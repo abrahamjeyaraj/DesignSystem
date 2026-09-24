@@ -69,3 +69,11 @@ Merged so far: Android (56b5058), iOS (22a63e1).
 - Web: waiting on user (tokens-only vs full ui-web swap).
 - SDK gaps queued for next minor: selectable chip, field validation, outline destructive button,
   optional empty-state message, section-title size token, themed native list/form container, date picker.
+
+## Ruling (user, 2026-09-23): user owns Pen screen fidelity for Tuition iOS + Android
+- Screens on both platforms do not match the Pen mocks yet; the user will get that fixed. Agents should
+  not iterate on screen layout unless asked.
+- iOS fix-up thread thr_khaaurgvuf stopped mid-edit. Uncommitted partial work (App.swift, project.yml,
+  new DSChrome.swift) left in worktree ~/.bb/.../thr_3ivjvzmyca-1/TuitionManager on branch
+  bb/impl-tuitionmanager-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
+- Android migration is merged into TuitionManager local main (5c4a358), not pushed.
