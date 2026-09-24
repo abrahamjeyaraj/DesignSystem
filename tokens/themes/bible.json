@@ -2,14 +2,63 @@
   "$description": "TheBibleProject: Warm Stone neutrals, Burnt Sienna accent, editorial gold CTA, IBM Plex Mono uppercase labels. Extracted from TheBibleProject/apps/web/src/app/globals.css and components/ui on 2026-09-23. Colour values are #rrggbb or {palette.step}; dark lists overrides only.",
   "name": "bible",
   "palette": {
-    "stone": { "50": "#fafaf8", "100": "#f5f5f0", "200": "#e8e8de", "300": "#d4d4c8", "400": "#b0b09e", "500": "#6d6d59", "600": "#6b6b56", "700": "#4a4a3a", "800": "#2e2e22", "900": "#1a1a12" },
-    "sienna": { "50": "#fdf7f5", "100": "#f9e9e3", "200": "#f3d3c7", "300": "#e6b5a1", "400": "#d89778", "500": "#c97a54", "600": "#b25d38", "700": "#8f4a2c", "800": "#6b3820", "900": "#482717" },
-    "indigo": { "50": "#f1f3f9", "100": "#dfe3f1", "200": "#c7d2eb", "300": "#a7c1dc", "400": "#81a3cc", "500": "#6385bc", "600": "#4f6ba7", "700": "#3d4d7a", "800": "#313d61", "900": "#293351" },
-    "sky": { "50": "#f0f7fc", "100": "#dceef9", "700": "#2f6b8c" },
-    "emerald": { "50": "#eef7f2", "100": "#d5eddf", "700": "#2d6b4a" },
-    "rose": { "50": "#faf2f2", "100": "#f4e1e1", "700": "#9c4242" }
+    "stone": {
+      "50": "#fafaf8",
+      "100": "#f5f5f0",
+      "200": "#e8e8de",
+      "300": "#d4d4c8",
+      "400": "#b0b09e",
+      "500": "#6d6d59",
+      "600": "#6b6b56",
+      "700": "#4a4a3a",
+      "800": "#2e2e22",
+      "900": "#1a1a12"
+    },
+    "sienna": {
+      "50": "#fdf7f5",
+      "100": "#f9e9e3",
+      "200": "#f3d3c7",
+      "300": "#e6b5a1",
+      "400": "#d89778",
+      "500": "#c97a54",
+      "600": "#b25d38",
+      "700": "#8f4a2c",
+      "800": "#6b3820",
+      "900": "#482717"
+    },
+    "indigo": {
+      "50": "#f1f3f9",
+      "100": "#dfe3f1",
+      "200": "#c7d2eb",
+      "300": "#a7c1dc",
+      "400": "#81a3cc",
+      "500": "#6385bc",
+      "600": "#4f6ba7",
+      "700": "#3d4d7a",
+      "800": "#313d61",
+      "900": "#293351"
+    },
+    "sky": {
+      "50": "#f0f7fc",
+      "100": "#dceef9",
+      "700": "#2f6b8c"
+    },
+    "emerald": {
+      "50": "#eef7f2",
+      "100": "#d5eddf",
+      "700": "#2d6b4a"
+    },
+    "rose": {
+      "50": "#faf2f2",
+      "100": "#f4e1e1",
+      "700": "#9c4242"
+    }
   },
-  "scales": { "primary": "stone", "secondary": "stone", "accent": "sienna" },
+  "scales": {
+    "primary": "stone",
+    "secondary": "stone",
+    "accent": "sienna"
+  },
   "tailwindAliases": {
     "gray": "stone",
     "slate": "stone",
@@ -21,33 +70,132 @@
     "rose": "rose"
   },
   "fontFamily": {
-    "heading": { "family": "Playfair Display", "webVar": "--font-playfair", "fallback": ["serif"] },
-    "body": { "family": "Geist", "webVar": "--font-geist", "fallback": ["sans-serif"] },
-    "mono": { "family": "IBM Plex Mono", "webVar": "--font-ibm-plex-mono", "fallback": ["monospace"] },
-    "label": { "family": "IBM Plex Mono", "webVar": "--font-ibm-plex-mono", "fallback": ["monospace"] }
+    "heading": {
+      "family": "Playfair Display",
+      "webVar": "--font-playfair",
+      "fallback": [
+        "serif"
+      ]
+    },
+    "body": {
+      "family": "Geist",
+      "webVar": "--font-geist",
+      "fallback": [
+        "sans-serif"
+      ]
+    },
+    "mono": {
+      "family": "IBM Plex Mono",
+      "webVar": "--font-ibm-plex-mono",
+      "fallback": [
+        "monospace"
+      ]
+    },
+    "label": {
+      "family": "IBM Plex Mono",
+      "webVar": "--font-ibm-plex-mono",
+      "fallback": [
+        "monospace"
+      ]
+    }
   },
-  "fontSize": { "base": 15 },
-  "radius": { "control": 2, "button": 2, "card": 8 },
-  "label": { "case": "uppercase", "tracking": 1.5, "size": 13, "weight": 500 },
+  "fontSize": {
+    "base": 15
+  },
+  "radius": {
+    "control": 2,
+    "button": 2,
+    "card": 8
+  },
+  "label": {
+    "case": "uppercase",
+    "tracking": 1.5,
+    "size": 13,
+    "weight": 500
+  },
   "shadow": {
-    "sm": [{ "x": 0, "y": 1, "blur": 2, "spread": 0, "alpha": 0.08 }],
+    "sm": [
+      {
+        "x": 0,
+        "y": 1,
+        "blur": 2,
+        "spread": 0,
+        "alpha": 0.08
+      }
+    ],
     "DEFAULT": [
-      { "x": 0, "y": 2, "blur": 4, "spread": 0, "alpha": 0.08 },
-      { "x": 0, "y": 1, "blur": 2, "spread": -1, "alpha": 0.06 }
+      {
+        "x": 0,
+        "y": 2,
+        "blur": 4,
+        "spread": 0,
+        "alpha": 0.08
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "blur": 2,
+        "spread": -1,
+        "alpha": 0.06
+      }
     ],
     "md": [
-      { "x": 0, "y": 4, "blur": 6, "spread": -1, "alpha": 0.12 },
-      { "x": 0, "y": 2, "blur": 4, "spread": -2, "alpha": 0.08 }
+      {
+        "x": 0,
+        "y": 4,
+        "blur": 6,
+        "spread": -1,
+        "alpha": 0.12
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "blur": 4,
+        "spread": -2,
+        "alpha": 0.08
+      }
     ],
     "lg": [
-      { "x": 0, "y": 10, "blur": 15, "spread": -3, "alpha": 0.12 },
-      { "x": 0, "y": 4, "blur": 6, "spread": -4, "alpha": 0.08 }
+      {
+        "x": 0,
+        "y": 10,
+        "blur": 15,
+        "spread": -3,
+        "alpha": 0.12
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "blur": 6,
+        "spread": -4,
+        "alpha": 0.08
+      }
     ],
     "xl": [
-      { "x": 0, "y": 20, "blur": 25, "spread": -5, "alpha": 0.14 },
-      { "x": 0, "y": 8, "blur": 10, "spread": -6, "alpha": 0.1 }
+      {
+        "x": 0,
+        "y": 20,
+        "blur": 25,
+        "spread": -5,
+        "alpha": 0.14
+      },
+      {
+        "x": 0,
+        "y": 8,
+        "blur": 10,
+        "spread": -6,
+        "alpha": 0.1
+      }
     ],
-    "card": [{ "x": 0, "y": 1, "blur": 2, "spread": 0, "alpha": 0.08 }]
+    "card": [
+      {
+        "x": 0,
+        "y": 1,
+        "blur": 2,
+        "spread": 0,
+        "alpha": 0.08
+      }
+    ]
   },
   "light": {
     "background": "#f8f8f6",
@@ -84,7 +232,16 @@
     "line": "#e5e0d8",
     "line-hover": "#e0dcd4",
     "action": "#c8b496",
-    "action-foreground": "#1a1a1a"
+    "action-foreground": "#1a1a1a",
+    "surface-card": "#fafaf8",
+    "surface-sand": "#f5f5f0",
+    "accent-2": "#c97a54",
+    "ink-900": "#1a1a1a",
+    "on-ink": "#1a1a12",
+    "on-ink-muted": "#6d6d59",
+    "on-ink-accent": "#c97a54",
+    "warn-bg": "#fcf5e5",
+    "alert-bg": "#fceaea"
   },
   "dark": {
     "background": "{stone.900}",
@@ -110,7 +267,16 @@
     "line": "#3a3730",
     "line-hover": "#423f36",
     "action": "#d9c9a8",
-    "action-foreground": "#1a1a1a"
+    "action-foreground": "#1a1a1a",
+    "surface-card": "#2e2e22",
+    "surface-sand": "#4a4a3a",
+    "accent-2": "#d89778",
+    "ink-900": "#f3f1ec",
+    "on-ink": "#fafaf8",
+    "on-ink-muted": "#b0b09e",
+    "on-ink-accent": "#d89778",
+    "warn-bg": "#fcf5e5",
+    "alert-bg": "#fceaea"
   },
   "extra": {
     "$description": "Bible-only colours kept so apps/web can migrate without renaming. Emitted as --color-<name> in CSS and as an extras map on native.",

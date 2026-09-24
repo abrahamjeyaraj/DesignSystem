@@ -360,6 +360,33 @@ public struct DSEmptyState<Action: View>: View {
     }
 }
 
+public enum DSProgressTone { case accent, accent2 }
+public enum DSNudgeTone { case warn, alert }
+public struct DSToggle: View {
+ @Environment(\.dsTheme) private var theme; @Environment(\.colorScheme) private var scheme
+ @Binding public var isOn: Bool; public var disabled: Bool; public var accessibilityLabel: String
+ public init(isOn: Binding<Bool>, disabled: Bool = false, accessibilityLabel: String = "Toggle") { self._isOn=isOn; self.disabled=disabled; self.accessibilityLabel=accessibilityLabel }
+ public var body: some View { let c=theme.colors(for: scheme); Button { isOn.toggle() } label: { Capsule().fill(Color(dsHex:c.accent)).frame(width:38,height:22).overlay(alignment:isOn ? .trailing : .leading) { Circle().fill(Color(dsHex:c.surfaceCard)).frame(width:16,height:16).padding(3) }.frame(width:48,height:48).contentShape(Rectangle()) }.buttonStyle(.plain).disabled(disabled).accessibilityLabel(accessibilityLabel).accessibilityValue(isOn ? "On" : "Off").accessibilityAddTraits(.isButton).accessibilityHint("Switch").accessibilityAction { isOn.toggle() } }
+}
+public struct DSProgress: View {
+ @Environment(\.dsTheme) private var theme; @Environment(\.colorScheme) private var scheme
+ public let value: Double; public let label: String?; public let valueLabel: String?; public let tone: DSProgressTone
+ public init(value: Double, label: String? = nil, valueLabel: String? = nil, tone: DSProgressTone = .accent) { self.value=value;self.label=label;self.valueLabel=valueLabel;self.tone=tone }
+ public var body: some View { let c=theme.colors(for:scheme); let progress=min(1,max(0,value.isFinite ? value : 0)); VStack(spacing:6) { if label != nil || valueLabel != nil { HStack(spacing:6) { Text(label ?? "").font(.system(size:13)).foregroundStyle(Color(dsHex:c.inkBody)); Spacer(minLength:0); Text(valueLabel ?? "").font(.system(size:13,weight:.semibold)).foregroundStyle(Color(dsHex:c.ink)) } }; GeometryReader { g in ZStack(alignment:.leading) { Capsule().fill(Color(dsHex:c.surfaceSand)); Capsule().fill(Color(dsHex:tone == .accent ? c.accent : c.accent2)).frame(width:g.size.width*progress) } }.frame(height:6) }.accessibilityElement(children:.ignore).accessibilityLabel(label ?? "Progress").accessibilityValue(valueLabel ?? "\(Int(progress*100)) percent") }
+}
+public struct DSInkCard<Content: View>: View {
+ @Environment(\.dsTheme) private var theme; @Environment(\.colorScheme) private var scheme
+ @ViewBuilder public let content: Content
+ public init(@ViewBuilder content:()->Content) { self.content=content() }
+ public var body: some View { let c=theme.colors(for:scheme); content.foregroundStyle(Color(dsHex:c.onInk)).padding(20).frame(maxWidth:.infinity,alignment:.leading).background(Color(dsHex:c.ink900),in:RoundedRectangle(cornerRadius:20)) }
+}
+public struct DSNudge: View {
+ @Environment(\.dsTheme) private var theme; @Environment(\.colorScheme) private var scheme
+ public let title:String; public let subtitle:String; public let systemImage:String; public let tone:DSNudgeTone; public let action:()->Void
+ public init(title:String,subtitle:String,systemImage:String,tone:DSNudgeTone = .warn,action:@escaping()->Void) { self.title=title;self.subtitle=subtitle;self.systemImage=systemImage;self.tone=tone;self.action=action }
+ public var body: some View { let c=theme.colors(for:scheme); Button(action:action) { HStack(spacing:14) { Image(systemName:systemImage).foregroundStyle(Color(dsHex:c.warning)); VStack(alignment:.leading,spacing:2) { Text(title).font(.system(size:15,weight:.semibold)).foregroundStyle(Color(dsHex:c.ink)); Text(subtitle).font(.system(size:13)).foregroundStyle(Color(dsHex:c.inkBody)) }.frame(maxWidth:.infinity,alignment:.leading); Image(systemName:"chevron.right").foregroundStyle(Color(dsHex:c.warning)) }.padding(16).frame(minHeight:theme.mobileLayout.touchTarget).background(Color(dsHex:tone == .warn ? c.warnBg : c.alertBg),in:RoundedRectangle(cornerRadius:16)) }.buttonStyle(.plain) }
+}
+
 private extension View {
     @ViewBuilder func ifLet<Value, Result: View>(_ value: Value?, transform: (Self, Value) -> Result) -> some View {
         if let value { transform(self, value) } else { self }

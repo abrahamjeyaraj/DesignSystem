@@ -2,27 +2,111 @@
   "$description": "TuitionManager: cream paper, oxblood primary, burnt-orange accent, Inter + Fraunces, pill buttons. Light extracted from TuitionManager/apps/web/src/components/ui.tsx designTokens and app/layout.tsx on 2026-09-23. Tuition has no dark mode yet; dark here is a PROPOSAL built from its own ink palette.",
   "name": "tuition",
   "palette": {
-    "oxblood": { "100": "#f3dada", "600": "#8a2b2b" },
-    "ember": { "100": "#f6e2d2", "500": "#c4622d", "600": "#a8511f" },
-    "cocoa": { "50": "#fbf8f3", "100": "#f2e7d8", "200": "#e9dfd1", "300": "#dcd1c1", "400": "#c4b2a2", "500": "#8b7c6d", "600": "#584a3e", "700": "#4a3a31", "800": "#3c2f28", "850": "#362a24", "900": "#2a211d", "950": "#1f1a17" }
+    "oxblood": {
+      "100": "#f3dada",
+      "600": "#8a2b2b"
+    },
+    "ember": {
+      "100": "#f6e2d2",
+      "500": "#c4622d",
+      "600": "#a8511f"
+    },
+    "cocoa": {
+      "50": "#fbf8f3",
+      "100": "#f2e7d8",
+      "200": "#e9dfd1",
+      "300": "#dcd1c1",
+      "400": "#c4b2a2",
+      "500": "#8b7c6d",
+      "600": "#584a3e",
+      "700": "#4a3a31",
+      "800": "#3c2f28",
+      "850": "#362a24",
+      "900": "#2a211d",
+      "950": "#1f1a17"
+    }
   },
-  "scales": { "accent": "ember", "neutral": "cocoa" },
+  "scales": {
+    "accent": "ember",
+    "neutral": "cocoa"
+  },
   "fontFamily": {
-    "sans": { "family": "Inter", "webVar": "--font-inter", "fallback": ["ui-sans-serif", "system-ui", "sans-serif"] },
-    "heading": { "family": "Fraunces", "webVar": "--font-fraunces", "fallback": ["Georgia", "serif"] },
-    "body": { "family": "Inter", "webVar": "--font-inter", "fallback": ["ui-sans-serif", "system-ui", "sans-serif"] },
-    "label": { "family": "Inter", "webVar": "--font-inter", "fallback": ["ui-sans-serif", "system-ui", "sans-serif"] }
+    "sans": {
+      "family": "Inter",
+      "webVar": "--font-inter",
+      "fallback": [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    },
+    "heading": {
+      "family": "Fraunces",
+      "webVar": "--font-fraunces",
+      "fallback": [
+        "Georgia",
+        "serif"
+      ]
+    },
+    "body": {
+      "family": "Inter",
+      "webVar": "--font-inter",
+      "fallback": [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    },
+    "label": {
+      "family": "Inter",
+      "webVar": "--font-inter",
+      "fallback": [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ]
+    }
   },
-  "radius": { "control": 8, "button": 9999, "card": 12, "xl": 12 },
-  "label": { "case": "none", "tracking": 0, "size": 15, "weight": 800 },
+  "radius": {
+    "control": 8,
+    "button": 9999,
+    "card": 12,
+    "xl": 12
+  },
+  "label": {
+    "case": "none",
+    "tracking": 0,
+    "size": 15,
+    "weight": 800
+  },
   "mobile": {
     "$source": "Pen Native Design System (m-* variables, M / components)",
     "type": {
-      "title": { "size": 28, "lineHeight": 36, "weight": 500 },
-      "headline": { "size": 20, "lineHeight": 28, "weight": 600 },
-      "body": { "size": 15, "lineHeight": 24, "weight": 400 },
-      "label": { "size": 13, "lineHeight": 20, "weight": 600 },
-      "caption": { "size": 11, "lineHeight": 16, "weight": 400 }
+      "title": {
+        "size": 28,
+        "lineHeight": 36,
+        "weight": 500
+      },
+      "headline": {
+        "size": 20,
+        "lineHeight": 28,
+        "weight": 600
+      },
+      "body": {
+        "size": 15,
+        "lineHeight": 24,
+        "weight": 400
+      },
+      "label": {
+        "size": 13,
+        "lineHeight": 20,
+        "weight": 600
+      },
+      "caption": {
+        "size": 11,
+        "lineHeight": 16,
+        "weight": 400
+      }
     },
     "layout": {
       "gutter": 20,
@@ -37,7 +121,15 @@
   },
   "supportsDark": false,
   "shadow": {
-    "card": [{ "x": 0, "y": 8, "blur": 24, "spread": 0, "alpha": 0.08 }]
+    "card": [
+      {
+        "x": 0,
+        "y": 8,
+        "blur": 24,
+        "spread": 0,
+        "alpha": 0.08
+      }
+    ]
   },
   "light": {
     "background": "#fbf7f0",
@@ -74,7 +166,16 @@
     "line": "{cocoa.300}",
     "line-hover": "#c9bba7",
     "action": "{oxblood.600}",
-    "action-foreground": "#fbf7f0"
+    "action-foreground": "#fbf7f0",
+    "surface-card": "{white}",
+    "surface-sand": "{cocoa.200}",
+    "accent-2": "{ember.600}",
+    "ink-900": "{cocoa.900}",
+    "on-ink": "#fbf7f0",
+    "on-ink-muted": "{cocoa.400}",
+    "on-ink-accent": "#ebc9a8",
+    "warn-bg": "{ember.100}",
+    "alert-bg": "{oxblood.100}"
   },
   "dark": {
     "background": "{cocoa.900}",
@@ -103,19 +204,23 @@
     "line": "{cocoa.700}",
     "line-hover": "#5c4a3f",
     "action": "#ebc9a8",
-    "action-foreground": "{cocoa.900}"
+    "action-foreground": "{cocoa.900}",
+    "surface-card": "{cocoa.850}",
+    "surface-sand": "{cocoa.800}",
+    "accent-2": "#e08a5a",
+    "ink-900": "{cocoa.900}",
+    "on-ink": "#fbf7f0",
+    "on-ink-muted": "{cocoa.400}",
+    "on-ink-accent": "#ebc9a8",
+    "warn-bg": "{cocoa.800}",
+    "alert-bg": "{cocoa.800}"
   },
   "extra": {
     "light": {
-      "surface-sand": "{cocoa.200}",
       "surface-tint": "{cocoa.100}",
-      "ink-900": "{cocoa.900}",
       "ink-800": "{cocoa.850}",
       "ink-700": "{cocoa.800}",
-      "ink-line": "{cocoa.700}",
-      "on-ink": "#fbf7f0",
-      "on-ink-muted": "{cocoa.400}",
-      "on-ink-accent": "#ebc9a8"
+      "ink-line": "{cocoa.700}"
     },
     "dark": {}
   }
