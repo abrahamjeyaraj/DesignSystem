@@ -47,3 +47,12 @@ type prefix Abe* -> DS* (DSThemeTokens, DSTokens, DSButton, ...); .abeTheme/.abe
 com.abrahamjeyaraj.designsystem, Maven com.abrahamjeyaraj:designsystem; Flutter abe_design ->
 design_system; RN AbeThemeProvider/useAbeTheme -> DSThemeProvider/useDSTheme. npm names unchanged.
 Merged so far: Android (56b5058), iOS (22a63e1).
+
+## Released v0.2.0 (2026-09-23)
+- Rename done (e379744); zero "Abe" outside this file. Tag v0.2.0 -> e379744.
+- Published to GitHub Packages: npm @abrahamjeyaraj/{tokens,ui-web,ui-native}@0.2.0 (manual dispatch
+  from main after CI fixes: set versions without npm, bun publish --registry npm.pkg.github.com),
+  Maven com.abrahamjeyaraj:designsystem:0.2.0 (tag run). SwiftPM + Flutter consume tag v0.2.0.
+- Trap: bun publish ignores publishConfig.registry; npm version/publish choke on workspace:*.
+- Trap: local gh token lacks read:packages; consumers need a PAT with read:packages.
+- Next: migrate TuitionManager ios-native + android-native (needs user go-ahead).
