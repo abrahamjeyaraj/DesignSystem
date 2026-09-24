@@ -12,6 +12,7 @@ import {
   type ViewProps,
   type ViewStyle,
 } from 'react-native';
+import { type ColorMode, type ThemeName, tokens } from '@abrahamjeyaraj/tokens';
 import { AbeThemeProvider, useAbeTheme } from './theme';
 
 export const ICON_SIZE_SM = 18;
@@ -461,7 +462,7 @@ export function AbeSegmented({ items, selected, onChange, onSelect, style }: Abe
             style={[
               {
                 flex: 1,
-                height: 36,
+                minHeight: Math.max(36, t.mobileLayout.touchTarget),
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 999,
@@ -716,7 +717,11 @@ export function AbeSectionHeader({ title, action, actionTitle, onAction, style }
         title
       )}
       {act && (
-        <Pressable accessibilityRole="button" onPress={onAction}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={onAction}
+          style={{ minHeight: t.mobileLayout.touchTarget, justifyContent: 'center' }}
+        >
           {typeof act === 'string' ? (
             <AbeText variant="label" style={{ color: t.colors.action, fontWeight: t.weight(600) }}>
               {act}
@@ -790,6 +795,7 @@ export function AbeTabBar({
             onPress={() => handleSelect(item.value)}
             style={{
               flex: 1,
+              minHeight: t.mobileLayout.touchTarget,
               alignItems: 'center',
               justifyContent: 'center',
               gap: 3,
@@ -935,57 +941,103 @@ export function AbeInput({ style, ...props }: TextInputProps) {
 
 // ---------- Gallery ----------
 
-export function AbeGallery({ style }: { style?: StyleProp<ViewStyle> }) {
+export interface AbeGalleryProps {
+  theme?: ThemeName;
+  mode?: ColorMode;
+  style?: StyleProp<ViewStyle>;
+}
+
+export function AbeGallery({ theme: selectedTheme, mode: selectedMode, style }: AbeGalleryProps = {}) {
+  const themesToRender: readonly ThemeName[] = selectedTheme ? [selectedTheme] : (['tuition', 'church', 'bible'] as const);
+
   return (
     <View style={style}>
-      {(['tuition', 'church', 'bible'] as const).map((theme) => (
-        <AbeThemeProvider key={theme} theme={theme}>
-          <AbeCard style={{ margin: 8, gap: 12 }}>
-            <AbeLargeTitle eyebrow={theme} title={`${theme} gallery`} />
-            <AbeNavBar
-              title="Navigation"
-              leading={<AbeButton size="sm" variant="ghost">Back</AbeButton>}
-              trailing={<AbeIconButton icon="⚙" accessibilityLabel="Settings" />}
-            />
-            <AbeSectionHeader title="Section Header" action="See all" />
-            <AbeText variant="title">Title text</AbeText>
-            <AbeText variant="headline">Headline text</AbeText>
-            <AbeText variant="body">Body text with theme tokens</AbeText>
-            <AbeText variant="label">Label text</AbeText>
-            <AbeText variant="caption">Caption text</AbeText>
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              <AbeButton variant="primary">Primary</AbeButton>
-              <AbeButton variant="secondary">Secondary</AbeButton>
-              <AbeButton variant="outline">Outline</AbeButton>
-              <AbeButton variant="ghost">Ghost</AbeButton>
-              <AbeButton variant="destructive">Destructive</AbeButton>
-            </View>
-            <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-              <AbeAvatar initials="AJ" />
-              <AbeChip tone="neutral">Neutral</AbeChip>
-              <AbeChip tone="accent">Accent</AbeChip>
-              <AbeChip tone="success">Paid</AbeChip>
-              <AbeChip tone="warning">Due</AbeChip>
-              <AbeChip tone="error">Overdue</AbeChip>
-              <AbeBadge tone="info">Info</AbeBadge>
-            </View>
-            <AbeListRow leading={<AbeAvatar initials="TS" />} title="Student Name" subtitle="Class 10 · Maths" chevron="›" />
-            <AbeStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
-            <AbeSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="All" />
-            <AbeField label="Field Label" placeholder="Enter value..." />
-            <AbeSearchField placeholder="Search students..." icon="🔍" />
-            <AbeSheetHandle />
-            <AbeTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
-            <AbeEmptyState title="Empty State" message="No records found in this section." action={<AbeButton size="sm">Create record</AbeButton>} />
-            <AbeInput placeholder="Standard Input..." />
-          </AbeCard>
-        </AbeThemeProvider>
-      ))}
+      {themesToRender.map((themeName) => {
+        const themeTokens = tokens.themes[themeName];
+        const modesToRender: readonly ColorMode[] = selectedMode
+          ? [selectedMode]
+          : themeTokens.supportsDark
+            ? (['light', 'dark'] as const)
+            : (['light'] as const);
+
+        return (
+          <View key={themeName} style={{ marginBottom: 24, gap: 16 }}>
+            <AbeText variant="title" style={{ paddingHorizontal: 16 }}>
+              {themeName.toUpperCase()} {themeTokens.supportsDark ? '' : '(Light only - supportsDark: false)'}
+            </AbeText>
+            {modesToRender.map((mode) => (
+              <AbeThemeProvider key={`${themeName}-${mode}`} theme={themeName} mode={mode}>
+                <AbeCard style={{ margin: 8, gap: 12 }}>
+                  <AbeLargeTitle eyebrow={`${themeName} · ${mode}`} title={`${themeName} (${mode})`} />
+                  <AbeNavBar
+                    title="Navigation"
+                    leading={<AbeButton size="sm" variant="ghost">Back</AbeButton>}
+                    trailing={<AbeIconButton icon="⚙" accessibilityLabel="Settings" />}
+                  />
+                  <AbeSectionHeader title="Section Header" action="See all" onAction={() => {}} />
+                  <AbeText variant="title">Title text</AbeText>
+                  <AbeText variant="headline">Headline text</AbeText>
+                  <AbeText variant="body">Body text with theme tokens</AbeText>
+                  <AbeText variant="label">Label text</AbeText>
+                  <AbeText variant="caption">Caption text</AbeText>
+                  <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                    <AbeButton variant="primary">Primary</AbeButton>
+                    <AbeButton variant="secondary">Secondary</AbeButton>
+                    <AbeButton variant="outline">Outline</AbeButton>
+                    <AbeButton variant="ghost">Ghost</AbeButton>
+                    <AbeButton variant="destructive">Destructive</AbeButton>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+                    <AbeAvatar initials="AJ" />
+                    <AbeChip tone="neutral">Neutral</AbeChip>
+                    <AbeChip tone="accent">Accent</AbeChip>
+                    <AbeChip tone="success">Paid</AbeChip>
+                    <AbeChip tone="warning">Due</AbeChip>
+                    <AbeChip tone="error">Overdue</AbeChip>
+                    <AbeBadge tone="info">Info</AbeBadge>
+                  </View>
+                  <AbeListRow leading={<AbeAvatar initials="TS" />} title="Student Name" subtitle="Class 10 · Maths" chevron="›" onPress={() => {}} />
+                  <AbeStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
+                  <AbeSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="All" />
+                  <AbeField label="Field Label" placeholder="Enter value..." />
+                  <AbeSearchField placeholder="Search students..." icon="🔍" />
+                  <AbeSheetHandle />
+                  <AbeTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
+                  <AbeEmptyState title="Empty State" message="No records found in this section." action={<AbeButton size="sm">Create record</AbeButton>} />
+                  <AbeInput placeholder="Standard Input..." />
+                </AbeCard>
+              </AbeThemeProvider>
+            ))}
+          </View>
+        );
+      })}
     </View>
   );
 }
 
-// Backward-compatible aliases
+// Backward-compatible type aliases
+export type TextProps = AbeTextProps;
+export type ButtonProps = AbeButtonProps;
+export type BadgeTone = Tone;
+export type IconButtonProps = AbeIconButtonProps;
+export type ChipProps = AbeChipProps;
+export type AvatarProps = AbeAvatarProps;
+export type ListRowProps = AbeListRowProps;
+export type StatTileProps = AbeStatTileProps;
+export type SegmentedProps = AbeSegmentedProps;
+export type FieldProps = AbeFieldProps;
+export type SearchFieldProps = AbeSearchFieldProps;
+export type LargeTitleProps = AbeLargeTitleProps;
+export type NavBarProps = AbeNavBarProps;
+export type SheetHandleProps = { style?: StyleProp<ViewStyle> };
+export type SectionHeaderProps = AbeSectionHeaderProps;
+export type TabBarProps = AbeTabBarProps;
+export type CardProps = ViewProps;
+export type EmptyStateProps = AbeEmptyStateProps;
+export type BadgeProps = AbeBadgeProps;
+export type GalleryProps = AbeGalleryProps;
+
+// Backward-compatible component aliases
 export {
   AbeText as Text,
   AbeButton as Button,

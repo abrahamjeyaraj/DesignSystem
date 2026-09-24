@@ -221,9 +221,16 @@ test('AbeEmptyState renders icon, title, message and action', () => {
   expect(html).toContain('Add Student');
 });
 
-test('AbeGallery renders all 3 themes', () => {
+test('AbeGallery renders all 3 themes and honours supportsDark', () => {
   const html = renderToString(<AbeGallery />);
-  expect(html).toContain('tuition gallery');
-  expect(html).toContain('church gallery');
-  expect(html).toContain('bible gallery');
+  expect(html).toContain('tuition (light)');
+  expect(html).toContain('Light only - supportsDark: false');
+  expect(html).toContain('church (light)');
+  expect(html).toContain('church (dark)');
+  expect(html).toContain('bible (light)');
+  expect(html).toContain('bible (dark)');
+
+  const tuitionOnly = renderToString(<AbeGallery theme="tuition" />);
+  expect(tuitionOnly).toContain('tuition (light)');
+  expect(tuitionOnly).not.toContain('church');
 });

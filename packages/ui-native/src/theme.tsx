@@ -31,7 +31,10 @@ export function createTheme(name: ThemeName = tokens.defaultTheme, mode: ColorMo
   const resolvedMode: ColorMode = t.supportsDark ? mode : 'light';
   const loaded = (family: string) => {
     const value = options?.fontsLoaded;
-    return value === undefined || value === true || (typeof value === 'object' ? value[family] !== false : typeof value === 'function' ? value(family) : false);
+    if (value === true) return true;
+    if (typeof value === 'function') return !!value(family);
+    if (value && typeof value === 'object') return value[family] === true;
+    return false;
   };
   const resolveFont = (role: FontRole, isLoaded = loaded(t.fontFamily[role].family)) => isLoaded ? t.fontFamily[role].family : fallback(role);
   const fontFamily = Object.fromEntries((Object.keys(t.fontFamily) as FontRole[]).map((role) => [role, resolveFont(role)])) as AbeTheme['fontFamily'];
