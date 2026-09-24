@@ -16,3 +16,4 @@ native/flutter/.flutter-plugins*
 native/flutter/example/pubspec.lock
 packages/*/dist/
 *.tgz
+**/.dart_tool/
