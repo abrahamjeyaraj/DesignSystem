@@ -11,7 +11,7 @@
   "scripts": {
     "tokens": "bun packages/tokens/scripts/build.ts",
     "tokens:check": "bun packages/tokens/scripts/build.ts --check",
-    "test": "bun test packages",
+    "test": "bun test --conditions source packages",
     "typecheck": "bun run --cwd packages/tokens typecheck && bun run --cwd packages/ui-web typecheck && bun run --cwd packages/ui-native typecheck",
     "check:native": "bash scripts/check-native.sh",
     "verify": "bun run tokens:check && bun run test && bun run typecheck",

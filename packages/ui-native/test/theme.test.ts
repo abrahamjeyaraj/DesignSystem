@@ -1,6 +1,9 @@
-import { describe, expect, test } from 'bun:test';
-import { Platform } from 'react-native';
-import { createTheme } from '../src/theme';
+import { describe, expect, test, mock } from 'bun:test';
+import * as rnw from 'react-native-web';
+mock.module('react-native', () => rnw);
+
+const { Platform } = await import('react-native');
+const { createTheme } = await import('../src/theme');
 
 describe('createTheme', () => {
   test('tuition forces light mode', () => expect(createTheme('tuition', 'dark').mode).toBe('light'));
@@ -19,3 +22,4 @@ describe('createTheme', () => {
     expect(theme.fontFamily.body).toBe(Platform.select({ ios: 'System', android: 'sans-serif', default: 'sans-serif' }));
   });
 });
+
