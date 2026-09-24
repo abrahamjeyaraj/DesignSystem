@@ -51,11 +51,7 @@ class DSText extends StatelessWidget {
         true,
       ),
       DSTextStyle.body => (t.tokens.mobileType.body, t.colors.inkBody, false),
-      DSTextStyle.label => (
-        t.tokens.mobileType.label,
-        t.colors.inkBody,
-        false,
-      ),
+      DSTextStyle.label => (t.tokens.mobileType.label, t.colors.inkBody, false),
       DSTextStyle.caption => (
         t.tokens.mobileType.caption,
         t.colors.inkMuted,
@@ -630,12 +626,7 @@ class DSLargeTitle extends StatelessWidget {
 }
 
 class DSNavBar extends StatelessWidget {
-  const DSNavBar({
-    super.key,
-    required this.title,
-    this.leading,
-    this.trailing,
-  });
+  const DSNavBar({super.key, required this.title, this.leading, this.trailing});
   final String title;
   final Widget? leading, trailing;
   @override
@@ -703,43 +694,32 @@ class DSSectionHeader extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.symmetric(
-      horizontal: DSTheme.of(context).tokens.mobileLayout.gutter,
-    ),
-    child: Row(
+  Widget build(BuildContext context) {
+    final theme = DSTheme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
           child: Text(
             title,
-            style: TextStyle(
-              color: Color(DSTheme.of(context).colors.ink),
-              fontSize: DSTheme.of(context).tokens.mobileType.headline.size,
-              fontWeight:
-                  FontWeight.values[((DSTheme.of(
-                                    context,
-                                  ).tokens.mobileType.headline.weight /
-                                  100)
-                              .round() -
-                          1)
-                      .clamp(0, 8)],
-            ),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)
+                .copyWith(
+                  color: Color(theme.colors.ink),
+                  fontFamily: theme.font(theme.tokens.mobileType.body.family),
+                ),
           ),
         ),
         if (actionLabel != null)
           TextButton(
             onPressed: onAction,
             style: TextButton.styleFrom(
-              minimumSize: Size(
-                0,
-                DSTheme.of(context).tokens.mobileLayout.touchTarget,
-              ),
+              minimumSize: Size(0, theme.tokens.mobileLayout.touchTarget),
             ),
             child: Text(actionLabel!),
           ),
       ],
-    ),
-  );
+    );
+  }
 }
 
 class DSTabItem {
@@ -769,13 +749,9 @@ class DSTabBar extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.fromLTRB(
-          t.tokens.mobileLayout.gutter,
-          0,
-          t.tokens.mobileLayout.gutter,
-          t.tokens.mobileLayout.itemGap,
-        ),
-        padding: EdgeInsets.all(t.tokens.mobileLayout.itemGap / 2),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        height: 64,
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Color(t.colors.card),
           border: Border.all(color: Color(t.colors.line)),
@@ -806,43 +782,56 @@ class DSTabBar extends StatelessWidget {
                       constraints: BoxConstraints(
                         minHeight: t.tokens.mobileLayout.touchTarget,
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        decoration: BoxDecoration(
-                          color: i == selectedIndex
-                              ? Color(t.colors.primary).withValues(alpha: .1)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                            t.tokens.radius.full,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 14,
                           ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              items[i].icon,
-                              size: 22,
-                              color: Color(
-                                i == selectedIndex
-                                    ? t.colors.primary
-                                    : t.colors.inkMuted,
-                              ),
+                          decoration: BoxDecoration(
+                            color: i == selectedIndex
+                                ? Color(t.colors.primary).withValues(alpha: .1)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(
+                              t.tokens.radius.full,
                             ),
-                            Text(
-                              items[i].label,
-                              maxLines: 1,
-                              softWrap: false,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Color(
-                                  i == selectedIndex
-                                      ? t.colors.primary
-                                      : t.colors.inkMuted,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: Icon(
+                                  items[i].icon,
+                                  size: 22,
+                                  color: Color(
+                                    i == selectedIndex
+                                        ? t.colors.primary
+                                        : t.colors.inkMuted,
+                                  ),
                                 ),
-                                fontSize: t.tokens.mobileType.caption.size,
                               ),
-                            ),
-                          ],
+                              Text(
+                                items[i].label,
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Color(
+                                    i == selectedIndex
+                                        ? t.colors.primary
+                                        : t.colors.inkMuted,
+                                  ),
+                                  fontSize: 10.5,
+                                  height: 1,
+                                  fontWeight: i == selectedIndex
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -911,9 +900,7 @@ class DSEmptyState extends StatelessWidget {
     final c = DSTheme.of(context).colors;
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(
-          DSTheme.of(context).tokens.mobileLayout.gutter,
-        ),
+        padding: EdgeInsets.all(DSTheme.of(context).tokens.mobileLayout.gutter),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -991,10 +978,75 @@ class DSStatusBar extends StatelessWidget {
 }
 
 enum DSProgressTone { accent, accent2 }
+
 enum DSNudgeTone { warn, alert }
-class DSToggle extends StatelessWidget { const DSToggle({super.key,required this.value,required this.onChanged,this.disabled=false,this.semanticLabel='Toggle'}); final bool value,disabled; final ValueChanged<bool> onChanged; final String semanticLabel; @override Widget build(BuildContext context){final c=DSTheme.of(context).colors;return Semantics(toggled:value,enabled:!disabled,label:semanticLabel,button:true,child:GestureDetector(onTap:disabled?null:()=>onChanged(!value),child:SizedBox(width:48,height:48,child:Center(child:Container(width:38,height:22,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:Color(value?c.accent:c.border).withValues(alpha:disabled ? .5 : 1),borderRadius:BorderRadius.circular(999)),child:Row(mainAxisAlignment:value?MainAxisAlignment.end:MainAxisAlignment.start,children:[Container(width:16,height:16,decoration:BoxDecoration(color:Color(c.surfaceCard),shape:BoxShape.circle))]))))));} }
+
+class DSToggle extends StatelessWidget {
+  const DSToggle({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.disabled = false,
+    this.semanticLabel = 'Toggle',
+  });
+  final bool value, disabled;
+  final ValueChanged<bool> onChanged;
+  final String semanticLabel;
+  @override
+  Widget build(BuildContext context) {
+    final c = DSTheme.of(context).colors;
+    return Semantics(
+      toggled: value,
+      enabled: !disabled,
+      label: semanticLabel,
+      button: true,
+      child: GestureDetector(
+        onTap: disabled ? null : () => onChanged(!value),
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Center(
+            child: Container(
+              width: 38,
+              height: 22,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: Color(
+                  value ? c.accent : c.border,
+                ).withValues(alpha: disabled ? .5 : 1),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Row(
+                mainAxisAlignment: value
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Color(c.surfaceCard),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class DSProgress extends StatelessWidget {
-  const DSProgress({super.key, required this.value, this.label, this.valueLabel, this.tone = DSProgressTone.accent});
+  const DSProgress({
+    super.key,
+    required this.value,
+    this.label,
+    this.valueLabel,
+    this.tone = DSProgressTone.accent,
+  });
   final double value;
   final String? label, valueLabel;
   final DSProgressTone tone;
@@ -1003,23 +1055,78 @@ class DSProgress extends StatelessWidget {
     final t = DSTheme.of(context);
     final c = t.colors;
     final v = value.isFinite ? value.clamp(0.0, 1.0) : 0.0;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      if (label != null || valueLabel != null)
-        Row(children: [
-          Expanded(child: Text(label ?? '', style: _role(context, t.tokens.mobileType.label, c.inkBody))),
-          Text(valueLabel ?? '', style: _role(context, t.tokens.mobileType.label, c.ink).copyWith(fontWeight: FontWeight.w600)),
-        ]),
-      if (label != null || valueLabel != null) const SizedBox(height: 6),
-      Semantics(value: valueLabel ?? '${(v * 100).round()} percent', child: ClipRRect(
-        borderRadius: BorderRadius.circular(999),
-        child: LinearProgressIndicator(value: v, minHeight: 6, backgroundColor: Color(c.surfaceSand), color: Color(tone == DSProgressTone.accent ? c.accent : c.accent2)),
-      )),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (label != null || valueLabel != null)
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label ?? '',
+                  style: _role(context, t.tokens.mobileType.label, c.inkBody),
+                ),
+              ),
+              Text(
+                valueLabel ?? '',
+                style: _role(
+                  context,
+                  t.tokens.mobileType.label,
+                  c.ink,
+                ).copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        if (label != null || valueLabel != null) const SizedBox(height: 6),
+        Semantics(
+          value: valueLabel ?? '${(v * 100).round()} percent',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: v,
+              minHeight: 6,
+              backgroundColor: Color(c.surfaceSand),
+              color: Color(
+                tone == DSProgressTone.accent ? c.accent : c.accent2,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
-class DSInkCard extends StatelessWidget { const DSInkCard({super.key,required this.child}); final Widget child; @override Widget build(BuildContext context){final t=DSTheme.of(context);return DefaultTextStyle.merge(style:TextStyle(color:Color(t.colors.onInk)),child:Container(width:double.infinity,padding:const EdgeInsets.all(20),decoration:BoxDecoration(color:Color(t.colors.ink900),borderRadius:BorderRadius.circular(20)),child:child));} }
+
+class DSInkCard extends StatelessWidget {
+  const DSInkCard({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    final t = DSTheme.of(context);
+    return DefaultTextStyle.merge(
+      style: TextStyle(color: Color(t.colors.onInk)),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Color(t.colors.ink900),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
 class DSNudge extends StatelessWidget {
-  const DSNudge({super.key, required this.title, required this.subtitle, required this.icon, required this.onTap, this.tone = DSNudgeTone.warn});
+  const DSNudge({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onTap,
+    this.tone = DSNudgeTone.warn,
+  });
   final String title, subtitle;
   final IconData icon;
   final VoidCallback onTap;
@@ -1036,15 +1143,36 @@ class DSNudge extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(children: [
-            Icon(icon, color: Color(c.warning)),
-            const SizedBox(width: 14),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: _role(context, t.tokens.mobileType.body, c.ink).copyWith(fontWeight: FontWeight.w600)),
-              Text(subtitle, style: _role(context, t.tokens.mobileType.label, c.inkBody)),
-            ])),
-            Icon(Icons.chevron_right, color: Color(c.warning)),
-          ]),
+          child: Row(
+            children: [
+              Icon(icon, color: Color(c.warning)),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: _role(
+                        context,
+                        t.tokens.mobileType.body,
+                        c.ink,
+                      ).copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      subtitle,
+                      style: _role(
+                        context,
+                        t.tokens.mobileType.label,
+                        c.inkBody,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: Color(c.warning)),
+            ],
+          ),
         ),
       ),
     );
@@ -1152,13 +1280,39 @@ class _DSGalleryState extends State<DSGallery> {
         onChanged: (i) => setState(() => _tab = i),
       ),
       const DSSectionHeader(title: 'Toggle · Progress · Ink card · Nudge'),
-      Wrap(spacing: 8, children: [
-        DSToggle(value: true, onChanged: (_) {}, semanticLabel: 'Toggle on'),
-        DSToggle(value: false, onChanged: (_) {}, semanticLabel: 'Toggle off'),
-      ]),
-      const DSProgress(value: .72, label: 'Recent tests', valueLabel: '72%', tone: DSProgressTone.accent2),
-      const DSInkCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Next class'), Text('Class 10 · Evening'), Text('Physics · 8 students')])),
-      DSNudge(title: 'Fee reminders ready', subtitle: '3 families to remind', icon: Icons.notifications_active_outlined, onTap: () {}),
+      Wrap(
+        spacing: 8,
+        children: [
+          DSToggle(value: true, onChanged: (_) {}, semanticLabel: 'Toggle on'),
+          DSToggle(
+            value: false,
+            onChanged: (_) {},
+            semanticLabel: 'Toggle off',
+          ),
+        ],
+      ),
+      const DSProgress(
+        value: .72,
+        label: 'Recent tests',
+        valueLabel: '72%',
+        tone: DSProgressTone.accent2,
+      ),
+      const DSInkCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Next class'),
+            Text('Class 10 · Evening'),
+            Text('Physics · 8 students'),
+          ],
+        ),
+      ),
+      DSNudge(
+        title: 'Fee reminders ready',
+        subtitle: '3 families to remind',
+        icon: Icons.notifications_active_outlined,
+        onTap: () {},
+      ),
       const DSSectionHeader(title: 'Empty state', actionLabel: 'See all'),
       const DSEmptyState(
         icon: Icons.inbox_outlined,

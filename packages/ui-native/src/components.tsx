@@ -702,7 +702,6 @@ export function DSSectionHeader({ title, action, actionTitle, onAction, style }:
     <View
       style={[
         {
-          paddingHorizontal: 20,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
@@ -771,11 +770,14 @@ export function DSTabBar({
     onTabPress?.(val);
   };
   return (
+    <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
     <View
       accessibilityRole="tablist"
       style={[
         {
+          height: 64,
           flexDirection: 'row',
+          justifyContent: 'space-between',
           padding: 6,
           borderRadius: 999,
           backgroundColor: t.colors.card,
@@ -795,8 +797,7 @@ export function DSTabBar({
             accessibilityState={{ selected: active }}
             onPress={() => handleSelect(item.value)}
             style={{
-              flex: 1,
-              minHeight: t.mobileLayout.touchTarget,
+              alignSelf: 'center',
               minWidth: t.mobileLayout.touchTarget,
               alignItems: 'center',
               justifyContent: 'center',
@@ -807,7 +808,7 @@ export function DSTabBar({
               backgroundColor: active ? `${t.colors.action}1A` : 'transparent',
             }}
           >
-            {typeof item.icon === 'string' ? <DSText variant="body">{item.icon}</DSText> : item.icon}
+            <View style={{ width: 22, height: 22, alignItems: 'center', justifyContent: 'center' }}>{typeof item.icon === 'string' ? <DSText variant="body">{item.icon}</DSText> : item.icon}</View>
             <DSText
               variant="caption"
               numberOfLines={1}
@@ -822,6 +823,7 @@ export function DSTabBar({
           </Pressable>
         );
       })}
+    </View>
     </View>
   );
 }

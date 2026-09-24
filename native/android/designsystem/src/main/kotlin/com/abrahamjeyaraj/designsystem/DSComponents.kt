@@ -473,8 +473,7 @@ fun DSSectionHeader(
     val c = design.colors
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -526,8 +525,7 @@ fun DSTabBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // Minimum, not fixed: labels grow with font scale instead of being clipped.
-                .heightIn(min = DSPenMetrics.TabBarCapsuleHeight)
+                .height(DSPenMetrics.TabBarCapsuleHeight)
                 .shadow(8.dp, capsuleShape)
                 .clip(capsuleShape)
                 .border(1.dp, Color(c.line), capsuleShape)
@@ -541,7 +539,6 @@ fun DSTabBar(
                 val pill = RoundedCornerShape(tokens.radius.full.dp)
                 Column(
                     modifier = Modifier
-                        .weight(1f)
                         .clip(pill)
                         .then(
                             if (selected) {
@@ -554,7 +551,7 @@ fun DSTabBar(
                             role = Role.Tab,
                             onClick = { onSelected(index) },
                         )
-                        .padding(vertical = 6.dp, horizontal = 4.dp)
+                        .padding(vertical = 6.dp, horizontal = 14.dp)
                         .semantics { contentDescription = item.label },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(3.dp),
@@ -563,16 +560,15 @@ fun DSTabBar(
                         item.icon,
                         contentDescription = null,
                         tint = if (selected) Color(c.primary) else Color(c.inkMuted),
-                        modifier = Modifier.size(DSPenMetrics.IconLg),
+                        modifier = Modifier.size(22.dp),
                     )
                     Text(
                         item.label,
-                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = DSPenMetrics.TabLabelSize.sp,
+                        fontSize = 10.5.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                         fontFamily = design.typography.body.fontFamily,
                         color = if (selected) Color(c.primary) else Color(c.inkMuted),

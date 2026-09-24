@@ -263,8 +263,7 @@ public struct DSSectionHeader<Action: View>: View {
     public init(_ title: String, @ViewBuilder action: () -> Action = { EmptyView() }) { self.title = title; self.action = action() }
     public var body: some View {
         let c = theme.colors(for: scheme)
-        HStack(alignment: .lastTextBaseline) { Text(title).dsFont(.headline).foregroundStyle(Color(dsHex: c.foreground)).frame(maxWidth: .infinity, alignment: .leading); action }
-            .padding(.horizontal, theme.mobileLayout.gutter)
+        HStack(alignment: .bottom) { Text(title).font(DSFontResolver.font(family: theme.mobileType.body.family, size: 17, heading: false).weight(.semibold)).foregroundStyle(Color(dsHex: c.foreground)).frame(maxWidth: .infinity, alignment: .leading); action }
     }
 }
 
@@ -312,20 +311,22 @@ public struct DSTabBar: View {
     public var body: some View {
         let c = theme.colors(for: scheme)
         HStack(spacing: 0) {
-            ForEach(items) { item in
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 let active = selection == item.id
+                if index > 0 { Spacer(minLength: 0) }
                 Button { selection = item.id } label: {
                     VStack(spacing: 3) {
-                        Image(systemName: item.systemImage).font(.system(size: DSComponentMetrics.tabIcon)).accessibilityHidden(true)
-                        Text(item.title).dsFont(.caption).fontWeight(active ? .semibold : .medium).lineLimit(1).minimumScaleFactor(0.8)
+                        Image(systemName: item.systemImage).font(.system(size: DSComponentMetrics.tabIcon)).frame(width: 22, height: 22).accessibilityHidden(true)
+                        Text(item.title).font(DSFontResolver.font(family: theme.mobileType.body.family, size: 10.5, heading: false).weight(active ? .semibold : .medium)).lineLimit(1).minimumScaleFactor(0.8)
                     }.foregroundStyle(Color(dsHex: active ? c.primary : c.inkMuted))
-                        .frame(maxWidth: .infinity, minHeight: theme.mobileLayout.touchTarget).padding(.vertical, theme.mobileLayout.itemGap / 2)
+                        .padding(.vertical, 6).padding(.horizontal, 14)
                         .background { if active { Capsule().fill(Color(dsHex: c.primary).opacity(0.10)) } }
                 }.buttonStyle(.plain).accessibilityLabel(item.title).accessibilityAddTraits(active ? .isSelected : [])
             }
-        }.padding(6).background(Color(dsHex: c.card).opacity(0.9), in: Capsule())
+        }.frame(maxWidth: .infinity).padding(6).frame(height: 64).background(Color(dsHex: c.card).opacity(0.9), in: Capsule())
             .overlay(Capsule().stroke(Color(dsHex: c.border), lineWidth: 1))
-            .shadow(color: Color(dsHex: c.foreground).opacity(0.08), radius: 12, y: 4)
+            .shadow(color: Color(dsHex: c.foreground).opacity(0.08), radius: 24, y: 8)
+            .padding(.horizontal, 16).padding(.bottom, 12)
             .accessibilityElement(children: .contain).accessibilityLabel(accessibilityLabel)
     }
 }
