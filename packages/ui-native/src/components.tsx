@@ -775,7 +775,7 @@ export function DSTabBar({
       accessibilityRole="tablist"
       style={[
         {
-          height: 64,
+          minHeight: 64,
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: 6,

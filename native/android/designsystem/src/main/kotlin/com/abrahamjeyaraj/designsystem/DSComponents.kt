@@ -525,7 +525,8 @@ fun DSTabBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(DSPenMetrics.TabBarCapsuleHeight)
+                // Minimum, not fixed: labels grow with font scale instead of being clipped.
+                .heightIn(min = DSPenMetrics.TabBarCapsuleHeight)
                 .shadow(8.dp, capsuleShape)
                 .clip(capsuleShape)
                 .border(1.dp, Color(c.line), capsuleShape)
@@ -569,6 +570,7 @@ fun DSTabBar(
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,
                         fontSize = 10.5.sp,
+                        lineHeight = 13.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                         fontFamily = design.typography.body.fontFamily,
                         color = if (selected) Color(c.primary) else Color(c.inkMuted),

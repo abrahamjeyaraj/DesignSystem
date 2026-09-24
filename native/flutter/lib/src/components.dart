@@ -750,7 +750,7 @@ class DSTabBar extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-        height: 64,
+        constraints: const BoxConstraints(minHeight: 64),
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Color(t.colors.card),

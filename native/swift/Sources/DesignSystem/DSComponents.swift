@@ -323,7 +323,7 @@ public struct DSTabBar: View {
                         .background { if active { Capsule().fill(Color(dsHex: c.primary).opacity(0.10)) } }
                 }.buttonStyle(.plain).accessibilityLabel(item.title).accessibilityAddTraits(active ? .isSelected : [])
             }
-        }.frame(maxWidth: .infinity).padding(6).frame(height: 64).background(Color(dsHex: c.card).opacity(0.9), in: Capsule())
+        }.frame(maxWidth: .infinity).padding(6).frame(minHeight: 64).background(Color(dsHex: c.card).opacity(0.9), in: Capsule())
             .overlay(Capsule().stroke(Color(dsHex: c.border), lineWidth: 1))
             .shadow(color: Color(dsHex: c.foreground).opacity(0.08), radius: 24, y: 8)
             .padding(.horizontal, 16).padding(.bottom, 12)

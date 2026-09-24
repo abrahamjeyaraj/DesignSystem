@@ -78,6 +78,10 @@ Merged so far: Android (56b5058), iOS (22a63e1).
   bb/impl-tuitionmanager-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
 - Android migration is merged into TuitionManager local main (5c4a358), not pushed.
 
+## Released v0.2.4 (2026-09-24)
+- DSTabBar capsule height is a 64pt minimum instead of fixed on every platform; Android labels use a
+  13sp line height. Fixes the clipped active label on Android seen with v0.2.3.
+
 ## Released v0.2.3 (2026-09-24)
 - DSSectionHeader no longer adds its own horizontal gutter (Pen sets padding 0 inside screen
   content) and uses body 17/600 on every platform.
