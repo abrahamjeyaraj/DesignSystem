@@ -78,6 +78,12 @@ Merged so far: Android (56b5058), iOS (22a63e1).
   bb/impl-tuitionmanager-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
 - Android migration is merged into TuitionManager local main (5c4a358), not pushed.
 
+## Released v0.2.3 (2026-09-24)
+- DSSectionHeader no longer adds its own horizontal gutter (Pen sets padding 0 inside screen
+  content) and uses body 17/600 on every platform.
+- DSTabBar follows Pen `M / Tab Bar`: 64pt capsule, 6 padding, 16/12 outer inset, fixed 22pt icons,
+  10.5 labels, hugging active pill. Swift now spreads items evenly; Flutter keeps 48dp targets.
+
 ## Released v0.2.2 (2026-09-23)
 - DSToggle, DSProgress, DSInkCard, DSNudge on web, React Native, Swift, Android and Flutter (Pen
   TuitionManager native frames). New shared roles: surface-card, surface-sand, accent-2, ink-900,
