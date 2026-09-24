@@ -84,7 +84,10 @@ fun DSGallery(modifier: Modifier = Modifier) {
             }
         }
         var toggle by remember { mutableStateOf(true) }
-        DSToggle(toggle,{toggle=it},label="Gallery toggle")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            DSToggle(toggle,{toggle=it},label="Gallery toggle on")
+            DSToggle(false,{},label="Gallery toggle off")
+        }
         DSProgress(.72f,label="Recent tests",valueLabel="72%",tone=DSProgressTone.Accent2,modifier=Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp))
         DSInkCard(Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp)) { Text("Next class",color=Color(design.colors.onInkAccent)); Text("Class 10 · Evening",color=Color(design.colors.onInk)) }
         DSNudge("Fee reminders ready","3 families to remind",Icons.Default.Today,onClick={})

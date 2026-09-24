@@ -77,7 +77,7 @@ public struct DSGallery: View {
                     DSTabItem("More", systemImage: "ellipsis")
                 ], selection: $selectedTab).padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Toggle · Progress · Ink card · Nudge")
-                DSToggle(isOn: .constant(true), accessibilityLabel: "Notifications")
+                HStack { DSToggle(isOn: .constant(true), accessibilityLabel: "Notifications on"); DSToggle(isOn: .constant(false), accessibilityLabel: "Notifications off") }
                 DSProgress(value: 0.72, label: "Recent tests", valueLabel: "72%", tone: .accent2).padding(.horizontal, theme.mobileLayout.gutter)
                 DSInkCard { VStack(alignment: .leading, spacing: 8) { Text("Next class").foregroundStyle(Color(dsHex: colors.onInkAccent)); Text("Class 10 · Evening"); Text("Physics · 8 students").foregroundStyle(Color(dsHex: colors.onInkMuted)) } }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSNudge(title: "Fee reminders ready", subtitle: "3 families to remind", systemImage: "bell.badge", action: {})

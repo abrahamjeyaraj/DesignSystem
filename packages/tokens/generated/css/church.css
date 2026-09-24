@@ -78,9 +78,9 @@
   --color-surface-sand: #efece4;
   --color-accent-2: #1a6b54;
   --color-ink-900: #1d1b16;
-  --color-on-ink: #1d1b16;
-  --color-on-ink-muted: #6f6c63;
-  --color-on-ink-accent: #1a6b54;
+  --color-on-ink: #f1ede3;
+  --color-on-ink-muted: #d6d1c4;
+  --color-on-ink-accent: #57b394;
   --color-warn-bg: #fff8eb;
   --color-alert-bg: #fff1f3;
   --color-panel: #fbfaf6;
@@ -174,9 +174,9 @@
   --color-surface-sand: #38352e;
   --color-accent-2: #3a9b7a;
   --color-ink-900: #f1ede3;
-  --color-on-ink: #f1ede3;
-  --color-on-ink-muted: #b3ada0;
-  --color-on-ink-accent: #3a9b7a;
+  --color-on-ink: #1d1b16;
+  --color-on-ink-muted: #6f6c63;
+  --color-on-ink-accent: #1a6b54;
   --color-panel: #2b2924;
   --color-surface: #312e28;
   --color-shell-gutter: #0e0d0a;
