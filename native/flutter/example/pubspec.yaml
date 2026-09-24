@@ -1,0 +1,14 @@
+name: abe_design_example
+description: Example gallery app for the Abe Flutter design system.
+publish_to: none
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  abe_design:
+    path: ..
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
