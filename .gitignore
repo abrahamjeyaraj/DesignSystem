@@ -13,3 +13,4 @@ native/flutter/build/
 native/flutter/.flutter-plugins*
 .build/
 .swiftpm/
+native/flutter/example/pubspec.lock
