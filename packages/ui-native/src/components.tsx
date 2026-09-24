@@ -13,7 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { type ColorMode, type ThemeName, tokens } from '@abrahamjeyaraj/tokens';
-import { PenV2GallerySectionWithHost } from './pen-v2-components';
+import { DSPatternsGallerySectionWithHost } from './pattern-components';
 import { DSThemeProvider, useDSTheme } from './theme';
 
 export const ICON_SIZE_SM = 18;
@@ -1042,7 +1042,7 @@ export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: D
                   <DSProgress label="Progress" valueLabel="70%" value={0.7} />
                   <DSInkCard><DSText>Ink card content</DSText></DSInkCard>
                   <DSNudge title="Reminder ready" subtitle="Tap to review" leading={<DSText>♢</DSText>} onPress={() => {}} />
-                  <PenV2GallerySectionWithHost />
+                  <DSPatternsGallerySectionWithHost />
                 </DSCard>
               </DSThemeProvider>
             ))}

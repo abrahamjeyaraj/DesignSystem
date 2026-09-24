@@ -183,20 +183,20 @@ void main() {
     },
   );
 
-  testWidgets('Pen v2 components meet touch target and expose semantics', (tester) async {
+  testWidgets('pattern components meet touch target and expose semantics', (tester) async {
     await tester.pumpWidget(
       _app(
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const DSSnackbarBar(message: 'Awarded', actionLabel: 'Undo', onAction: _noop),
-            DSCountPill(symbol: '★', count: 42, onPressed: _noop),
-            DSMarkToggle(marked: true, onChanged: (_) {}),
+            const DSSnackbarBar(message: 'Item added', actionLabel: 'Undo', onAction: _noop),
+            DSCountPill(symbol: '#', count: 42, onPressed: _noop),
+            DSMarkToggle(marked: true, onChanged: (_) {}, semanticLabel: 'Mark toggle'),
           ],
         ),
       ),
     );
-    expect(find.text('Awarded'), findsOneWidget);
+    expect(find.text('Item added'), findsOneWidget);
     expect(find.bySemanticsLabel('Undo'), findsOneWidget);
     expect(find.textContaining('42'), findsWidgets);
     expect(

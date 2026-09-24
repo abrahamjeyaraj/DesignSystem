@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'ds_tokens.g.dart';
 import 'theme.dart';
 
-part 'dspen_v2_components.dart';
+part 'ds_pattern_components.dart';
 
 enum DSButtonVariant { primary, secondary, ghost, destructive }
 
@@ -1325,8 +1325,8 @@ class _DSGalleryState extends State<DSGallery> {
         title: 'Nothing due',
         message: 'You are all caught up.',
       ),
-      const DSSectionHeader(title: 'Pen v2'),
-      const DSSnackbarBar(message: 'Ananya +1 ★', actionLabel: 'Undo', onAction: _noop),
+      const DSSectionHeader(title: 'Patterns'),
+      const DSSnackbarBar(message: 'Item added', actionLabel: 'Undo', onAction: _noop),
       DSWeekStrip(
         days: const [
           DSWeekStripDay(id: 'mon', weekdaySymbol: 'M', dayNumber: 15, loadCount: 3),
@@ -1341,28 +1341,28 @@ class _DSGalleryState extends State<DSGallery> {
         timeStart: '09:30',
         timeEnd: '10:30',
         state: DSTimelineRowState.live,
-        content: const DSText('Class 10 · Morning', style: DSTextStyle.headline),
-        footer: const DSChip(label: 'Attendance', tone: DSChipTone.accent),
+        content: const DSText('Morning session', style: DSTextStyle.headline),
+        footer: const DSChip(label: 'Live', tone: DSChipTone.accent),
       ),
       Row(
         children: [
-          DSCountPill(symbol: '★', count: 42, onPressed: _noop),
-          DSMarkToggle(marked: _mark, onChanged: (v) => setState(() => _mark = v)),
+          DSCountPill(symbol: '#', count: 42, onPressed: _noop),
+          DSMarkToggle(marked: _mark, onChanged: (v) => setState(() => _mark = v), semanticLabel: 'Mark toggle'),
         ],
       ),
       DSPodium(
         entries: const [
-          DSPodiumEntry(id: '2', name: 'Ananya', value: '42 ★ · #2', columnHeight: 120),
-          DSPodiumEntry(id: '1', name: 'Meera', value: '51 ★ · #1', columnHeight: 150, isLeader: true),
-          DSPodiumEntry(id: '3', name: 'Divya', value: '38 ★ · #3', columnHeight: 104),
+          DSPodiumEntry(id: '2', name: 'Alex', value: '42 pts · #2', columnHeight: 120),
+          DSPodiumEntry(id: '1', name: 'Jordan', value: '51 pts · #1', columnHeight: 150, isLeader: true),
+          DSPodiumEntry(id: '3', name: 'Sam', value: '38 pts · #3', columnHeight: 104),
         ],
         avatarBuilder: (e) => DSAvatar(initials: e.name.substring(0, 2)),
       ),
       const DSSummaryBar(
         items: [
-          DSSummaryItem('Present', '7', tone: DSStatTone.success),
-          DSSummaryItem('Absent', '1', tone: DSStatTone.error),
-          DSSummaryItem('Class avg', '92%'),
+          DSSummaryItem('Done', '7', tone: DSStatTone.success),
+          DSSummaryItem('Pending', '1', tone: DSStatTone.error),
+          DSSummaryItem('Average', '92%'),
         ],
       ),
       DSPresetGrid(
@@ -1382,10 +1382,10 @@ class _DSGalleryState extends State<DSGallery> {
         ],
       ),
       const DSActivityRow(
-        title: 'Ananya +5 ★',
-        detail: 'Full marks · Physics test',
+        title: 'Record updated',
+        detail: 'Entry saved',
         timestamp: '16:52',
-        icon: Icons.star,
+        icon: Icons.history,
         actionLabel: 'Undo',
         onAction: _noop,
       ),

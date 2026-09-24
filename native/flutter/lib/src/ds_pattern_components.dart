@@ -1,6 +1,6 @@
 part of 'components.dart';
 
-class DSPenV2Metrics {
+class DSPatternMetrics {
   static const weekCellRadius = 14.0;
   static const loadDotSize = 4.0;
   static const countPillHeight = 36.0;
@@ -104,12 +104,12 @@ class DSWeekStrip extends StatelessWidget {
               label: '${day.weekdaySymbol} ${day.dayNumber}',
               child: InkWell(
                 onTap: () => onSelect(day),
-                borderRadius: BorderRadius.circular(DSPenV2Metrics.weekCellRadius),
+                borderRadius: BorderRadius.circular(DSPatternMetrics.weekCellRadius),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     color: Color(day.id == selectedDayId ? c.action : c.card),
-                    borderRadius: BorderRadius.circular(DSPenV2Metrics.weekCellRadius),
+                    borderRadius: BorderRadius.circular(DSPatternMetrics.weekCellRadius),
                     border: day.id == todayDayId && day.id != selectedDayId
                         ? Border.all(color: Color(c.primary))
                         : null,
@@ -119,14 +119,14 @@ class DSWeekStrip extends StatelessWidget {
                       DSText(day.weekdaySymbol, style: DSTextStyle.caption),
                       DSText('${day.dayNumber}', style: DSTextStyle.body),
                       SizedBox(
-                        height: DSPenV2Metrics.loadDotSize,
+                        height: DSPatternMetrics.loadDotSize,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             for (var i = 0; i < day.loadCount.clamp(0, 4); i++)
                               Container(
-                                width: DSPenV2Metrics.loadDotSize,
-                                height: DSPenV2Metrics.loadDotSize,
+                                width: DSPatternMetrics.loadDotSize,
+                                height: DSPatternMetrics.loadDotSize,
                                 margin: const EdgeInsets.symmetric(horizontal: 1),
                                 decoration: BoxDecoration(
                                   color: Color(day.id == selectedDayId ? c.actionForeground : c.accent2),
@@ -175,7 +175,7 @@ class DSTimelineRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: DSPenV2Metrics.timelineGutterWidth,
+          width: DSPatternMetrics.timelineGutterWidth,
           child: Padding(
             padding: const EdgeInsets.only(top: 14),
             child: Column(
@@ -240,7 +240,7 @@ class DSCountPill extends StatelessWidget {
           onTap: onPressed,
           borderRadius: BorderRadius.circular(t.tokens.radius.full),
           child: SizedBox(
-            height: DSPenV2Metrics.countPillHeight,
+            height: DSPatternMetrics.countPillHeight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
@@ -340,7 +340,7 @@ class DSMarkToggle extends StatelessWidget {
     super.key,
     required this.marked,
     required this.onChanged,
-    this.semanticLabel = 'Attendance mark',
+    required this.semanticLabel,
   });
   final bool marked;
   final ValueChanged<bool> onChanged;
@@ -353,7 +353,7 @@ class DSMarkToggle extends StatelessWidget {
     return Semantics(
       button: true,
       label: semanticLabel,
-      value: marked ? 'Present' : 'Absent',
+      value: marked ? 'On' : 'Off',
       child: Material(
         color: Color(marked ? c.successLight : c.error),
         shape: const CircleBorder(),
@@ -361,12 +361,12 @@ class DSMarkToggle extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: () => onChanged(!marked),
           child: SizedBox(
-            width: DSPenV2Metrics.markToggleSize,
-            height: DSPenV2Metrics.markToggleSize,
+            width: DSPatternMetrics.markToggleSize,
+            height: DSPatternMetrics.markToggleSize,
             child: Icon(
               marked ? Icons.check : Icons.close,
               color: Color(marked ? c.success : c.destructiveForeground),
-              size: DSPenV2Metrics.markIconSize,
+              size: DSPatternMetrics.markIconSize,
             ),
           ),
         ),
@@ -456,7 +456,7 @@ class DSPresetGrid extends StatelessWidget {
                 onTap: () => onSelect(option),
                 borderRadius: BorderRadius.circular(t.tokens.mobileLayout.cardRadius),
                 child: Container(
-                  height: DSPenV2Metrics.presetTileHeight,
+                  height: DSPatternMetrics.presetTileHeight,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: Color(option.id == selectedId ? c.action : c.card),
@@ -505,7 +505,7 @@ class DSStepper extends StatelessWidget {
       label: semanticLabel,
       value: '$value',
       child: Container(
-        height: DSPenV2Metrics.presetTileHeight,
+        height: DSPatternMetrics.presetTileHeight,
         padding: EdgeInsets.symmetric(horizontal: t.tokens.mobileLayout.gutter),
         decoration: BoxDecoration(
           color: Color(c.card),
@@ -553,21 +553,21 @@ class DSQuickActionTile extends StatelessWidget {
       label: title,
       child: Material(
         color: Color(c.card),
-        borderRadius: BorderRadius.circular(DSPenV2Metrics.quickActionRadius),
+        borderRadius: BorderRadius.circular(DSPatternMetrics.quickActionRadius),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(DSPenV2Metrics.quickActionRadius),
+          borderRadius: BorderRadius.circular(DSPatternMetrics.quickActionRadius),
           child: Container(
             constraints: BoxConstraints(minHeight: t.tokens.mobileLayout.touchTarget),
             padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(DSPenV2Metrics.quickActionRadius),
+              borderRadius: BorderRadius.circular(DSPatternMetrics.quickActionRadius),
               border: Border.all(color: Color(c.line)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: Color(c.primary), size: DSPenV2Metrics.quickActionIconSize),
+                Icon(icon, color: Color(c.primary), size: DSPatternMetrics.quickActionIconSize),
                 const SizedBox(height: 6),
                 DSText(title, style: DSTextStyle.caption),
               ],
@@ -609,9 +609,9 @@ class DSActivityRow extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: DSPenV2Metrics.activityAvatarRadius,
+                radius: DSPatternMetrics.activityAvatarRadius,
                 backgroundColor: Color(c.successLight),
-                child: Icon(icon, size: DSPenV2Metrics.activityGlyphSize, color: Color(c.primary)),
+                child: Icon(icon, size: DSPatternMetrics.activityGlyphSize, color: Color(c.primary)),
               ),
               const SizedBox(width: 12),
               Expanded(

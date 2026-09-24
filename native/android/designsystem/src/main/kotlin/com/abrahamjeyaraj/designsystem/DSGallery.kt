@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -119,8 +118,8 @@ fun DSGallery(modifier: Modifier = Modifier) {
             selectedIndex = tab,
             onSelected = { tab = it },
         )
-        DSSectionHeader("Pen v2 components")
-        DSSnackbarBar("Ananya +1 ★", actionLabel = "Undo", onAction = {}, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
+        DSSectionHeader("Patterns")
+        DSSnackbarBar("Item added", actionLabel = "Undo", onAction = {}, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
         DSWeekStrip(
             days = listOf(
                 DSWeekStripDay("mon", "M", 15, 3),
@@ -133,26 +132,26 @@ fun DSGallery(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
         )
         DSTimelineRow("09:30", "10:30", DSTimelineRowState.Live, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), content = {
-            DSText("Class 10 · Morning", DSTextStyle.Headline)
-        }, footer = { DSChip("Attendance", variant = DSChipVariant.Accent) })
+            DSText("Morning session", DSTextStyle.Headline)
+        }, footer = { DSChip("Live", variant = DSChipVariant.Accent) })
         Row(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            DSCountPill("★", 42, onClick = {})
-            DSMarkToggle(mark, onMarkedChange = { mark = it })
+            DSCountPill("#", 42, onClick = {})
+            DSMarkToggle(mark, onMarkedChange = { mark = it }, contentDescription = "Mark toggle")
         }
         DSPodium(
             entries = listOf(
-                DSPodiumEntry("2", "Ananya", "42 ★ · #2", 120.dp),
-                DSPodiumEntry("1", "Meera", "51 ★ · #1", 150.dp, isLeader = true),
-                DSPodiumEntry("3", "Divya", "38 ★ · #3", 104.dp),
+                DSPodiumEntry("2", "Alex", "42 pts · #2", 120.dp),
+                DSPodiumEntry("1", "Jordan", "51 pts · #1", 150.dp, isLeader = true),
+                DSPodiumEntry("3", "Sam", "38 pts · #3", 104.dp),
             ),
             modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
             avatar = { DSAvatar(it.name.take(2)) },
         )
         DSSummaryBar(
             listOf(
-                DSSummaryItem("Present", "7", DSStatTone.Success),
-                DSSummaryItem("Absent", "1", DSStatTone.Error),
-                DSSummaryItem("Class avg", "92%"),
+                DSSummaryItem("Done", "7", DSStatTone.Success),
+                DSSummaryItem("Pending", "1", DSStatTone.Error),
+                DSSummaryItem("Average", "92%"),
             ),
             modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
         )
@@ -167,7 +166,7 @@ fun DSGallery(modifier: Modifier = Modifier) {
             DSQuickActionTile("Call", Icons.Default.Phone, onClick = {}, modifier = Modifier.weight(1f))
             DSQuickActionTile("History", Icons.Default.Today, onClick = {}, modifier = Modifier.weight(1f))
         }
-        DSActivityRow("Ananya +5 ★", "16:52", detail = "Full marks", icon = Icons.Default.Star, actionLabel = "Undo", onAction = {})
+        DSActivityRow("Record updated", "16:52", detail = "Entry saved", icon = Icons.Default.Today, actionLabel = "Undo", onAction = {})
         DSMultilineField("Notes", notes, onValueChange = { notes = it }, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
         Column(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             DSText("Title style", DSTextStyle.Title)

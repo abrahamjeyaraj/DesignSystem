@@ -4,20 +4,6 @@ import SwiftUI
 import UIKit
 #endif
 
-// MARK: - Pen v2 metrics (fixed sizes from tuition-manager.pen)
-
-public enum DSPenV2Metrics {
-    public static let weekCellRadius: CGFloat = 14
-    public static let loadDotSize: CGFloat = 4
-    public static let countPillHeight: CGFloat = 36
-    public static let presetTileHeight: CGFloat = 64
-    public static let quickActionRadius: CGFloat = 14
-    public static let timelineGutterWidth: CGFloat = 44
-    public static let markToggleSize: CGFloat = 48
-    public static let markIconSize: CGFloat = 22
-    public static let podiumHeights: [CGFloat] = [120, 150, 104]
-}
-
 // MARK: - Snackbar
 
 public struct DSSnackbarAction: Sendable {
@@ -174,20 +160,20 @@ public struct DSWeekStrip: View {
                             ForEach(0..<min(day.loadCount, 4), id: \.self) { _ in
                                 Circle()
                                     .fill(Color(dsHex: selected ? c.actionForeground : c.accent2))
-                                    .frame(width: DSPenV2Metrics.loadDotSize, height: DSPenV2Metrics.loadDotSize)
+                                    .frame(width: DSComponentMetrics.loadDotSize, height: DSComponentMetrics.loadDotSize)
                             }
                         }
-                        .frame(height: DSPenV2Metrics.loadDotSize)
+                        .frame(height: DSComponentMetrics.loadDotSize)
                     }
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity)
                     .background(
                         Color(dsHex: selected ? c.action : c.card),
-                        in: RoundedRectangle(cornerRadius: DSPenV2Metrics.weekCellRadius)
+                        in: RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
                     )
                     .overlay {
                         if isToday && !selected {
-                            RoundedRectangle(cornerRadius: DSPenV2Metrics.weekCellRadius)
+                            RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
                                 .stroke(Color(dsHex: c.primary), lineWidth: 1)
                         }
                     }
@@ -238,7 +224,7 @@ public struct DSTimelineRow<Content: View, Footer: View>: View {
                 Text(timeStart).dsFont(.label).fontWeight(.semibold).foregroundStyle(Color(dsHex: primaryInk))
                 Text(timeEnd).dsFont(.caption).foregroundStyle(Color(dsHex: mutedInk))
             }
-            .frame(width: DSPenV2Metrics.timelineGutterWidth, alignment: .leading)
+            .frame(width: DSComponentMetrics.timelineGutterWidth, alignment: .leading)
             .padding(.top, 14)
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 10) {
@@ -281,7 +267,7 @@ public struct DSCountPill: View {
             }
             .foregroundStyle(Color(dsHex: c.ink))
             .padding(.horizontal, 12)
-            .frame(height: DSPenV2Metrics.countPillHeight)
+            .frame(height: DSComponentMetrics.countPillHeight)
             .background(Color(dsHex: c.muted), in: Capsule())
         }
         .buttonStyle(DSCountPillButtonStyle())
@@ -357,7 +343,7 @@ public struct DSMarkToggle: View {
     @Binding public var isMarked: Bool
     public let accessibilityLabel: String
 
-    public init(isMarked: Binding<Bool>, accessibilityLabel: String = "Attendance mark") {
+    public init(isMarked: Binding<Bool>, accessibilityLabel: String) {
         self._isMarked = isMarked
         self.accessibilityLabel = accessibilityLabel
     }
@@ -366,14 +352,14 @@ public struct DSMarkToggle: View {
         let c = theme.colors(for: scheme)
         Button { isMarked.toggle() } label: {
             Image(systemName: isMarked ? "checkmark" : "xmark")
-                .font(.system(size: DSPenV2Metrics.markIconSize, weight: .semibold))
+                .font(.system(size: DSComponentMetrics.markIconSize, weight: .semibold))
                 .foregroundStyle(Color(dsHex: isMarked ? c.success : c.destructiveForeground))
-                .frame(width: DSPenV2Metrics.markToggleSize, height: DSPenV2Metrics.markToggleSize)
+                .frame(width: DSComponentMetrics.markToggleSize, height: DSComponentMetrics.markToggleSize)
                 .background(Color(dsHex: isMarked ? c.successLight : c.error), in: Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityValue(isMarked ? "Present" : "Absent")
+        .accessibilityValue(isMarked ? "On" : "Off")
         .accessibilityAddTraits(.isButton)
     }
 }
@@ -457,7 +443,7 @@ public struct DSPresetGrid: View {
                     Text(option.label).dsFont(.headline).fontWeight(.semibold)
                         .foregroundStyle(Color(dsHex: selected ? c.actionForeground : c.foreground))
                         .frame(maxWidth: .infinity)
-                        .frame(height: DSPenV2Metrics.presetTileHeight)
+                        .frame(height: DSComponentMetrics.presetTileHeight)
                         .background(Color(dsHex: selected ? c.action : c.card), in: RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius))
                         .overlay(RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius).stroke(Color(dsHex: c.border), lineWidth: selected ? 0 : 1))
                 }
@@ -495,7 +481,7 @@ public struct DSStepper: View {
             }
         }
         .padding(.horizontal, theme.mobileLayout.gutter)
-        .frame(height: DSPenV2Metrics.presetTileHeight)
+        .frame(height: DSComponentMetrics.presetTileHeight)
         .frame(maxWidth: .infinity)
         .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius))
         .overlay(RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
@@ -530,8 +516,8 @@ public struct DSQuickActionTile: View {
             }
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
-            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: DSPenV2Metrics.quickActionRadius))
-            .overlay(RoundedRectangle(cornerRadius: DSPenV2Metrics.quickActionRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
+            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: DSComponentMetrics.quickActionRadius))
+            .overlay(RoundedRectangle(cornerRadius: DSComponentMetrics.quickActionRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
         }
         .buttonStyle(.plain)
         .frame(minHeight: theme.mobileLayout.touchTarget)

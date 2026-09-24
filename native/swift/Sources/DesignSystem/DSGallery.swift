@@ -90,8 +90,8 @@ public struct DSGallery: View {
                 DSEmptyState(systemImage: "tray", title: "No payments due", message: "New payment reminders will appear here.") {
                     DSButton("Add payment", leadingSystemImage: "plus") {}
                 }.padding(.horizontal, theme.mobileLayout.gutter)
-                DSSectionHeader("Pen v2 · Snackbar")
-                DSSnackbarBar(message: "Ananya +1 ★", action: DSSnackbarAction(title: "Undo", handler: {}))
+                DSSectionHeader("Patterns · Snackbar")
+                DSSnackbarBar(message: "Item added", action: DSSnackbarAction(title: "Undo", handler: {}))
                     .padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Week strip · Timeline")
                 DSWeekStrip(
@@ -105,26 +105,26 @@ public struct DSGallery: View {
                     onSelect: { selectedWeekDay = $0.id }
                 ).padding(.horizontal, theme.mobileLayout.gutter)
                 DSTimelineRow(timeStart: "09:30", timeEnd: "10:30", state: .live) {
-                    Text("Class 10 · Morning").dsFont(.headline)
+                    Text("Morning session").dsFont(.headline)
                 } footer: {
-                    DSChip("Attendance", tone: .accent)
+                    DSChip("Live", tone: .accent)
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Count pill · Podium · Mark")
                 HStack {
-                    DSCountPill(symbol: "★", count: 42, action: {})
-                    DSMarkToggle(isMarked: $markOn)
+                    DSCountPill(symbol: "#", count: 42, action: {})
+                    DSMarkToggle(isMarked: $markOn, accessibilityLabel: "Mark toggle")
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSPodium(entries: [
-                    DSPodiumEntry(id: "2", name: "Ananya", value: "42 ★ · #2", columnHeight: 120),
-                    DSPodiumEntry(id: "1", name: "Meera", value: "51 ★ · #1", columnHeight: 150, isLeader: true),
-                    DSPodiumEntry(id: "3", name: "Divya", value: "38 ★ · #3", columnHeight: 104),
+                    DSPodiumEntry(id: "2", name: "Alex", value: "42 pts · #2", columnHeight: 120),
+                    DSPodiumEntry(id: "1", name: "Jordan", value: "51 pts · #1", columnHeight: 150, isLeader: true),
+                    DSPodiumEntry(id: "3", name: "Sam", value: "38 pts · #3", columnHeight: 104),
                 ]) { entry in DSAvatar(initials: String(entry.name.prefix(2))) }
                     .padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Summary · Presets · Quick actions")
                 DSSummaryBar(items: [
-                    DSSummaryItem(label: "Present", value: "7", tone: .success),
-                    DSSummaryItem(label: "Absent", value: "1", tone: .error),
-                    DSSummaryItem(label: "Class avg", value: "92%"),
+                    DSSummaryItem(label: "Done", value: "7", tone: .success),
+                    DSSummaryItem(label: "Pending", value: "1", tone: .error),
+                    DSSummaryItem(label: "Average", value: "92%"),
                 ]).padding(.horizontal, theme.mobileLayout.gutter)
                 DSPresetGrid(
                     options: [DSPresetOption(id: "1", label: "+1"), DSPresetOption(id: "5", label: "+5"), DSPresetOption(id: "10", label: "+10")],
@@ -137,7 +137,7 @@ public struct DSGallery: View {
                     DSQuickActionTile(title: "History", systemImage: "clock", action: {})
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Activity · Notes")
-                DSActivityRow(title: "Ananya +5 ★", detail: "Full marks · Physics test", timestamp: "16:52", systemImage: "star", actionTitle: "Undo", onAction: {})
+                DSActivityRow(title: "Record updated", detail: "Entry saved", timestamp: "16:52", systemImage: "clock", actionTitle: "Undo", onAction: {})
                 DSMultilineField(label: "Notes", text: $notesText, maxLength: 500)
                     .padding(.horizontal, theme.mobileLayout.gutter)
             }

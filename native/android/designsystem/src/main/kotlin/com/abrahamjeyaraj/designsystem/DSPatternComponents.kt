@@ -331,7 +331,7 @@ fun DSMarkToggle(
     marked: Boolean,
     onMarkedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    contentDescription: String = "Attendance mark",
+    contentDescription: String,
 ) {
     val design = DS.current
     val c = design.colors
@@ -343,7 +343,7 @@ fun DSMarkToggle(
             .clickable(role = Role.Switch, onClick = { onMarkedChange(!marked) })
             .semantics {
                 this.contentDescription = contentDescription
-                stateDescription = if (marked) "Present" else "Absent"
+                stateDescription = if (marked) "On" else "Off"
             },
         contentAlignment = Alignment.Center,
     ) {

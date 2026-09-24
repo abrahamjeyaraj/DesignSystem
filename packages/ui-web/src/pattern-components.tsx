@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { cn } from './cn';
 
-/** Pen v2 layout metrics from tuition-manager.pen (no theme role). */
-const PEN = {
+/** Pattern layout metrics with no dedicated token role (see native DSPenMetrics / DSComponentMetrics). */
+const patternMetrics = {
   weekCellRadius: 'rounded-[calc(var(--spacing)*3.5)]',
   loadDot: 'size-1',
   countPillHeight: 'h-9',
@@ -133,7 +133,7 @@ export function DSWeekStrip({ days, selectedDayId, todayDayId, onSelect, classNa
             onClick={() => onSelect(day)}
             className={cn(
               'flex flex-1 flex-col items-center gap-1 py-2.5 font-body',
-              PEN.weekCellRadius,
+              patternMetrics.weekCellRadius,
               selected ? 'bg-action text-action-foreground' : 'bg-card text-foreground',
               isToday && !selected && 'border border-primary',
             )}
@@ -142,7 +142,7 @@ export function DSWeekStrip({ days, selectedDayId, todayDayId, onSelect, classNa
             <span className="text-base font-semibold">{day.dayNumber}</span>
             <span className="flex h-1 justify-center gap-0.5">
               {Array.from({ length: Math.min(day.loadCount ?? 0, 4) }).map((_, i) => (
-                <span key={i} className={cn(PEN.loadDot, 'rounded-full', selected ? 'bg-current' : 'bg-accent-2')} />
+                <span key={i} className={cn(patternMetrics.loadDot, 'rounded-full', selected ? 'bg-current' : 'bg-accent-2')} />
               ))}
             </span>
           </button>
@@ -156,7 +156,7 @@ export function DSTimelineRow({ timeStart, timeEnd, state, children, footer, cla
   const live = state === 'live';
   return (
     <div className={cn('flex gap-3.5', className)}>
-      <div className={cn(PEN.timelineGutter, 'pt-3.5 font-body')}>
+      <div className={cn(patternMetrics.timelineGutter, 'pt-3.5 font-body')}>
         <div className="label-text text-ink-body font-semibold text-ink">{timeStart}</div>
         <div className="text-sm text-ink-muted text-ink-muted">{timeEnd}</div>
       </div>
@@ -174,7 +174,7 @@ export function DSCountPill({ symbol, count, onClick, className, 'aria-label': a
       type="button"
       onClick={onClick}
       aria-label={ariaLabel ?? `${symbol} ${count}`}
-      className={cn(PEN.countPillHeight, 'rounded-full border-0 bg-muted px-3 font-body text-base font-semibold text-ink cursor-pointer', className)}
+      className={cn(patternMetrics.countPillHeight, 'rounded-full border-0 bg-muted px-3 font-body text-base font-semibold text-ink cursor-pointer', className)}
     >
       {symbol} {count}
     </button>
@@ -202,7 +202,7 @@ export function DSPodium({ entries, renderAvatar, className }: { entries: { id: 
   );
 }
 
-export function DSMarkToggle({ checked, onCheckedChange, className, 'aria-label': ariaLabel = 'Attendance mark' }: { checked: boolean; onCheckedChange: (v: boolean) => void; className?: string; 'aria-label'?: string }) {
+export function DSMarkToggle({ checked, onCheckedChange, className, 'aria-label': ariaLabel }: { checked: boolean; onCheckedChange: (v: boolean) => void; className?: string; 'aria-label': string }) {
   return (
     <button
       type="button"
@@ -211,9 +211,9 @@ export function DSMarkToggle({ checked, onCheckedChange, className, 'aria-label'
       aria-label={ariaLabel}
       onClick={() => onCheckedChange(!checked)}
       className={cn(
-        PEN.markSize,
+        patternMetrics.markSize,
         'rounded-full border-0 font-body cursor-pointer',
-        PEN.markIcon,
+        patternMetrics.markIcon,
         checked ? 'bg-success-light text-success' : 'bg-error text-destructive-foreground',
         className,
       )}
@@ -248,7 +248,7 @@ export function DSPresetGrid({ options, selectedId, onSelect, className }: { opt
             aria-pressed={selected}
             onClick={() => onSelect(o)}
             className={cn(
-              PEN.presetTileHeight,
+              patternMetrics.presetTileHeight,
               'flex flex-1 items-center justify-center rounded-card font-body text-xl font-semibold cursor-pointer',
               selected ? 'bg-action text-action-foreground' : 'border border-line bg-card text-foreground',
             )}
@@ -263,7 +263,7 @@ export function DSPresetGrid({ options, selectedId, onSelect, className }: { opt
 
 export function DSStepper({ value, min, max, onChange, label = 'Value stepper', className }: { value: number; min: number; max: number; onChange: (v: number) => void; label?: string; className?: string }) {
   return (
-    <div aria-label={label} className={cn(PEN.presetTileHeight, 'flex items-center justify-between rounded-card border border-line bg-card px-5 font-body', className)}>
+    <div aria-label={label} className={cn(patternMetrics.presetTileHeight, 'flex items-center justify-between rounded-card border border-line bg-card px-5 font-body', className)}>
       <button type="button" aria-label="Decrease" disabled={value <= min} onClick={() => onChange(value - 1)} className="min-h-[length:var(--min-touch-target)] min-w-[length:var(--min-touch-target)] border-0 bg-transparent cursor-pointer disabled:opacity-50">−</button>
       <span className="text-xl font-semibold">{value}</span>
       <button type="button" aria-label="Increase" disabled={value >= max} onClick={() => onChange(value + 1)} className="min-h-[length:var(--min-touch-target)] min-w-[length:var(--min-touch-target)] border-0 bg-transparent cursor-pointer disabled:opacity-50">+</button>
@@ -273,7 +273,7 @@ export function DSStepper({ value, min, max, onChange, label = 'Value stepper', 
 
 export function DSQuickActionTile({ title, icon, onClick, className }: { title: string; icon: React.ReactNode; onClick?: () => void; className?: string }) {
   return (
-    <button type="button" onClick={onClick} className={cn('flex min-h-[length:var(--min-touch-target)] flex-1 flex-col items-center gap-1.5 border border-line bg-card py-3 font-body cursor-pointer', PEN.quickActionRadius, className)}>
+    <button type="button" onClick={onClick} className={cn('flex min-h-[length:var(--min-touch-target)] flex-1 flex-col items-center gap-1.5 border border-line bg-card py-3 font-body cursor-pointer', patternMetrics.quickActionRadius, className)}>
       {icon}
       <span className="text-sm text-ink-muted text-ink-body">{title}</span>
     </button>
@@ -321,23 +321,23 @@ export function DSMultilineField({ label, maxLength = 500, showCharacterCount = 
   );
 }
 
-export function PenV2Gallery() {
+export function DSPatternsGallery() {
   const snackbar = useDSSnackbarPresenter();
   const [week, setWeek] = React.useState('fri');
   const [preset, setPreset] = React.useState('5');
   const [step, setStep] = React.useState(3);
   const [mark, setMark] = React.useState(true);
-  const [notes, setNotes] = React.useState('Great progress.');
+  const [notes, setNotes] = React.useState('Sample note.');
   return (
     <section className="flex flex-col gap-3 font-body">
-      <h3 className="m-0 label-text text-ink-body font-semibold text-ink">Pen v2</h3>
-      <button type="button" className="text-left text-sm text-ink-muted text-primary" onClick={() => snackbar.show('Ananya +1 ★', { actionLabel: 'Undo', onAction: () => {} })}>
+      <h3 className="m-0 label-text text-ink-body font-semibold text-ink">Patterns</h3>
+      <button type="button" className="text-left text-sm text-ink-muted text-primary" onClick={() => snackbar.show('Item added', { actionLabel: 'Undo', onAction: () => {} })}>
         Show snackbar
       </button>
       <DSWeekStrip days={[{ id: 'mon', weekdaySymbol: 'M', dayNumber: 15, loadCount: 3 }, { id: 'fri', weekdaySymbol: 'F', dayNumber: 19, loadCount: 4 }]} selectedDayId={week} todayDayId="fri" onSelect={(d) => setWeek(d.id)} />
-      <DSTimelineRow timeStart="09:30" timeEnd="10:30" state="live"><strong className="text-xl">Class 10 · Morning</strong></DSTimelineRow>
-      <div className="flex gap-3"><DSCountPill symbol="★" count={42} /><DSMarkToggle checked={mark} onCheckedChange={setMark} /></div>
-      <DSSummaryBar items={[{ label: 'Present', value: '7', tone: 'success' }, { label: 'Absent', value: '1', tone: 'error' }, { label: 'Class avg', value: '92%' }]} />
+      <DSTimelineRow timeStart="09:30" timeEnd="10:30" state="live"><strong className="text-xl">Morning session</strong></DSTimelineRow>
+      <div className="flex gap-3"><DSCountPill symbol="#" count={42} /><DSMarkToggle checked={mark} onCheckedChange={setMark} aria-label="Mark toggle" /></div>
+      <DSSummaryBar items={[{ label: 'Done', value: '7', tone: 'success' }, { label: 'Pending', value: '1', tone: 'error' }, { label: 'Average', value: '92%' }]} />
       <DSPresetGrid options={[{ id: '1', label: '+1' }, { id: '5', label: '+5' }]} selectedId={preset} onSelect={(o) => setPreset(o.id)} />
       <DSStepper value={step} min={1} max={99} onChange={setStep} />
       <DSMultilineField label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
@@ -345,10 +345,10 @@ export function PenV2Gallery() {
   );
 }
 
-export function PenV2GalleryWithHost() {
+export function DSPatternsGalleryWithHost() {
   return (
     <DSSnackbarHost>
-      <PenV2Gallery />
+      <DSPatternsGallery />
     </DSSnackbarHost>
   );
 }

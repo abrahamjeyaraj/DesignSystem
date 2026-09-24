@@ -2,13 +2,13 @@ import XCTest
 @testable import DesignSystem
 
 final class DSComponentsTests: XCTestCase {
-    func testPenV2MetricsMatchPenSpec() {
-        XCTAssertEqual(DSPenV2Metrics.weekCellRadius, 14)
-        XCTAssertEqual(DSPenV2Metrics.loadDotSize, 4)
-        XCTAssertEqual(DSPenV2Metrics.countPillHeight, 36)
-        XCTAssertEqual(DSPenV2Metrics.presetTileHeight, 64)
-        XCTAssertEqual(DSPenV2Metrics.markToggleSize, 48)
-        XCTAssertEqual(DSPenV2Metrics.podiumHeights, [120, 150, 104])
+    func testPatternComponentMetrics() {
+        XCTAssertEqual(DSComponentMetrics.weekCellRadius, 14)
+        XCTAssertEqual(DSComponentMetrics.loadDotSize, 4)
+        XCTAssertEqual(DSComponentMetrics.countPillHeight, 36)
+        XCTAssertEqual(DSComponentMetrics.presetTileHeight, 64)
+        XCTAssertEqual(DSComponentMetrics.markToggleSize, 48)
+        XCTAssertEqual(DSComponentMetrics.podiumHeights, [120, 150, 104])
     }
 
     func testWeekStripDayEquality() {

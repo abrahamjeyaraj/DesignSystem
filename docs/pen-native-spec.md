@@ -1,4 +1,4 @@
-# Pen native component spec (extracted from TuitionManager/ux/tuition-manager.pen)
+# Native mobile component spec (layout reference)
 
 `$name` = Pen variable (see tokens/themes/tuition.json mapping). Sizes in pt/dp.
 

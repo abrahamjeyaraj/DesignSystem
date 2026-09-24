@@ -11,8 +11,8 @@ import {
 import { Pressable, Text, TextInput, View, type PressableProps, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { useDSTheme, type DSTheme } from './theme';
 
-/** Pen v2 fixed metrics (tuition-manager.pen); theme layout/spacing for everything else. */
-const PEN = {
+/** Pattern layout metrics with no dedicated token role (see native DSPenMetrics). */
+const patternMetrics = {
   weekCellRadius: 14,
   loadDot: 4,
   countPillHeight: 36,
@@ -193,7 +193,7 @@ export interface DSWeekStripDay { id: string; weekdaySymbol: string; dayNumber: 
 export function DSWeekStrip({ days, selectedDayId, todayDayId, onSelect, style }: { days: DSWeekStripDay[]; selectedDayId: string; todayDayId?: string; onSelect: (day: DSWeekStripDay) => void; style?: StyleProp<ViewStyle> }) {
   const t = useDSTheme();
   return (
-    <View style={[{ flexDirection: 'row', gap: PEN.weekStripGap }, style]}>
+    <View style={[{ flexDirection: 'row', gap: patternMetrics.weekStripGap }, style]}>
       {days.map((day) => {
         const selected = day.id === selectedDayId;
         const isToday = day.id === todayDayId;
@@ -206,8 +206,8 @@ export function DSWeekStrip({ days, selectedDayId, todayDayId, onSelect, style }
             onPress={() => onSelect(day)}
             style={{
               flex: 1,
-              paddingVertical: PEN.weekCellPadV,
-              borderRadius: PEN.weekCellRadius,
+              paddingVertical: patternMetrics.weekCellPadV,
+              borderRadius: patternMetrics.weekCellRadius,
               backgroundColor: selected ? t.colors.action : t.colors.card,
               borderWidth: isToday && !selected ? 1 : 0,
               borderColor: t.colors.primary,
@@ -217,9 +217,9 @@ export function DSWeekStrip({ days, selectedDayId, todayDayId, onSelect, style }
           >
             <Txt size="caption" color={selected ? t.colors['action-foreground'] : t.colors['ink-muted']}>{day.weekdaySymbol}</Txt>
             <Txt weight={t.weight(600)} color={selected ? t.colors['action-foreground'] : t.colors.foreground}>{day.dayNumber}</Txt>
-            <View style={{ flexDirection: 'row', gap: sp(t, '1') / 2, height: PEN.loadDot }}>
+            <View style={{ flexDirection: 'row', gap: sp(t, '1') / 2, height: patternMetrics.loadDot }}>
               {Array.from({ length: Math.min(day.loadCount ?? 0, 4) }).map((_, i) => (
-                <View key={i} style={{ width: PEN.loadDot, height: PEN.loadDot, borderRadius: PEN.loadDot, backgroundColor: selected ? t.colors['action-foreground'] : t.colors['accent-2'] }} />
+                <View key={i} style={{ width: patternMetrics.loadDot, height: patternMetrics.loadDot, borderRadius: patternMetrics.loadDot, backgroundColor: selected ? t.colors['action-foreground'] : t.colors['accent-2'] }} />
               ))}
             </View>
           </Pressable>
@@ -233,12 +233,12 @@ export function DSTimelineRow({ timeStart, timeEnd, state, children, footer, sty
   const t = useDSTheme();
   const live = state === 'live';
   return (
-    <View style={[{ flexDirection: 'row', gap: PEN.timelinePad }, style]}>
-      <View style={{ width: PEN.timelineGutter, paddingTop: PEN.timelinePad, gap: sp(t, '1') / 2 }}>
+    <View style={[{ flexDirection: 'row', gap: patternMetrics.timelinePad }, style]}>
+      <View style={{ width: patternMetrics.timelineGutter, paddingTop: patternMetrics.timelinePad, gap: sp(t, '1') / 2 }}>
         <Txt size="label" weight={t.weight(600)}>{timeStart}</Txt>
         <Txt size="caption">{timeEnd}</Txt>
       </View>
-      <View style={{ flex: 1, padding: PEN.timelinePad, gap: sp(t, '3'), borderRadius: t.mobileLayout.cardRadius, backgroundColor: live ? t.colors['ink-900'] : t.colors.card, borderWidth: live ? 0 : 1, borderColor: t.colors.line }}>
+      <View style={{ flex: 1, padding: patternMetrics.timelinePad, gap: sp(t, '3'), borderRadius: t.mobileLayout.cardRadius, backgroundColor: live ? t.colors['ink-900'] : t.colors.card, borderWidth: live ? 0 : 1, borderColor: t.colors.line }}>
         {children}
         {footer}
       </View>
@@ -257,7 +257,7 @@ export function DSCountPill({ symbol, count, accessibilityLabel, style, ...props
           flexDirection: 'row',
           alignItems: 'center',
           gap: sp(t, '1'),
-          height: PEN.countPillHeight,
+          height: patternMetrics.countPillHeight,
           paddingHorizontal: sp(t, '3'),
           borderRadius: t.radius.full,
           backgroundColor: t.colors.muted,
@@ -276,7 +276,7 @@ export interface DSPodiumEntry { id: string; name: string; value: string; column
 export function DSPodium({ entries, renderAvatar, style }: { entries: DSPodiumEntry[]; renderAvatar: (entry: DSPodiumEntry) => ReactNode; style?: StyleProp<ViewStyle> }) {
   const t = useDSTheme();
   return (
-    <View style={[{ flexDirection: 'row', alignItems: 'flex-end', gap: PEN.weekStripGap }, style]}>
+    <View style={[{ flexDirection: 'row', alignItems: 'flex-end', gap: patternMetrics.weekStripGap }, style]}>
       {entries.map((entry) => (
         <View
           key={entry.id}
@@ -285,10 +285,10 @@ export function DSPodium({ entries, renderAvatar, style }: { entries: DSPodiumEn
             flex: 1,
             height: entry.columnHeight,
             paddingHorizontal: sp(t, '2'),
-            paddingVertical: PEN.timelinePad,
+            paddingVertical: patternMetrics.timelinePad,
             justifyContent: 'flex-end',
             alignItems: 'center',
-            gap: PEN.weekStripGap,
+            gap: patternMetrics.weekStripGap,
             borderRadius: t.mobileLayout.cardRadius,
             backgroundColor: entry.isLeader ? t.colors['ink-900'] : t.colors.card,
             borderWidth: entry.isLeader ? 0 : 1,
@@ -304,7 +304,7 @@ export function DSPodium({ entries, renderAvatar, style }: { entries: DSPodiumEn
   );
 }
 
-export function DSMarkToggle({ value, onValueChange, accessibilityLabel = 'Attendance mark', style }: { value: boolean; onValueChange: (v: boolean) => void; accessibilityLabel?: string; style?: StyleProp<ViewStyle> }) {
+export function DSMarkToggle({ value, onValueChange, accessibilityLabel, style }: { value: boolean; onValueChange: (v: boolean) => void; accessibilityLabel: string; style?: StyleProp<ViewStyle> }) {
   const t = useDSTheme();
   return (
     <Pressable
@@ -314,9 +314,9 @@ export function DSMarkToggle({ value, onValueChange, accessibilityLabel = 'Atten
       onPress={() => onValueChange(!value)}
       style={[
         {
-          width: PEN.markSize,
-          height: PEN.markSize,
-          borderRadius: PEN.markSize / 2,
+          width: patternMetrics.markSize,
+          height: patternMetrics.markSize,
+          borderRadius: patternMetrics.markSize / 2,
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: value ? t.colors['success-light'] : t.colors.error,
@@ -324,7 +324,7 @@ export function DSMarkToggle({ value, onValueChange, accessibilityLabel = 'Atten
         style,
       ]}
     >
-      <Text style={{ fontSize: PEN.markIconSize, color: value ? t.colors.success : t.colors['destructive-foreground'] }}>{value ? '✓' : '✕'}</Text>
+      <Text style={{ fontSize: patternMetrics.markIconSize, color: value ? t.colors.success : t.colors['destructive-foreground'] }}>{value ? '✓' : '✕'}</Text>
     </Pressable>
   );
 }
@@ -333,7 +333,7 @@ export function DSSummaryBar({ items, style }: { items: { label: string; value: 
   const t = useDSTheme();
   const color = (tone?: string) => (tone === 'success' ? t.colors.success : tone === 'warning' ? t.colors.warning : tone === 'error' ? t.colors.error : t.colors.foreground);
   return (
-    <View style={[{ flexDirection: 'row', paddingVertical: PEN.timelinePad, borderRadius: t.mobileLayout.cardRadius, backgroundColor: t.colors.card, borderWidth: 1, borderColor: t.colors.line }, style]}>
+    <View style={[{ flexDirection: 'row', paddingVertical: patternMetrics.timelinePad, borderRadius: t.mobileLayout.cardRadius, backgroundColor: t.colors.card, borderWidth: 1, borderColor: t.colors.line }, style]}>
       {items.map((item) => (
         <View key={item.label} style={{ flex: 1, alignItems: 'center', gap: sp(t, '1') / 2 }} accessibilityLabel={`${item.label} ${item.value}`}>
           <Txt size="headline" weight={t.weight(600)} color={color(item.tone)}>{item.value}</Txt>
@@ -347,7 +347,7 @@ export function DSSummaryBar({ items, style }: { items: { label: string; value: 
 export function DSPresetGrid({ options, selectedId, onSelect, style }: { options: { id: string; label: string }[]; selectedId?: string; onSelect: (o: { id: string; label: string }) => void; style?: StyleProp<ViewStyle> }) {
   const t = useDSTheme();
   return (
-    <View style={[{ flexDirection: 'row', gap: PEN.weekStripGap }, style]}>
+    <View style={[{ flexDirection: 'row', gap: patternMetrics.weekStripGap }, style]}>
       {options.map((option) => {
         const selected = option.id === selectedId;
         return (
@@ -359,7 +359,7 @@ export function DSPresetGrid({ options, selectedId, onSelect, style }: { options
             onPress={() => onSelect(option)}
             style={{
               flex: 1,
-              height: PEN.presetTileHeight,
+              height: patternMetrics.presetTileHeight,
               borderRadius: t.mobileLayout.cardRadius,
               alignItems: 'center',
               justifyContent: 'center',
@@ -387,7 +387,7 @@ export function DSStepper({ value, onChange, min, max, label = 'Value stepper', 
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: PEN.presetTileHeight,
+          height: patternMetrics.presetTileHeight,
           paddingHorizontal: t.mobileLayout.gutter,
           borderRadius: t.mobileLayout.cardRadius,
           borderWidth: 1,
@@ -420,12 +420,12 @@ export function DSQuickActionTile({ title, icon, onPress, style }: { title: stri
           flex: 1,
           minHeight: t.mobileLayout.touchTarget,
           paddingVertical: sp(t, '3'),
-          borderRadius: PEN.quickActionRadius,
+          borderRadius: patternMetrics.quickActionRadius,
           borderWidth: 1,
           borderColor: t.colors.line,
           backgroundColor: t.colors.card,
           alignItems: 'center',
-          gap: PEN.weekStripGap,
+          gap: patternMetrics.weekStripGap,
         },
         style,
       ]}
@@ -439,7 +439,7 @@ export function DSQuickActionTile({ title, icon, onPress, style }: { title: stri
 export function DSActivityRow({ title, detail, timestamp, leading, actionLabel, onAction, style }: { title: string; detail?: string; timestamp: string; leading: ReactNode; actionLabel?: string; onAction?: () => void; style?: StyleProp<ViewStyle> }) {
   const t = useDSTheme();
   return (
-    <View accessibilityLabel={`${title}, ${timestamp}`} style={[{ flexDirection: 'row', alignItems: 'center', gap: sp(t, '3'), minHeight: PEN.activityRowMinHeight, paddingHorizontal: t.mobileLayout.gutter }, style]}>
+    <View accessibilityLabel={`${title}, ${timestamp}`} style={[{ flexDirection: 'row', alignItems: 'center', gap: sp(t, '3'), minHeight: patternMetrics.activityRowMinHeight, paddingHorizontal: t.mobileLayout.gutter }, style]}>
       {leading}
       <View style={{ flex: 1, gap: sp(t, '1') / 2 }}>
         <Txt weight={t.weight(600)}>{title}</Txt>
@@ -461,7 +461,7 @@ export function DSMultilineField({ label, value, onChangeText, maxLength = 500 }
   const t = useDSTheme();
   const bodySize = t.mobileType.body.size;
   return (
-    <View style={{ gap: PEN.weekStripGap }}>
+    <View style={{ gap: patternMetrics.weekStripGap }}>
       {label && <Txt size="label" color={t.colors['ink-body']}>{label}</Txt>}
       <TextInput
         multiline
@@ -488,23 +488,23 @@ export function DSMultilineField({ label, value, onChangeText, maxLength = 500 }
   );
 }
 
-export function PenV2GallerySection() {
+export function DSPatternsGallerySection() {
   const snackbar = useDSSnackbarPresenter();
   const [week, setWeek] = useState('fri');
   const [preset, setPreset] = useState('5');
   const [step, setStep] = useState(3);
   const [mark, setMark] = useState(true);
-  const [notes, setNotes] = useState('Great progress.');
+  const [notes, setNotes] = useState('Sample note.');
   return (
     <View style={{ gap: 12 }}>
-      <Txt size="label" weight={600}>Pen v2</Txt>
-      <Pressable accessibilityRole="button" onPress={() => snackbar.show('Ananya +1 ★', { actionLabel: 'Undo', onAction: () => {} })}>
+      <Txt size="label" weight={600}>Patterns</Txt>
+      <Pressable accessibilityRole="button" onPress={() => snackbar.show('Item added', { actionLabel: 'Undo', onAction: () => {} })}>
         <Txt size="caption">Show snackbar</Txt>
       </Pressable>
       <DSWeekStrip days={[{ id: 'mon', weekdaySymbol: 'M', dayNumber: 15, loadCount: 3 }, { id: 'fri', weekdaySymbol: 'F', dayNumber: 19, loadCount: 4 }]} selectedDayId={week} todayDayId="fri" onSelect={(d) => setWeek(d.id)} />
-      <DSTimelineRow timeStart="09:30" timeEnd="10:30" state="live"><Txt size="headline">Class 10 · Morning</Txt></DSTimelineRow>
-      <View style={{ flexDirection: 'row', gap: 12 }}><DSCountPill symbol="★" count={42} /><DSMarkToggle value={mark} onValueChange={setMark} /></View>
-      <DSSummaryBar items={[{ label: 'Present', value: '7', tone: 'success' }, { label: 'Absent', value: '1', tone: 'error' }, { label: 'Class avg', value: '92%' }]} />
+      <DSTimelineRow timeStart="09:30" timeEnd="10:30" state="live"><Txt size="headline">Morning session</Txt></DSTimelineRow>
+      <View style={{ flexDirection: 'row', gap: 12 }}><DSCountPill symbol="#" count={42} /><DSMarkToggle value={mark} onValueChange={setMark} accessibilityLabel="Mark toggle" /></View>
+      <DSSummaryBar items={[{ label: 'Done', value: '7', tone: 'success' }, { label: 'Pending', value: '1', tone: 'error' }, { label: 'Average', value: '92%' }]} />
       <DSPresetGrid options={[{ id: '1', label: '+1' }, { id: '5', label: '+5' }]} selectedId={preset} onSelect={(o) => setPreset(o.id)} />
       <DSStepper value={step} min={1} max={99} onChange={setStep} />
       <DSMultilineField label="Notes" value={notes} onChangeText={setNotes} />
@@ -512,10 +512,10 @@ export function PenV2GallerySection() {
   );
 }
 
-export function PenV2GallerySectionWithHost() {
+export function DSPatternsGallerySectionWithHost() {
   return (
     <DSSnackbarHost>
-      <PenV2GallerySection />
+      <DSPatternsGallerySection />
     </DSSnackbarHost>
   );
 }

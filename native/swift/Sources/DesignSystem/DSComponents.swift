@@ -5,7 +5,7 @@ public enum DSButtonVariant: Sendable, Equatable { case primary, secondary, ghos
 public enum DSChipTone: Sendable { case neutral, accent, success, warning, error }
 public enum DSStatTone: Sendable, Equatable { case neutral, success, warning, error }
 
-/// Fixed visual sizes called out by the Pen spec that have no corresponding token roles.
+/// Fixed visual sizes with no corresponding token role (shared + pattern components).
 public enum DSComponentMetrics {
     public static let smallIcon: CGFloat = 18
     public static let standardIcon: CGFloat = 20
@@ -15,6 +15,15 @@ public enum DSComponentMetrics {
     public static let chipVerticalPadding: CGFloat = 4
     public static let sheetHandleWidth: CGFloat = 40
     public static let sheetHandleHeight: CGFloat = 5
+    public static let weekCellRadius: CGFloat = 14
+    public static let loadDotSize: CGFloat = 4
+    public static let countPillHeight: CGFloat = 36
+    public static let presetTileHeight: CGFloat = 64
+    public static let quickActionRadius: CGFloat = 14
+    public static let timelineGutterWidth: CGFloat = 44
+    public static let markToggleSize: CGFloat = 48
+    public static let markIconSize: CGFloat = 22
+    public static let podiumHeights: [CGFloat] = [120, 150, 104]
 }
 
 /// A text button with primary, secondary, ghost, and destructive appearances.
