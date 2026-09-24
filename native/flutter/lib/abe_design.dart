@@ -9,4 +9,5 @@
 library;
 
 export 'src/abe_tokens.g.dart';
+export 'src/components.dart';
 export 'src/theme.dart';
