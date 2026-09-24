@@ -1,5 +1,8 @@
 import XCTest
 @testable import AbeDesign
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
 
 final class AbeTokensTests: XCTestCase {
     func testThemesKeepTheirOwnLook() {
@@ -10,4 +13,20 @@ final class AbeTokensTests: XCTestCase {
         XCTAssertEqual(AbeTokens.church.radius.card, 15)
         XCTAssertEqual(AbeTokens.themes.count, 3)
     }
+
+    #if canImport(SwiftUI)
+    func testThemeResolutionUsesDarkPaletteOnlyWhenSupported() {
+        XCTAssertEqual(AbeTokens.church.colors(for: .dark), AbeTokens.church.dark)
+        XCTAssertEqual(AbeTokens.bible.colors(for: .light), AbeTokens.bible.light)
+        XCTAssertEqual(AbeTokens.tuition.colors(for: .dark), AbeTokens.tuition.light)
+        XCTAssertFalse(AbeTokens.tuition.supportsDark)
+        XCTAssertTrue(AbeTokens.church.supportsDark)
+    }
+
+    func testFontFallbackUsesSerifForHeadingsAndSystemForOtherRoles() {
+        XCTAssertEqual(AbeFontResolver.fallback(forHeading: true), .serif)
+        XCTAssertEqual(AbeFontResolver.fallback(forHeading: false), .system)
+        XCTAssertFalse(AbeFontResolver.isAvailable("AbeDesign Missing Font"))
+    }
+    #endif
 }

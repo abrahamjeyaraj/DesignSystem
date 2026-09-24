@@ -1,5 +1,10 @@
 #if canImport(SwiftUI)
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 public extension Color {
     /// 0xRRGGBB, as emitted in AbeTokens.
@@ -31,11 +36,37 @@ public extension View {
 }
 
 public extension AbeThemeTokens {
-    func colors(for scheme: SwiftUI.ColorScheme) -> AbeColorScheme { colors(dark: scheme == .dark) }
+    /// Resolves the palette against the requested appearance while honoring light-only themes.
+    func colors(for scheme: SwiftUI.ColorScheme) -> AbeColorScheme {
+        colors(dark: supportsDark && scheme == .dark)
+    }
 
-    /// Custom font from the theme; falls back to the system font if the family is not bundled.
+    /// Custom font from the theme; falls back to serif for heading families and system sans otherwise.
     func font(_ family: KeyPath<AbeFontFamilies, String>, size: KeyPath<AbeFontSizes, Double>, weight: Font.Weight = .regular) -> Font {
-        .custom(fontFamily[keyPath: family], size: fontSize[keyPath: size]).weight(weight)
+        AbeFontResolver.font(family: fontFamily[keyPath: family], size: fontSize[keyPath: size], heading: family == \.heading).weight(weight)
+    }
+}
+
+/// Font lookup is exposed for apps that want to diagnose which theme fonts are installed.
+public enum AbeFontFallback: Sendable, Equatable { case serif, system }
+
+public enum AbeFontResolver {
+    public static func fallback(forHeading heading: Bool) -> AbeFontFallback { heading ? .serif : .system }
+
+    public static func isAvailable(_ family: String) -> Bool {
+        #if canImport(UIKit)
+        return UIFont(name: family, size: 12) != nil
+        #elseif canImport(AppKit)
+        return NSFont(name: family, size: 12) != nil
+        #else
+        return false
+        #endif
+    }
+
+    public static func font(family: String, size: Double, heading: Bool) -> Font {
+        if isAvailable(family) { return .custom(family, size: size) }
+        let design: Font.Design = fallback(forHeading: heading) == .serif ? .serif : .default
+        return .system(size: size, weight: .regular, design: design)
     }
 }
 
@@ -43,21 +74,28 @@ public extension AbeThemeTokens {
 public struct AbeButtonStyle: ButtonStyle {
     @Environment(\.abeTheme) private var theme
     @Environment(\.colorScheme) private var scheme
+    @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
+    public let variant: AbeButtonVariant
 
-    public init() {}
+    public init(variant: AbeButtonVariant = .primary) { self.variant = variant }
 
     public func makeBody(configuration: Configuration) -> some View {
         let c = theme.colors(for: scheme)
+        let fill: Color = variant == .ghost ? .clear : Color(abeHex: variant == .destructive ? c.destructive : variant == .secondary ? c.card : c.action)
+        let ink: UInt32 = variant == .destructive ? c.destructiveForeground : variant == .secondary || variant == .ghost ? c.foreground : c.actionForeground
         let label = configuration.label
-            .font(.custom(theme.fontFamily.label, size: theme.label.size).weight(Self.weight(theme.label.weight)))
+            .font(AbeFontResolver.font(family: theme.mobileType.label.family, size: theme.mobileType.label.size * Double(scale), heading: false).weight(.semibold))
             .tracking(theme.label.tracking)
         return Group {
             if theme.label.uppercase { label.textCase(.uppercase) } else { label.textCase(nil) }
         }
-        .foregroundStyle(Color(abeHex: c.actionForeground))
+        .foregroundStyle(Color(abeHex: ink))
         .padding(.horizontal, AbeTokens.Spacing.s5)
-        .frame(minHeight: AbeTokens.minTouchTarget)
-        .background(Color(abeHex: c.action), in: RoundedRectangle(cornerRadius: min(theme.radius.button, AbeTokens.minTouchTarget / 2)))
+        .frame(minHeight: theme.mobileLayout.touchTarget)
+        .background(fill, in: RoundedRectangle(cornerRadius: min(theme.radius.button, theme.mobileLayout.touchTarget / 2)))
+        .overlay {
+            if variant == .secondary { RoundedRectangle(cornerRadius: min(theme.radius.button, theme.mobileLayout.touchTarget / 2)).stroke(Color(abeHex: c.border), lineWidth: 1) }
+        }
         .opacity(configuration.isPressed ? 0.85 : 1)
     }
 
