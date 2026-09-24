@@ -1,6 +1,6 @@
 {
   "name": "@abrahamjeyaraj/ui-native",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React Native / Expo / react-native-web primitives themed by @abrahamjeyaraj/tokens.",
   "type": "module",
   "exports": {

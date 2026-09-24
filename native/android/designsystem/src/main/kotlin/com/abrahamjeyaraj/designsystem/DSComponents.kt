@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -514,7 +516,8 @@ fun DSTabBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(DSPenMetrics.TabBarCapsuleHeight)
+                // Minimum, not fixed: labels grow with font scale instead of being clipped.
+                .heightIn(min = DSPenMetrics.TabBarCapsuleHeight)
                 .shadow(8.dp, capsuleShape)
                 .clip(capsuleShape)
                 .border(1.dp, Color(c.line), capsuleShape)
@@ -541,7 +544,7 @@ fun DSTabBar(
                             role = Role.Tab,
                             onClick = { onSelected(index) },
                         )
-                        .padding(vertical = 6.dp, horizontal = 14.dp)
+                        .padding(vertical = 6.dp, horizontal = 4.dp)
                         .semantics { contentDescription = item.label },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(3.dp),
@@ -554,6 +557,11 @@ fun DSTabBar(
                     )
                     Text(
                         item.label,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
                         fontSize = DSPenMetrics.TabLabelSize.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                         fontFamily = design.typography.body.fontFamily,

@@ -317,7 +317,7 @@ public struct DSTabBar: View {
                 Button { selection = item.id } label: {
                     VStack(spacing: 3) {
                         Image(systemName: item.systemImage).font(.system(size: DSComponentMetrics.tabIcon)).accessibilityHidden(true)
-                        Text(item.title).dsFont(.caption).fontWeight(active ? .semibold : .medium)
+                        Text(item.title).dsFont(.caption).fontWeight(active ? .semibold : .medium).lineLimit(1).minimumScaleFactor(0.8)
                     }.foregroundStyle(Color(dsHex: active ? c.primary : c.inkMuted))
                         .frame(maxWidth: .infinity, minHeight: theme.mobileLayout.touchTarget).padding(.vertical, theme.mobileLayout.itemGap / 2)
                         .background { if active { Capsule().fill(Color(dsHex: c.primary).opacity(0.10)) } }

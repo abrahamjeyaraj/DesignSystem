@@ -1,6 +1,6 @@
 {
   "name": "@abrahamjeyaraj/ui-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React + Radix + Tailwind v4 components (web and mobile web). Styling comes entirely from the active @abrahamjeyaraj/tokens theme.",
   "type": "module",
   "sideEffects": [

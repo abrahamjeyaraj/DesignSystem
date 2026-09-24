@@ -810,6 +810,7 @@ export function DSTabBar({
             {typeof item.icon === 'string' ? <DSText variant="body">{item.icon}</DSText> : item.icon}
             <DSText
               variant="caption"
+              numberOfLines={1}
               style={{
                 fontSize: 10.5,
                 fontWeight: active ? t.weight(600) : t.weight(500),

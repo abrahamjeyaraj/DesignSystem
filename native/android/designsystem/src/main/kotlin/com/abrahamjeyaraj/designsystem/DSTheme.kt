@@ -138,7 +138,10 @@ fun DSTheme(
     val label = theme.label
     val labelFamily = fonts.resolve(theme.fontFamily.label, headingRole = false)
     val typography = Typography(
+        // Map every Material heading slot so screens using MaterialTheme.typography get the theme fonts.
+        headlineLarge = mobileTypography.title,
         headlineMedium = mobileTypography.headline,
+        headlineSmall = mobileTypography.headline,
         titleLarge = mobileTypography.title,
         bodyMedium = mobileTypography.body,
         bodySmall = mobileTypography.caption,

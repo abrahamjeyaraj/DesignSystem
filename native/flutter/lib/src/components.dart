@@ -830,6 +830,9 @@ class DSTabBar extends StatelessWidget {
                             ),
                             Text(
                               items[i].label,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Color(
                                   i == selectedIndex
