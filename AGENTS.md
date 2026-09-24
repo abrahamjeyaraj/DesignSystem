@@ -12,6 +12,10 @@ Shared design system for TheBibleProject, ChurchManagement (ChurchHQ) and Tuitio
   `native/android/.../DSTokens.kt` or `native/flutter/lib/src/ds_tokens.g.dart`; run `bun run tokens`.
 - Components use role names only (`bg-action`, `text-ink`, `border-line`, `rounded-button`,
   `label-text`). No hex literals, no stock palette classes (`gray-500`), no brand font variables.
+- Components are generic UI patterns only. No product or domain concepts (students, attendance,
+  fees, stars, sermons, members, donations) in component names, APIs, default labels, metrics names
+  or file names. Accessibility labels have no product-specific defaults. Gallery samples use neutral
+  content. Anything that only makes sense for one product belongs in that product's app.
 - A theme may change values, never keys. A new role or scale key goes in `base.json` and gets a value
   in every theme.
 - Use Bun. Before handing off: `bun run verify`; if native adapters or the generator changed, also
