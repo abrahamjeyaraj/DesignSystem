@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Today
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,6 +83,14 @@ fun DSGallery(modifier: Modifier = Modifier) {
                 DSText("Supporting copy from tokens only.", DSTextStyle.Body)
             }
         }
+        var toggle by remember { mutableStateOf(true) }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            DSToggle(toggle,{toggle=it},label="Gallery toggle on")
+            DSToggle(false,{},label="Gallery toggle off")
+        }
+        DSProgress(.72f,label="Recent tests",valueLabel="72%",tone=DSProgressTone.Accent2,modifier=Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp))
+        DSInkCard(Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp)) { Text("Next class",color=Color(design.colors.onInkAccent)); Text("Class 10 · Evening",color=Color(design.colors.onInk)) }
+        DSNudge("Fee reminders ready","3 families to remind",Icons.Default.Today,onClick={})
         DSEmptyState(
             title = "No students",
             message = "Try adjusting your filters.",

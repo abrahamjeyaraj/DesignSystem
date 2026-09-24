@@ -17,3 +17,5 @@ export * from './slider';
 export * from './tab-bar';
 export * from './tabs';
 export * from './tooltip';
+
+export * from './pen-components';

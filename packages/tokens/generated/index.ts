@@ -36,7 +36,16 @@ export const tokens = {
     "line",
     "line-hover",
     "action",
-    "action-foreground"
+    "action-foreground",
+    "surface-card",
+    "surface-sand",
+    "accent-2",
+    "ink-900",
+    "on-ink",
+    "on-ink-muted",
+    "on-ink-accent",
+    "warn-bg",
+    "alert-bg"
   ],
   "spacing": {
     "0": 0,
@@ -132,7 +141,16 @@ export const tokens = {
         "line": "#e5e0d8",
         "line-hover": "#e0dcd4",
         "action": "#c8b496",
-        "action-foreground": "#1a1a1a"
+        "action-foreground": "#1a1a1a",
+        "surface-card": "#fafaf8",
+        "surface-sand": "#f5f5f0",
+        "accent-2": "#c97a54",
+        "ink-900": "#1a1a1a",
+        "on-ink": "#fafaf8",
+        "on-ink-muted": "#b0b09e",
+        "on-ink-accent": "#d89778",
+        "warn-bg": "#fcf5e5",
+        "alert-bg": "#fceaea"
       },
       "dark": {
         "background": "#1a1a12",
@@ -169,7 +187,16 @@ export const tokens = {
         "line": "#3a3730",
         "line-hover": "#423f36",
         "action": "#d9c9a8",
-        "action-foreground": "#1a1a1a"
+        "action-foreground": "#1a1a1a",
+        "surface-card": "#2e2e22",
+        "surface-sand": "#4a4a3a",
+        "accent-2": "#d89778",
+        "ink-900": "#f3f1ec",
+        "on-ink": "#1a1a12",
+        "on-ink-muted": "#6d6d59",
+        "on-ink-accent": "#8f4a2c",
+        "warn-bg": "#fcf5e5",
+        "alert-bg": "#fceaea"
       },
       "extra": {
         "light": {
@@ -512,7 +539,16 @@ export const tokens = {
         "line": "#e6e3dc",
         "line-hover": "#d6d2c8",
         "action": "#1a6b54",
-        "action-foreground": "#ffffff"
+        "action-foreground": "#ffffff",
+        "surface-card": "#ffffff",
+        "surface-sand": "#efece4",
+        "accent-2": "#1a6b54",
+        "ink-900": "#1d1b16",
+        "on-ink": "#f1ede3",
+        "on-ink-muted": "#d6d1c4",
+        "on-ink-accent": "#57b394",
+        "warn-bg": "#fff8eb",
+        "alert-bg": "#fff1f3"
       },
       "dark": {
         "background": "#26241e",
@@ -549,7 +585,16 @@ export const tokens = {
         "line": "#3f3b33",
         "line-hover": "#4d483f",
         "action": "#3a9b7a",
-        "action-foreground": "#ffffff"
+        "action-foreground": "#ffffff",
+        "surface-card": "#312e28",
+        "surface-sand": "#38352e",
+        "accent-2": "#3a9b7a",
+        "ink-900": "#f1ede3",
+        "on-ink": "#1d1b16",
+        "on-ink-muted": "#6f6c63",
+        "on-ink-accent": "#1a6b54",
+        "warn-bg": "#fff8eb",
+        "alert-bg": "#fff1f3"
       },
       "extra": {
         "light": {
@@ -892,7 +937,16 @@ export const tokens = {
         "line": "#dcd1c1",
         "line-hover": "#c9bba7",
         "action": "#8a2b2b",
-        "action-foreground": "#fbf7f0"
+        "action-foreground": "#fbf7f0",
+        "surface-card": "#ffffff",
+        "surface-sand": "#e9dfd1",
+        "accent-2": "#a8511f",
+        "ink-900": "#2a211d",
+        "on-ink": "#fbf7f0",
+        "on-ink-muted": "#c4b2a2",
+        "on-ink-accent": "#ebc9a8",
+        "warn-bg": "#f6e2d2",
+        "alert-bg": "#f3dada"
       },
       "dark": {
         "background": "#2a211d",
@@ -929,30 +983,29 @@ export const tokens = {
         "line": "#4a3a31",
         "line-hover": "#5c4a3f",
         "action": "#ebc9a8",
-        "action-foreground": "#2a211d"
+        "action-foreground": "#2a211d",
+        "surface-card": "#362a24",
+        "surface-sand": "#3c2f28",
+        "accent-2": "#e08a5a",
+        "ink-900": "#2a211d",
+        "on-ink": "#fbf7f0",
+        "on-ink-muted": "#c4b2a2",
+        "on-ink-accent": "#ebc9a8",
+        "warn-bg": "#3c2f28",
+        "alert-bg": "#3c2f28"
       },
       "extra": {
         "light": {
-          "surface-sand": "#e9dfd1",
           "surface-tint": "#f2e7d8",
-          "ink-900": "#2a211d",
           "ink-800": "#362a24",
           "ink-700": "#3c2f28",
-          "ink-line": "#4a3a31",
-          "on-ink": "#fbf7f0",
-          "on-ink-muted": "#c4b2a2",
-          "on-ink-accent": "#ebc9a8"
+          "ink-line": "#4a3a31"
         },
         "dark": {
-          "surface-sand": "#e9dfd1",
           "surface-tint": "#f2e7d8",
-          "ink-900": "#2a211d",
           "ink-800": "#362a24",
           "ink-700": "#3c2f28",
-          "ink-line": "#4a3a31",
-          "on-ink": "#fbf7f0",
-          "on-ink-muted": "#c4b2a2",
-          "on-ink-accent": "#ebc9a8"
+          "ink-line": "#4a3a31"
         }
       },
       "scales": {

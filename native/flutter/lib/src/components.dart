@@ -990,6 +990,67 @@ class DSStatusBar extends StatelessWidget {
   }
 }
 
+enum DSProgressTone { accent, accent2 }
+enum DSNudgeTone { warn, alert }
+class DSToggle extends StatelessWidget { const DSToggle({super.key,required this.value,required this.onChanged,this.disabled=false,this.semanticLabel='Toggle'}); final bool value,disabled; final ValueChanged<bool> onChanged; final String semanticLabel; @override Widget build(BuildContext context){final c=DSTheme.of(context).colors;return Semantics(toggled:value,enabled:!disabled,label:semanticLabel,button:true,child:GestureDetector(onTap:disabled?null:()=>onChanged(!value),child:SizedBox(width:48,height:48,child:Center(child:Container(width:38,height:22,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:Color(value?c.accent:c.border).withValues(alpha:disabled ? .5 : 1),borderRadius:BorderRadius.circular(999)),child:Row(mainAxisAlignment:value?MainAxisAlignment.end:MainAxisAlignment.start,children:[Container(width:16,height:16,decoration:BoxDecoration(color:Color(c.surfaceCard),shape:BoxShape.circle))]))))));} }
+class DSProgress extends StatelessWidget {
+  const DSProgress({super.key, required this.value, this.label, this.valueLabel, this.tone = DSProgressTone.accent});
+  final double value;
+  final String? label, valueLabel;
+  final DSProgressTone tone;
+  @override
+  Widget build(BuildContext context) {
+    final t = DSTheme.of(context);
+    final c = t.colors;
+    final v = value.isFinite ? value.clamp(0.0, 1.0) : 0.0;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      if (label != null || valueLabel != null)
+        Row(children: [
+          Expanded(child: Text(label ?? '', style: _role(context, t.tokens.mobileType.label, c.inkBody))),
+          Text(valueLabel ?? '', style: _role(context, t.tokens.mobileType.label, c.ink).copyWith(fontWeight: FontWeight.w600)),
+        ]),
+      if (label != null || valueLabel != null) const SizedBox(height: 6),
+      Semantics(value: valueLabel ?? '${(v * 100).round()} percent', child: ClipRRect(
+        borderRadius: BorderRadius.circular(999),
+        child: LinearProgressIndicator(value: v, minHeight: 6, backgroundColor: Color(c.surfaceSand), color: Color(tone == DSProgressTone.accent ? c.accent : c.accent2)),
+      )),
+    ]);
+  }
+}
+class DSInkCard extends StatelessWidget { const DSInkCard({super.key,required this.child}); final Widget child; @override Widget build(BuildContext context){final t=DSTheme.of(context);return DefaultTextStyle.merge(style:TextStyle(color:Color(t.colors.onInk)),child:Container(width:double.infinity,padding:const EdgeInsets.all(20),decoration:BoxDecoration(color:Color(t.colors.ink900),borderRadius:BorderRadius.circular(20)),child:child));} }
+class DSNudge extends StatelessWidget {
+  const DSNudge({super.key, required this.title, required this.subtitle, required this.icon, required this.onTap, this.tone = DSNudgeTone.warn});
+  final String title, subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+  final DSNudgeTone tone;
+  @override
+  Widget build(BuildContext context) {
+    final t = DSTheme.of(context);
+    final c = t.colors;
+    return Material(
+      color: Color(tone == DSNudgeTone.warn ? c.warnBg : c.alertBg),
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Icon(icon, color: Color(c.warning)),
+            const SizedBox(width: 14),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: _role(context, t.tokens.mobileType.body, c.ink).copyWith(fontWeight: FontWeight.w600)),
+              Text(subtitle, style: _role(context, t.tokens.mobileType.label, c.inkBody)),
+            ])),
+            Icon(Icons.chevron_right, color: Color(c.warning)),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 /// Shows every DS component in a compact scrollable specimen sheet.
 class DSGallery extends StatefulWidget {
   const DSGallery({super.key});
@@ -1090,6 +1151,14 @@ class _DSGalleryState extends State<DSGallery> {
         selectedIndex: _tab,
         onChanged: (i) => setState(() => _tab = i),
       ),
+      const DSSectionHeader(title: 'Toggle · Progress · Ink card · Nudge'),
+      Wrap(spacing: 8, children: [
+        DSToggle(value: true, onChanged: (_) {}, semanticLabel: 'Toggle on'),
+        DSToggle(value: false, onChanged: (_) {}, semanticLabel: 'Toggle off'),
+      ]),
+      const DSProgress(value: .72, label: 'Recent tests', valueLabel: '72%', tone: DSProgressTone.accent2),
+      const DSInkCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Next class'), Text('Class 10 · Evening'), Text('Physics · 8 students')])),
+      DSNudge(title: 'Fee reminders ready', subtitle: '3 families to remind', icon: Icons.notifications_active_outlined, onTap: () {}),
       const DSSectionHeader(title: 'Empty state', actionLabel: 'See all'),
       const DSEmptyState(
         icon: Icons.inbox_outlined,

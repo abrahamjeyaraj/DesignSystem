@@ -942,6 +942,14 @@ export function DSInput({ style, ...props }: TextInputProps) {
   );
 }
 
+export interface DSToggleProps { value: boolean; onValueChange: (value: boolean) => void; disabled?: boolean; accessibilityLabel?: string; style?: StyleProp<ViewStyle> }
+export function DSToggle({value,onValueChange,disabled=false,accessibilityLabel='Toggle',style}:DSToggleProps){const t=useDSTheme();return <Pressable accessibilityRole="switch" accessibilityLabel={accessibilityLabel} accessibilityState={{checked:value,disabled}} disabled={disabled} onPress={()=>onValueChange(!value)} style={[{width:48,height:48,alignItems:'center',justifyContent:'center'},style]}><View style={{width:38,height:22,padding:3,borderRadius:999,backgroundColor:value?t.colors.accent:t.colors.border,flexDirection:'row',justifyContent:value?'flex-end':'flex-start',alignItems:'center',opacity:disabled ? 0.5 : 1}}><View style={{width:16,height:16,borderRadius:999,backgroundColor:t.colors['surface-card']}}/></View></Pressable>}
+export interface DSProgressProps { value:number; tone?:'accent'|'accent-2'; label?:ReactNode; valueLabel?:ReactNode; style?:StyleProp<ViewStyle> }
+export function DSProgress({value,tone='accent',label,valueLabel,style}:DSProgressProps){const t=useDSTheme();const v=Math.max(0,Math.min(1,Number.isFinite(value)?value:0));return <View style={[{width:'100%'},style]}>{(label!=null||valueLabel!=null)&&<View style={{flexDirection:'row',justifyContent:'space-between',gap:6,marginBottom:6}}>{typeof label==='string'?<DSText variant="label" style={{color:t.colors['muted-foreground']}}>{label}</DSText>:label}{typeof valueLabel==='string'?<DSText variant="label" style={{fontWeight:'600'}}>{valueLabel}</DSText>:valueLabel}</View>}<View accessibilityRole="progressbar" accessibilityValue={{min:0,max:100,now:Math.round(v*100)}} style={{height:6,width:'100%',borderRadius:999,backgroundColor:t.colors['surface-sand'],overflow:'hidden'}}><View style={{height:6,width:`${v*100}%`,backgroundColor:t.colors[tone==='accent-2'?'accent-2':'accent'],borderRadius:999}}/></View></View>}
+export function DSInkCard({children,style,...props}:ViewProps & {children:ReactNode}){const t=useDSTheme();return <View {...props} style={[{backgroundColor:t.colors['ink-900'],borderRadius:20,padding:20,gap:14},style]}>{children}</View>}
+export interface DSNudgeProps {title:ReactNode;subtitle?:ReactNode;leading:ReactNode;onPress:()=>void;tone?:'warn'|'alert';style?:StyleProp<ViewStyle>}
+export function DSNudge({title,subtitle,leading,onPress,tone='warn',style}:DSNudgeProps){const t=useDSTheme();return <Pressable accessibilityRole="button" onPress={onPress} style={({pressed})=>[{flexDirection:'row',alignItems:'center',gap:14,padding:16,borderRadius:16,backgroundColor:t.colors[tone==='warn'?'warn-bg':'alert-bg'],opacity:pressed ? 0.85 : 1},style]}>{leading}<View style={{flex:1,gap:2}}>{typeof title==='string'?<DSText variant="body" style={{fontWeight:'600'}}>{title}</DSText>:title}{subtitle!=null&&(typeof subtitle==='string'?<DSText variant="label" style={{color:t.colors['muted-foreground']}}>{subtitle}</DSText>:subtitle)}</View><DSText>›</DSText></Pressable>}
+
 // ---------- Gallery ----------
 
 export interface DSGalleryProps {
@@ -1011,6 +1019,10 @@ export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: D
                   <DSTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
                   <DSEmptyState title="Empty State" message="No records found in this section." action={<DSButton size="sm">Create record</DSButton>} />
                   <DSInput placeholder="Standard Input..." />
+                  <View style={{flexDirection:'row',gap:8}}><DSToggle value={true} onValueChange={() => {}} accessibilityLabel="Toggle on" /><DSToggle value={false} onValueChange={() => {}} accessibilityLabel="Toggle off" /></View>
+                  <DSProgress label="Progress" valueLabel="70%" value={0.7} />
+                  <DSInkCard><DSText>Ink card content</DSText></DSInkCard>
+                  <DSNudge title="Reminder ready" subtitle="Tap to review" leading={<DSText>♢</DSText>} onPress={() => {}} />
                 </DSCard>
               </DSThemeProvider>
             ))}

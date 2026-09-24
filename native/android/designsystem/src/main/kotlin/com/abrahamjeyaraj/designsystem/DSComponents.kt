@@ -26,9 +26,11 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -494,6 +497,13 @@ fun DSSectionHeader(
         }
     }
 }
+
+enum class DSProgressTone { Accent, Accent2 }
+enum class DSNudgeTone { Warn, Alert }
+@Composable fun DSToggle(value:Boolean,onValueChange:(Boolean)->Unit,modifier:Modifier=Modifier,enabled:Boolean=true,label:String="Toggle") { val c=DS.current.colors; Box(modifier.size(48.dp).clickable(enabled=enabled,role=Role.Switch,onClick={onValueChange(!value)}).semantics { contentDescription=label; this.role=Role.Switch; stateDescription=if(value) "On" else "Off" },contentAlignment=Alignment.Center) { Row(Modifier.size(38.dp,22.dp).clip(CircleShape).background(Color(if(value)c.accent else c.border)).padding(3.dp),horizontalArrangement=if(value) Arrangement.End else Arrangement.Start,verticalAlignment=Alignment.CenterVertically) { Box(Modifier.size(16.dp).clip(CircleShape).background(Color(c.surfaceCard))) } } }
+@Composable fun DSProgress(value:Float,modifier:Modifier=Modifier,label:String?=null,valueLabel:String?=null,tone:DSProgressTone=DSProgressTone.Accent) { val c=DS.current.colors; val v=value.coerceIn(0f,1f); Column(modifier.fillMaxWidth()) { if(label!=null||valueLabel!=null) Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) { Text(label.orEmpty(),style=DS.current.typography.label.copy(color=Color(c.inkBody))); Text(valueLabel.orEmpty(),style=DS.current.typography.label.copy(fontWeight=FontWeight.SemiBold,color=Color(c.ink))) }; if(label!=null||valueLabel!=null) Spacer(Modifier.height(6.dp)); androidx.compose.material3.LinearProgressIndicator(progress={v},modifier=Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),color=Color(if(tone==DSProgressTone.Accent)c.accent else c.accent2),trackColor=Color(c.surfaceSand),drawStopIndicator={}) } }
+@Composable fun DSInkCard(modifier:Modifier=Modifier,content:@Composable ()->Unit) { val c=DS.current.colors; Column(modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Color(c.ink900)).padding(20.dp),verticalArrangement=Arrangement.spacedBy(14.dp)) { CompositionLocalProvider(LocalContentColor provides Color(c.onInk)) { content() } } }
+@Composable fun DSNudge(title:String,subtitle:String,icon:ImageVector,onClick:()->Unit,modifier:Modifier=Modifier,tone:DSNudgeTone=DSNudgeTone.Warn) { val c=DS.current.colors; Row(modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color(if(tone==DSNudgeTone.Warn)c.warnBg else c.alertBg)).clickable(role=Role.Button,onClick=onClick).padding(16.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(14.dp)) { Icon(icon,contentDescription=null,tint=Color(c.warning)); Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(2.dp)) { Text(title,style=DS.current.typography.body.copy(fontWeight=FontWeight.SemiBold,color=Color(c.ink))); Text(subtitle,style=DS.current.typography.label.copy(color=Color(c.inkBody))) }; Icon(Icons.Default.ChevronRight,contentDescription=null,tint=Color(c.warning)) } }
 
 data class DSTabItem(val label: String, val icon: ImageVector)
 

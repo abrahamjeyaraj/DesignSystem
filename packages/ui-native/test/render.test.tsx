@@ -26,6 +26,10 @@ const {
   DSBadge,
   DSInput,
   DSGallery,
+  DSToggle,
+  DSProgress,
+  DSInkCard,
+  DSNudge,
   Text,
   Button,
   Card,
@@ -219,6 +223,16 @@ test('DSEmptyState renders icon, title, message and action', () => {
   expect(html).toContain('No Students');
   expect(html).toContain('Add a student to get started.');
   expect(html).toContain('Add Student');
+});
+
+test('new Tuition Pen components render accessible controls and clamped progress', () => {
+  const html = render(<><DSToggle value={true} onValueChange={() => {}} accessibilityLabel="Email alerts on" /><DSToggle value={false} onValueChange={() => {}} accessibilityLabel="Email alerts off" /><DSProgress value={1.5} label="Recent tests" valueLabel="100%" /><DSInkCard><DSText>Next class</DSText></DSInkCard><DSNudge title="Reminder ready" subtitle="Review it" leading={<DSText>Bell</DSText>} onPress={() => {}} /></>);
+  expect(html).toContain('role="switch"');
+  expect(html).toContain('Email alerts on');
+  expect(html).toContain('Email alerts off');
+  expect(html).toContain('100%');
+  expect(html).toContain('Next class');
+  expect(html).toContain('Reminder ready');
 });
 
 test('DSGallery renders all 3 themes and honours supportsDark', () => {

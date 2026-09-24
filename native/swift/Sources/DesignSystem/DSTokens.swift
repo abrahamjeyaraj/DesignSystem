@@ -49,6 +49,15 @@ public struct DSColorScheme: Sendable, Equatable {
     public let lineHover: UInt32
     public let action: UInt32
     public let actionForeground: UInt32
+    public let surfaceCard: UInt32
+    public let surfaceSand: UInt32
+    public let accent2: UInt32
+    public let ink900: UInt32
+    public let onInk: UInt32
+    public let onInkMuted: UInt32
+    public let onInkAccent: UInt32
+    public let warnBg: UInt32
+    public let alertBg: UInt32
 }
 
 public struct DSFontFamilies: Sendable, Equatable {
@@ -196,7 +205,16 @@ public enum DSTokens {
             line: 0xE5E0D8,
             lineHover: 0xE0DCD4,
             action: 0xC8B496,
-            actionForeground: 0x1A1A1A
+            actionForeground: 0x1A1A1A,
+            surfaceCard: 0xFAFAF8,
+            surfaceSand: 0xF5F5F0,
+            accent2: 0xC97A54,
+            ink900: 0x1A1A1A,
+            onInk: 0xFAFAF8,
+            onInkMuted: 0xB0B09E,
+            onInkAccent: 0xD89778,
+            warnBg: 0xFCF5E5,
+            alertBg: 0xFCEAEA
         ),
         dark: DSColorScheme(
             background: 0x1A1A12,
@@ -233,7 +251,16 @@ public enum DSTokens {
             line: 0x3A3730,
             lineHover: 0x423F36,
             action: 0xD9C9A8,
-            actionForeground: 0x1A1A1A
+            actionForeground: 0x1A1A1A,
+            surfaceCard: 0x2E2E22,
+            surfaceSand: 0x4A4A3A,
+            accent2: 0xD89778,
+            ink900: 0xF3F1EC,
+            onInk: 0x1A1A12,
+            onInkMuted: 0x6D6D59,
+            onInkAccent: 0x8F4A2C,
+            warnBg: 0xFCF5E5,
+            alertBg: 0xFCEAEA
         ),
         extraLight: ["ed-ink": 0x1A1A1A, "ed-body": 0x4A4A4A, "ed-muted": 0x666666, "ed-gold": 0xC8B496, "ed-blue": 0x384F84, "ed-border": 0xE5E0D8, "ed-bg": 0xF4F2EF, "ed-dark": 0x1E1E1E, "ed-placeholder": 0xBBBBBB, "ed-paper": 0xF5F2ED, "ed-card": 0xFFFFFF, "ed-footer": 0xF8F7F5, "ed-border-light": 0xEEECE8, "ed-border-hover": 0xE0DCD4, "ed-hairline": 0x999999, "ed-brand-brown": 0xB07C4B, "ed-brown-text": 0x8A5A2E, "ed-warm-dark": 0x29261B],
         extraDark: ["ed-ink": 0xF3F1EC, "ed-body": 0xC9C5BD, "ed-muted": 0xA8A39A, "ed-gold": 0xD9C9A8, "ed-blue": 0x9DB0D6, "ed-border": 0x3A3730, "ed-bg": 0x1C1B17, "ed-dark": 0x1E1E1E, "ed-placeholder": 0xBBBBBB, "ed-paper": 0x26241E, "ed-card": 0x232118, "ed-footer": 0x1A1915, "ed-border-light": 0x322F28, "ed-border-hover": 0x423F36, "ed-hairline": 0x999999, "ed-brand-brown": 0xB07C4B, "ed-brown-text": 0xD9A86A, "ed-warm-dark": 0x29261B],
@@ -350,7 +377,16 @@ public enum DSTokens {
             line: 0xE6E3DC,
             lineHover: 0xD6D2C8,
             action: 0x1A6B54,
-            actionForeground: 0xFFFFFF
+            actionForeground: 0xFFFFFF,
+            surfaceCard: 0xFFFFFF,
+            surfaceSand: 0xEFECE4,
+            accent2: 0x1A6B54,
+            ink900: 0x1D1B16,
+            onInk: 0xF1EDE3,
+            onInkMuted: 0xD6D1C4,
+            onInkAccent: 0x57B394,
+            warnBg: 0xFFF8EB,
+            alertBg: 0xFFF1F3
         ),
         dark: DSColorScheme(
             background: 0x26241E,
@@ -387,7 +423,16 @@ public enum DSTokens {
             line: 0x3F3B33,
             lineHover: 0x4D483F,
             action: 0x3A9B7A,
-            actionForeground: 0xFFFFFF
+            actionForeground: 0xFFFFFF,
+            surfaceCard: 0x312E28,
+            surfaceSand: 0x38352E,
+            accent2: 0x3A9B7A,
+            ink900: 0xF1EDE3,
+            onInk: 0x1D1B16,
+            onInkMuted: 0x6F6C63,
+            onInkAccent: 0x1A6B54,
+            warnBg: 0xFFF8EB,
+            alertBg: 0xFFF1F3
         ),
         extraLight: ["panel": 0xFBFAF6, "surface": 0xFFFFFF, "shell-gutter": 0xEFECE4, "verified-blue": 0x1D9BF0, "gold-ink": 0x9A7A2E],
         extraDark: ["panel": 0x2B2924, "surface": 0x312E28, "shell-gutter": 0x0E0D0A, "verified-blue": 0x1D9BF0, "gold-ink": 0x9A7A2E],
@@ -504,7 +549,16 @@ public enum DSTokens {
             line: 0xDCD1C1,
             lineHover: 0xC9BBA7,
             action: 0x8A2B2B,
-            actionForeground: 0xFBF7F0
+            actionForeground: 0xFBF7F0,
+            surfaceCard: 0xFFFFFF,
+            surfaceSand: 0xE9DFD1,
+            accent2: 0xA8511F,
+            ink900: 0x2A211D,
+            onInk: 0xFBF7F0,
+            onInkMuted: 0xC4B2A2,
+            onInkAccent: 0xEBC9A8,
+            warnBg: 0xF6E2D2,
+            alertBg: 0xF3DADA
         ),
         dark: DSColorScheme(
             background: 0x2A211D,
@@ -541,10 +595,19 @@ public enum DSTokens {
             line: 0x4A3A31,
             lineHover: 0x5C4A3F,
             action: 0xEBC9A8,
-            actionForeground: 0x2A211D
+            actionForeground: 0x2A211D,
+            surfaceCard: 0x362A24,
+            surfaceSand: 0x3C2F28,
+            accent2: 0xE08A5A,
+            ink900: 0x2A211D,
+            onInk: 0xFBF7F0,
+            onInkMuted: 0xC4B2A2,
+            onInkAccent: 0xEBC9A8,
+            warnBg: 0x3C2F28,
+            alertBg: 0x3C2F28
         ),
-        extraLight: ["surface-sand": 0xE9DFD1, "surface-tint": 0xF2E7D8, "ink-900": 0x2A211D, "ink-800": 0x362A24, "ink-700": 0x3C2F28, "ink-line": 0x4A3A31, "on-ink": 0xFBF7F0, "on-ink-muted": 0xC4B2A2, "on-ink-accent": 0xEBC9A8],
-        extraDark: ["surface-sand": 0xE9DFD1, "surface-tint": 0xF2E7D8, "ink-900": 0x2A211D, "ink-800": 0x362A24, "ink-700": 0x3C2F28, "ink-line": 0x4A3A31, "on-ink": 0xFBF7F0, "on-ink-muted": 0xC4B2A2, "on-ink-accent": 0xEBC9A8],
+        extraLight: ["surface-tint": 0xF2E7D8, "ink-800": 0x362A24, "ink-700": 0x3C2F28, "ink-line": 0x4A3A31],
+        extraDark: ["surface-tint": 0xF2E7D8, "ink-800": 0x362A24, "ink-700": 0x3C2F28, "ink-line": 0x4A3A31],
         fontFamily: DSFontFamilies(
             sans: "Inter",
             heading: "Fraunces",

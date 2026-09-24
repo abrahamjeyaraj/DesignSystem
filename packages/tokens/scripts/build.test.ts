@@ -142,6 +142,27 @@ describe("css", () => {
   });
 });
 
+describe("on-ink contrast", () => {
+  const luminance = (hex: string) => {
+    const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map((v) => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!;
+  };
+  const contrast = (foreground: string, background: string) => {
+    const [lighter, darker] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+    return (lighter! + 0.05) / (darker! + 0.05);
+  };
+  test("on-ink text roles meet contrast against ink-900 in every theme and mode", () => {
+    for (const theme of themes) {
+      for (const mode of ["light", "dark"] as const) {
+        const colors = theme[mode];
+        expect(contrast(colors["on-ink"]!, colors["ink-900"]!)).toBeGreaterThanOrEqual(4.5);
+        expect(contrast(colors["on-ink-muted"]!, colors["ink-900"]!)).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
+});
+
 test("committed outputs are up to date", () => {
   for (const [rel, content] of Object.entries(outputs())) {
     const path = join(ROOT, rel);
