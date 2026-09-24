@@ -2,17 +2,32 @@
   "name": "@abrahamjeyaraj/tokens",
   "version": "0.1.0",
   "description": "Design tokens and per-app themes (Tailwind v4 CSS, TypeScript). Generated from tokens/*.json.",
-  "private": true,
   "type": "module",
   "exports": {
-    ".": "./generated/index.ts",
+    ".": {
+      "source": "./generated/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./tokens.json": "./generated/tokens.json",
     "./css/*.css": "./generated/css/*.css",
     "./base.css": "./css/base.css"
   },
-  "files": ["generated", "css"],
+  "files": [
+    "dist",
+    "generated/tokens.json",
+    "generated/css",
+    "css"
+  ],
   "scripts": {
-    "build": "bun scripts/build.ts",
+    "build": "bun scripts/build.ts && bun build generated/index.ts --outdir dist && bunx tsc generated/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir dist --skipLibCheck",
     "typecheck": "tsc --noEmit -p ."
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
   }
 }

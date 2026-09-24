@@ -1,0 +1,29 @@
+name: Publish npm packages
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  packages: write
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: Set package versions
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          npm version "$VERSION" --no-git-tag-version --workspace=@abrahamjeyaraj/tokens
+          npm version "$VERSION" --no-git-tag-version --workspace=@abrahamjeyaraj/ui-web
+          npm version "$VERSION" --no-git-tag-version --workspace=@abrahamjeyaraj/ui-native
+      - run: bun run verify
+      - run: bun run build
+      - name: Configure npm authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm publish --workspace=@abrahamjeyaraj/tokens
+      - run: npm publish --workspace=@abrahamjeyaraj/ui-web
+      - run: npm publish --workspace=@abrahamjeyaraj/ui-native

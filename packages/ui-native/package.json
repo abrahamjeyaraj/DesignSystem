@@ -2,13 +2,18 @@
   "name": "@abrahamjeyaraj/ui-native",
   "version": "0.1.0",
   "description": "React Native / Expo / react-native-web primitives themed by @abrahamjeyaraj/tokens.",
-  "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p ."
+    "build": "bun build ./src/index.ts --outdir ./dist --external react --external react-native --external react-native-web --external '@abrahamjeyaraj/*' && bunx tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "bun test test"
   },
   "dependencies": {
     "@abrahamjeyaraj/tokens": "workspace:*"
@@ -20,6 +25,19 @@
   "devDependencies": {
     "@types/react": "^19",
     "react": "19.2.8",
-    "react-native": "0.79.6"
-  }
+    "react-native": "0.79.6",
+    "react-native-web": "^0.20.0",
+    "react-dom": "19.2.8",
+    "@types/react-dom": "^19"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
+  },
+  "files": [
+    "dist"
+  ]
 }
