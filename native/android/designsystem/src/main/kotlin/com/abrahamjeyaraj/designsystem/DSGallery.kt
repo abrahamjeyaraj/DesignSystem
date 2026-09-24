@@ -54,22 +54,22 @@ fun DSGallery(modifier: Modifier = Modifier) {
         DSLargeTitle(title = "Today", eyebrow = "Friday, 19 September", trailing = {
             DSIconButton(Icons.Default.Today, onClick = {}, contentDescription = "Calendar")
         })
-        DSSearchField(search, onQueryChange = { search = it }, placeholder = "Search students")
+        DSSearchField(search, onQueryChange = { search = it }, placeholder = "Search items")
         DSSegmentedControl(listOf("All", "Due", "Overdue", "Paid"), segment, onSelected = { segment = it })
         Row(Modifier.fillMaxWidth().padding(horizontal = tokens.mobileLayout.gutter.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             DSStatTile("Collected", "₹3,84,000", meta = "+12% vs Aug", metaTone = DSStatTone.Success)
-            DSStatTile("Due", "₹42,000", meta = "8 students", metaTone = DSStatTone.Warning)
+            DSStatTile("Due", "₹42,000", meta = "8 people", metaTone = DSStatTone.Warning)
         }
         DSSectionHeader("Classes today", actionLabel = "See all", onAction = {})
         DSListRow(
-            title = "Ananya Raghavan",
-            subtitle = "Class 10 · Maths, Physics",
+            title = "Alex Morgan",
+            subtitle = "Group A · Design, Research",
             leading = { DSAvatar("AR") },
             trailing = { DSChip("Paid", variant = DSChipVariant.Success) },
             onClick = {},
         )
         Row(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            DSChip("Class 10", variant = DSChipVariant.Neutral)
+            DSChip("Group A", variant = DSChipVariant.Neutral)
             DSChip("Due", variant = DSChipVariant.Warning)
             DSChip("Overdue", variant = DSChipVariant.Error)
             DSChip("Active", variant = DSChipVariant.Accent)
@@ -95,24 +95,24 @@ fun DSGallery(modifier: Modifier = Modifier) {
             DSToggle(false,{},label="Gallery toggle off")
         }
         DSProgress(.72f,label="Recent tests",valueLabel="72%",tone=DSProgressTone.Accent2,modifier=Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp))
-        DSInkCard(Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp)) { Text("Next class",color=Color(design.colors.onInkAccent)); Text("Class 10 · Evening",color=Color(design.colors.onInk)) }
-        DSNudge("Fee reminders ready","3 families to remind",Icons.Default.Today,onClick={})
+        DSInkCard(Modifier.padding(horizontal=tokens.mobileLayout.gutter.dp)) { Text("Up next",color=Color(design.colors.onInkAccent)); Text("Evening session",color=Color(design.colors.onInk)) }
+        DSNudge("Reminders ready","3 people to follow up",Icons.Default.Today,onClick={})
         DSEmptyState(
-            title = "No students",
+            title = "No items yet",
             message = "Try adjusting your filters.",
             icon = Icons.Default.SearchOff,
             actionLabel = "Clear filters",
             onAction = {},
             modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
         )
-        DSNavBar("Student")
+        DSNavBar("Details")
         DSSheetHandle()
         DSTabBar(
             items = listOf(
                 DSTabItem("Today", Icons.Default.Today),
-                DSTabItem("Students", Icons.Default.Groups),
-                DSTabItem("Fees", Icons.Default.Payments),
-                DSTabItem("Classes", Icons.Default.School),
+                DSTabItem("People", Icons.Default.Groups),
+                DSTabItem("Payments", Icons.Default.Payments),
+                DSTabItem("Library", Icons.Default.School),
                 DSTabItem("More", Icons.Default.CalendarToday),
             ),
             selectedIndex = tab,

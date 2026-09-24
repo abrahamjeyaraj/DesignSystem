@@ -1029,13 +1029,13 @@ export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: D
                     <DSChip tone="error">Overdue</DSChip>
                     <DSBadge tone="info">Info</DSBadge>
                   </View>
-                  <DSListRow leading={<DSAvatar initials="TS" />} title="Student Name" subtitle="Class 10 · Maths" chevron="›" onPress={() => {}} />
+                  <DSListRow leading={<DSAvatar initials="TS" />} title="Alex Morgan" subtitle="Group A · Design" chevron="›" onPress={() => {}} />
                   <DSStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
                   <DSSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="All" />
                   <DSField label="Field Label" placeholder="Enter value..." />
-                  <DSSearchField placeholder="Search students..." icon="🔍" />
+                  <DSSearchField placeholder="Search items..." icon="🔍" />
                   <DSSheetHandle />
-                  <DSTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
+                  <DSTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'People', value: 'people', icon: '👥' }]} selected="today" />
                   <DSEmptyState title="Empty State" message="No records found in this section." action={<DSButton size="sm">Create record</DSButton>} />
                   <DSInput placeholder="Standard Input..." />
                   <View style={{flexDirection:'row',gap:8}}><DSToggle value={true} onValueChange={() => {}} accessibilityLabel="Toggle on" /><DSToggle value={false} onValueChange={() => {}} accessibilityLabel="Toggle off" /></View>

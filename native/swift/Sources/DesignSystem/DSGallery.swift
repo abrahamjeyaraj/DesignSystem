@@ -34,18 +34,18 @@ public struct DSGallery: View {
                     DSButton("Remind", variant: .secondary, leadingSystemImage: "bell") {}
                     DSButton("View details", variant: .ghost) {}
                     DSButton("Delete", variant: .destructive, leadingSystemImage: "trash") {}
-                    HStack { DSIconButton(systemImage: "ellipsis", accessibilityLabel: "More actions") {}; DSAvatar(initials: "AR", accessibilityLabel: "Ananya Raghavan"); DSChip("Class 10"); DSChip("Active", tone: .accent); DSChip("Paid", tone: .success); DSChip("Due", tone: .warning); DSChip("Overdue", tone: .error) }
+                    HStack { DSIconButton(systemImage: "ellipsis", accessibilityLabel: "More actions") {}; DSAvatar(initials: "AR", accessibilityLabel: "Alex Morgan"); DSChip("Group A"); DSChip("Active", tone: .accent); DSChip("Paid", tone: .success); DSChip("Due", tone: .warning); DSChip("Overdue", tone: .error) }
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Typography")
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Title · Today").dsFont(.title)
                     Text("Headline · Classes today").dsFont(.headline)
-                    Text("Body · Ananya Raghavan").dsFont(.body)
-                    Text("Label · Class 10 · Maths").dsFont(.label)
+                    Text("Body · Alex Morgan").dsFont(.body)
+                    Text("Label · Group A · Design").dsFont(.label)
                     Text("Caption · Updated just now").dsFont(.caption)
                 }.foregroundStyle(Color(dsHex: colors.foreground)).padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("List row")
-                DSListRow(title: "Ananya Raghavan", subtitle: "Class 10 · Maths, Physics", showsChevron: true, action: {}) {
+                DSListRow(title: "Alex Morgan", subtitle: "Group A · Design, Research", showsChevron: true, action: {}) {
                     DSAvatar(initials: "AR")
                 } trailing: { DSChip("Due", tone: .warning) }
                 DSSectionHeader("Stat tile")
@@ -58,10 +58,10 @@ public struct DSGallery: View {
                 DSSectionHeader("Fields")
                 VStack(spacing: theme.mobileLayout.itemGap) {
                     DSField(label: "Amount") { TextField("Amount", text: $fieldText) }
-                    DSSearchField(text: $searchText, placeholder: "Search students")
+                    DSSearchField(text: $searchText, placeholder: "Search items")
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Navigation")
-                DSNavBar(title: "Student") {
+                DSNavBar(title: "Details") {
                     DSIconButton(systemImage: "chevron.left", accessibilityLabel: "Back") {}
                 } trailing: {
                     DSIconButton(systemImage: "ellipsis", accessibilityLabel: "More options") {}
@@ -70,22 +70,22 @@ public struct DSGallery: View {
                 DSSectionHeader("Card")
                 DSCard {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Student profile").dsFont(.headline)
+                        Text("Profile").dsFont(.headline)
                         Text("DSCard provides a themed surface, border, and card radius.").dsFont(.body)
                         DSChip("Active", tone: .success)
                     }
                 }.padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Tab bar")
                 DSTabBar(items: [
-                    DSTabItem("Today", systemImage: "sun.max"), DSTabItem("Students", systemImage: "person.2"),
-                    DSTabItem("Fees", systemImage: "indianrupeesign.circle"), DSTabItem("Classes", systemImage: "book.closed"),
+                    DSTabItem("Today", systemImage: "sun.max"), DSTabItem("People", systemImage: "person.2"),
+                    DSTabItem("Payments", systemImage: "indianrupeesign.circle"), DSTabItem("Library", systemImage: "book.closed"),
                     DSTabItem("More", systemImage: "ellipsis")
                 ], selection: $selectedTab).padding(.horizontal, theme.mobileLayout.gutter)
                 DSSectionHeader("Toggle · Progress · Ink card · Nudge")
                 HStack { DSToggle(isOn: .constant(true), accessibilityLabel: "Notifications on"); DSToggle(isOn: .constant(false), accessibilityLabel: "Notifications off") }
                 DSProgress(value: 0.72, label: "Recent tests", valueLabel: "72%", tone: .accent2).padding(.horizontal, theme.mobileLayout.gutter)
-                DSInkCard { VStack(alignment: .leading, spacing: 8) { Text("Next class").foregroundStyle(Color(dsHex: colors.onInkAccent)); Text("Class 10 · Evening"); Text("Physics · 8 students").foregroundStyle(Color(dsHex: colors.onInkMuted)) } }.padding(.horizontal, theme.mobileLayout.gutter)
-                DSNudge(title: "Fee reminders ready", subtitle: "3 families to remind", systemImage: "bell.badge", action: {})
+                DSInkCard { VStack(alignment: .leading, spacing: 8) { Text("Up next").foregroundStyle(Color(dsHex: colors.onInkAccent)); Text("Evening session"); Text("Workshop · 8 people").foregroundStyle(Color(dsHex: colors.onInkMuted)) } }.padding(.horizontal, theme.mobileLayout.gutter)
+                DSNudge(title: "Reminders ready", subtitle: "3 people to follow up", systemImage: "bell.badge", action: {})
                 DSSectionHeader("Empty state")
                 DSEmptyState(systemImage: "tray", title: "No payments due", message: "New payment reminders will appear here.") {
                     DSButton("Add payment", leadingSystemImage: "plus") {}

@@ -1227,7 +1227,7 @@ class _DSGalleryState extends State<DSGallery> {
       const Wrap(
         spacing: 8,
         children: [
-          DSChip(label: 'Class 10'),
+          DSChip(label: 'Group A'),
           DSChip(label: 'Active', tone: DSChipTone.accent),
           DSChip(label: 'Paid', tone: DSChipTone.success),
           DSChip(label: 'Due', tone: DSChipTone.warning),
@@ -1237,8 +1237,8 @@ class _DSGalleryState extends State<DSGallery> {
       const DSSectionHeader(title: 'Profile'),
       const DSCard(
         child: DSListRow(
-          title: 'Ananya Raghavan',
-          subtitle: 'Class 10 · Maths, Physics',
+          title: 'Alex Morgan',
+          subtitle: 'Group A · Design, Research',
           leading: DSAvatar(initials: 'AR'),
           trailing: DSChip(label: 'Paid', tone: DSChipTone.success),
         ),
@@ -1258,10 +1258,10 @@ class _DSGalleryState extends State<DSGallery> {
       ),
       const DSSectionHeader(title: 'Fields'),
       const DSField(label: 'Amount', initialValue: '₹12,000'),
-      const DSSearchField(hintText: 'Search students'),
+      const DSSearchField(hintText: 'Search items'),
       const DSSectionHeader(title: 'Navigation'),
       DSNavBar(
-        title: 'Student',
+        title: 'Details',
         leading: DSIconButton(
           icon: Icons.arrow_back,
           semanticLabel: 'Back',
@@ -1277,8 +1277,8 @@ class _DSGalleryState extends State<DSGallery> {
       DSTabBar(
         items: const [
           DSTabItem(label: 'Today', icon: Icons.today),
-          DSTabItem(label: 'Students', icon: Icons.people),
-          DSTabItem(label: 'Fees', icon: Icons.payments),
+          DSTabItem(label: 'People', icon: Icons.people),
+          DSTabItem(label: 'Payments', icon: Icons.payments),
           DSTabItem(label: 'Classes', icon: Icons.class_),
           DSTabItem(label: 'More', icon: Icons.more_horiz),
         ],
@@ -1307,15 +1307,15 @@ class _DSGalleryState extends State<DSGallery> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Next class'),
-            Text('Class 10 · Evening'),
-            Text('Physics · 8 students'),
+            Text('Up next'),
+            Text('Evening session'),
+            Text('Workshop · 8 people'),
           ],
         ),
       ),
       DSNudge(
-        title: 'Fee reminders ready',
-        subtitle: '3 families to remind',
+        title: 'Reminders ready',
+        subtitle: '3 people to follow up',
         icon: Icons.notifications_active_outlined,
         onTap: () {},
       ),
