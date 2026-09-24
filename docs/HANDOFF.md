@@ -31,3 +31,10 @@
 - Native type names must stay Abe-prefixed (SwiftUI/Material3 ColorScheme clash).
 - Android built with TuitionManager's gradle wrapper; AGP 8.9.2, Kotlin 2.1.20, compose BOM 2025.04.01.
 - context-mode hook blocks some build commands in Bash; use ctx_execute for gradle/swift builds.
+
+## Phase 1-3 dispatch (2026-09-23, base main @ b595ce7, brief docs/sdk-brief.md)
+- iOS SwiftUI     thr_mby8hpkpks  codex gpt-6-luna                 native/swift/**, Package.swift
+- Android Compose thr_w4u8grdxdt  acp-cursor composer-2.5          native/android/**, .github/workflows/publish-android.yml
+- React Native    thr_qv55s5nur3  pi antigravity/gemini-3.8-flash  packages/ui-native/**, package.json publish fields, publish-npm.yml
+- Flutter         thr_mrd47fkp89  codex gpt-6-luna                 native/flutter/**
+Parent integrates: inspect each branch diff, rerun checks, merge to main, tag v0.2.0, push (publish runs on tag).
