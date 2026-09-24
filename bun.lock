@@ -11,11 +11,11 @@
     },
     "packages/tokens": {
       "name": "@abrahamjeyaraj/tokens",
-      "version": "0.2.1",
+      "version": "0.1.0",
     },
     "packages/ui-native": {
       "name": "@abrahamjeyaraj/ui-native",
-      "version": "0.2.1",
+      "version": "0.1.0",
       "dependencies": {
         "@abrahamjeyaraj/tokens": "workspace:*",
       },
@@ -34,7 +34,7 @@
     },
     "packages/ui-web": {
       "name": "@abrahamjeyaraj/ui-web",
-      "version": "0.2.1",
+      "version": "0.1.0",
       "dependencies": {
         "@abrahamjeyaraj/tokens": "workspace:*",
         "@radix-ui/react-alert-dialog": "^1.1.23",

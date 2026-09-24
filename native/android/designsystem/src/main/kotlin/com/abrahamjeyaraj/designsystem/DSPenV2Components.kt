@@ -59,11 +59,21 @@ class DSSnackbarHostState {
     var currentMessage by mutableStateOf<String?>(null)
     var actionLabel by mutableStateOf<String?>(null)
     var onAction: (() -> Unit)? = null
+    /** Increments on every [show] so the host restarts auto-dismiss even for the same message. */
+    var showGeneration by mutableIntStateOf(0)
+    var durationMs by mutableStateOf(5000L)
 
-    fun show(message: String, actionLabel: String? = null, onAction: (() -> Unit)? = null, durationMs: Long = 5000) {
+    fun show(
+        message: String,
+        actionLabel: String? = null,
+        onAction: (() -> Unit)? = null,
+        durationMs: Long = 5000,
+    ) {
         currentMessage = message
         this.actionLabel = actionLabel
         this.onAction = onAction
+        this.durationMs = durationMs
+        showGeneration++
     }
 
     fun dismiss() {
@@ -77,13 +87,16 @@ class DSSnackbarHostState {
 fun DSSnackbarHost(
     hostState: DSSnackbarHostState,
     modifier: Modifier = Modifier,
-    durationMs: Long = 5000,
 ) {
     val message = hostState.currentMessage
-    LaunchedEffect(message) {
-        if (message != null) {
+    val generation = hostState.showGeneration
+    val durationMs = hostState.durationMs
+    LaunchedEffect(generation) {
+        if (hostState.currentMessage != null) {
             delay(durationMs)
-            hostState.dismiss()
+            if (hostState.showGeneration == generation) {
+                hostState.dismiss()
+            }
         }
     }
     AnimatedVisibility(

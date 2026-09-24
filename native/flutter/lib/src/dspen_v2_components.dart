@@ -8,6 +8,10 @@ class DSPenV2Metrics {
   static const quickActionRadius = 14.0;
   static const timelineGutterWidth = 44.0;
   static const markToggleSize = 48.0;
+  static const markIconSize = 22.0;
+  static const quickActionIconSize = 20.0;
+  static const activityGlyphSize = 17.0;
+  static const activityAvatarRadius = 18.0;
 }
 
 class DSSnackbarBar extends StatelessWidget {
@@ -362,7 +366,7 @@ class DSMarkToggle extends StatelessWidget {
             child: Icon(
               marked ? Icons.check : Icons.close,
               color: Color(marked ? c.success : c.destructiveForeground),
-              size: 22,
+              size: DSPenV2Metrics.markIconSize,
             ),
           ),
         ),
@@ -563,7 +567,7 @@ class DSQuickActionTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: Color(c.primary), size: 20),
+                Icon(icon, color: Color(c.primary), size: DSPenV2Metrics.quickActionIconSize),
                 const SizedBox(height: 6),
                 DSText(title, style: DSTextStyle.caption),
               ],
@@ -605,9 +609,9 @@ class DSActivityRow extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 18,
+                radius: DSPenV2Metrics.activityAvatarRadius,
                 backgroundColor: Color(c.successLight),
-                child: Icon(icon, size: 17, color: Color(c.primary)),
+                child: Icon(icon, size: DSPenV2Metrics.activityGlyphSize, color: Color(c.primary)),
               ),
               const SizedBox(width: 12),
               Expanded(
