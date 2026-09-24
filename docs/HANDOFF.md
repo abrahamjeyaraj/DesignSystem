@@ -38,3 +38,12 @@
 - React Native    thr_qv55s5nur3  pi antigravity/gemini-3.8-flash  packages/ui-native/**, package.json publish fields, publish-npm.yml
 - Flutter         thr_mrd47fkp89  codex gpt-6-luna                 native/flutter/**
 Parent integrates: inspect each branch diff, rerun checks, merge to main, tag v0.2.0, push (publish runs on tag).
+
+## Rename ruling (user, 2026-09-23): no "Abe" anywhere; generic for future public release
+Do ONE rename pass after RN + Flutter branches merge, before tagging v0.2.0:
+root pkg abe-design-system -> design-system; Swift module/product AbeDesign -> DesignSystem;
+type prefix Abe* -> DS* (DSThemeTokens, DSTokens, DSButton, ...); .abeTheme/.abeFont/Color(abeHex:) ->
+.dsTheme/.dsFont/Color(dsHex:); Android :abe-design -> :designsystem, com.abe.design ->
+com.abrahamjeyaraj.designsystem, Maven com.abrahamjeyaraj:designsystem; Flutter abe_design ->
+design_system; RN AbeThemeProvider/useAbeTheme -> DSThemeProvider/useDSTheme. npm names unchanged.
+Merged so far: Android (56b5058), iOS (22a63e1).
