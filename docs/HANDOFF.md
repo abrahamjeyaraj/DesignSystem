@@ -77,3 +77,10 @@ Merged so far: Android (56b5058), iOS (22a63e1).
   new DSChrome.swift) left in worktree ~/.bb/.../thr_3ivjvzmyca-1/TuitionManager on branch
   bb/impl-tuitionmanager-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
 - Android migration is merged into TuitionManager local main (5c4a358), not pushed.
+
+## Released v0.2.2 (2026-09-23)
+- DSToggle, DSProgress, DSInkCard, DSNudge on web, React Native, Swift, Android and Flutter (Pen
+  TuitionManager native frames). New shared roles: surface-card, surface-sand, accent-2, ink-900,
+  on-ink, on-ink-muted, on-ink-accent, warn-bg, alert-bg, with a contrast test (on-ink 4.5:1,
+  on-ink-muted 3:1 against ink-900) for every theme and mode.
+- Owner lifted the screen-fidelity pause: TuitionManager iOS and Android are being rebuilt to Pen.
