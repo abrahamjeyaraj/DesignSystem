@@ -233,4 +233,8 @@ test('AbeGallery renders all 3 themes and honours supportsDark', () => {
   const tuitionOnly = renderToString(<AbeGallery theme="tuition" />);
   expect(tuitionOnly).toContain('tuition (light)');
   expect(tuitionOnly).not.toContain('church');
+
+  const tuitionDarkRequested = renderToString(<AbeGallery theme="tuition" mode="dark" />);
+  expect(tuitionDarkRequested).toContain('tuition (light)');
+  expect(tuitionDarkRequested).not.toContain('tuition (dark)');
 });

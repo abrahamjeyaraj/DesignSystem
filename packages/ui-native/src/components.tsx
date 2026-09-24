@@ -463,6 +463,7 @@ export function AbeSegmented({ items, selected, onChange, onSelect, style }: Abe
               {
                 flex: 1,
                 minHeight: Math.max(36, t.mobileLayout.touchTarget),
+                minWidth: t.mobileLayout.touchTarget,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 999,
@@ -720,7 +721,7 @@ export function AbeSectionHeader({ title, action, actionTitle, onAction, style }
         <Pressable
           accessibilityRole="button"
           onPress={onAction}
-          style={{ minHeight: t.mobileLayout.touchTarget, justifyContent: 'center' }}
+          style={{ minHeight: t.mobileLayout.touchTarget, minWidth: t.mobileLayout.touchTarget, justifyContent: 'center', alignItems: 'center' }}
         >
           {typeof act === 'string' ? (
             <AbeText variant="label" style={{ color: t.colors.action, fontWeight: t.weight(600) }}>
@@ -796,6 +797,7 @@ export function AbeTabBar({
             style={{
               flex: 1,
               minHeight: t.mobileLayout.touchTarget,
+              minWidth: t.mobileLayout.touchTarget,
               alignItems: 'center',
               justifyContent: 'center',
               gap: 3,
@@ -954,8 +956,11 @@ export function AbeGallery({ theme: selectedTheme, mode: selectedMode, style }: 
     <View style={style}>
       {themesToRender.map((themeName) => {
         const themeTokens = tokens.themes[themeName];
-        const modesToRender: readonly ColorMode[] = selectedMode
-          ? [selectedMode]
+        const resolvedSelectedMode: ColorMode | undefined = selectedMode
+          ? (themeTokens.supportsDark ? selectedMode : 'light')
+          : undefined;
+        const modesToRender: readonly ColorMode[] = resolvedSelectedMode
+          ? [resolvedSelectedMode]
           : themeTokens.supportsDark
             ? (['light', 'dark'] as const)
             : (['light'] as const);
@@ -1035,6 +1040,7 @@ export type TabBarProps = AbeTabBarProps;
 export type CardProps = ViewProps;
 export type EmptyStateProps = AbeEmptyStateProps;
 export type BadgeProps = AbeBadgeProps;
+export type InputProps = TextInputProps;
 export type GalleryProps = AbeGalleryProps;
 
 // Backward-compatible component aliases
