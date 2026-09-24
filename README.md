@@ -10,9 +10,9 @@ tokens/base.json            role contract + default scales (spacing, radius, typ
 tokens/themes/<app>.json    bible | church | tuition: palette, role colours, fonts, sizes, radii
         │  bun run tokens  (packages/tokens/scripts/build.ts)
         ▼
-packages/tokens     @abe/tokens     Tailwind v4 CSS per theme + typed TS object
-packages/ui-web     @abe/ui-web     React + Radix + Tailwind components (web and mobile web)
-packages/ui-native  @abe/ui-native  React Native / Expo / react-native-web primitives
+packages/tokens     @abrahamjeyaraj/tokens     Tailwind v4 CSS per theme + typed TS object
+packages/ui-web     @abrahamjeyaraj/ui-web     React + Radix + Tailwind components (web and mobile web)
+packages/ui-native  @abrahamjeyaraj/ui-native  React Native / Expo / react-native-web primitives
 native/swift        AbeDesign       SwiftPM: tokens + SwiftUI environment, Color(abeHex:), button style
 native/android      :abe-design     Android library: tokens + Compose AbeTheme (Material3 bridge)
 native/flutter      abe_design      Dart package: tokens + ThemeData + AbeTheme extension
@@ -22,18 +22,18 @@ Generated files are committed, so Xcode, Gradle and pub consumers never need Bun
 
 ## Use it
 
-**Next.js (Tailwind v4)**: add `"@abe/ui-web": "file:../../../DesignSystem/packages/ui-web"` and
-`"@abe/tokens": "file:../../../DesignSystem/packages/tokens"`, set `transpilePackages: ["@abe/ui-web", "@abe/tokens"]`, then:
+**Next.js (Tailwind v4)**: add `"@abrahamjeyaraj/ui-web": "file:../../../DesignSystem/packages/ui-web"` and
+`"@abrahamjeyaraj/tokens": "file:../../../DesignSystem/packages/tokens"`, set `transpilePackages: ["@abrahamjeyaraj/ui-web", "@abrahamjeyaraj/tokens"]`, then:
 
 ```css
 @import "tailwindcss";
-@import "@abe/tokens/css/church.css";   /* your app's theme */
-@import "@abe/tokens/base.css";         /* optional body/heading base layer */
-@import "@abe/ui-web/styles.css";       /* lets Tailwind see the component classes */
+@import "@abrahamjeyaraj/tokens/css/church.css";   /* your app's theme */
+@import "@abrahamjeyaraj/tokens/base.css";         /* optional body/heading base layer */
+@import "@abrahamjeyaraj/ui-web/styles.css";       /* lets Tailwind see the component classes */
 ```
 
 ```tsx
-import { Button, Card, Input } from "@abe/ui-web";
+import { Button, Card, Input } from "@abrahamjeyaraj/ui-web";
 ```
 
 Load the theme's fonts with `next/font` using the CSS variable named in the theme JSON (`webVar`),

@@ -7,6 +7,20 @@ class AbeShadowLayer {
 }
 
 /// Colours are 0xAARRGGBB, ready for dart:ui Color(int).
+class AbeTextRole {
+  const AbeTextRole({
+    required this.family,
+    required this.size,
+    required this.lineHeight,
+    required this.weight,
+  });
+
+  final String family;
+  final double size;
+  final double lineHeight;
+  final int weight;
+}
+
 class AbeColorScheme {
   const AbeColorScheme({
     required this.background,
@@ -209,6 +223,44 @@ class AbeLabelStyle {
   final int weight;
 }
 
+class AbeMobileType {
+  const AbeMobileType({
+    required this.title,
+    required this.headline,
+    required this.body,
+    required this.label,
+    required this.caption,
+  });
+
+  final AbeTextRole title;
+  final AbeTextRole headline;
+  final AbeTextRole body;
+  final AbeTextRole label;
+  final AbeTextRole caption;
+}
+
+class AbeMobileLayout {
+  const AbeMobileLayout({
+    required this.gutter,
+    required this.sectionGap,
+    required this.itemGap,
+    required this.touchTarget,
+    required this.controlHeight,
+    required this.fieldHeight,
+    required this.cardRadius,
+    required this.sheetRadius,
+  });
+
+  final double gutter;
+  final double sectionGap;
+  final double itemGap;
+  final double touchTarget;
+  final double controlHeight;
+  final double fieldHeight;
+  final double cardRadius;
+  final double sheetRadius;
+}
+
 class AbeThemeTokens {
   const AbeThemeTokens({
     required this.name,
@@ -223,6 +275,9 @@ class AbeThemeTokens {
     required this.radius,
     required this.shadow,
     required this.label,
+    required this.mobileType,
+    required this.mobileLayout,
+    required this.supportsDark,
   });
 
   final String name;
@@ -239,6 +294,11 @@ class AbeThemeTokens {
   final AbeRadii radius;
   final AbeShadows shadow;
   final AbeLabelStyle label;
+  final AbeMobileType mobileType;
+  final AbeMobileLayout mobileLayout;
+
+  /// False when the app is light-only by design; adapters then ignore the system dark setting.
+  final bool supportsDark;
 
   AbeColorScheme colors({required bool dark}) => dark ? this.dark : light;
 }
@@ -381,6 +441,24 @@ abstract final class AbeTokens {
       size: 13.0,
       weight: 500,
     ),
+    mobileType: AbeMobileType(
+      title: AbeTextRole(family: 'Playfair Display', size: 28.0, lineHeight: 34.0, weight: 700),
+      headline: AbeTextRole(family: 'Playfair Display', size: 20.0, lineHeight: 26.0, weight: 600),
+      body: AbeTextRole(family: 'Geist', size: 16.0, lineHeight: 24.0, weight: 400),
+      label: AbeTextRole(family: 'IBM Plex Mono', size: 14.0, lineHeight: 20.0, weight: 600),
+      caption: AbeTextRole(family: 'Geist', size: 12.0, lineHeight: 16.0, weight: 400),
+    ),
+    mobileLayout: AbeMobileLayout(
+      gutter: 16.0,
+      sectionGap: 24.0,
+      itemGap: 12.0,
+      touchTarget: 44.0,
+      controlHeight: 48.0,
+      fieldHeight: 48.0,
+      cardRadius: 12.0,
+      sheetRadius: 20.0,
+    ),
+    supportsDark: true,
   );
 
   static const church = AbeThemeTokens(
@@ -517,6 +595,24 @@ abstract final class AbeTokens {
       size: 14.0,
       weight: 600,
     ),
+    mobileType: AbeMobileType(
+      title: AbeTextRole(family: 'Newsreader', size: 28.0, lineHeight: 34.0, weight: 700),
+      headline: AbeTextRole(family: 'Newsreader', size: 20.0, lineHeight: 26.0, weight: 600),
+      body: AbeTextRole(family: 'Geist', size: 16.0, lineHeight: 24.0, weight: 400),
+      label: AbeTextRole(family: 'Geist', size: 14.0, lineHeight: 20.0, weight: 600),
+      caption: AbeTextRole(family: 'Geist', size: 12.0, lineHeight: 16.0, weight: 400),
+    ),
+    mobileLayout: AbeMobileLayout(
+      gutter: 16.0,
+      sectionGap: 24.0,
+      itemGap: 12.0,
+      touchTarget: 44.0,
+      controlHeight: 48.0,
+      fieldHeight: 48.0,
+      cardRadius: 12.0,
+      sheetRadius: 20.0,
+    ),
+    supportsDark: true,
   );
 
   static const tuition = AbeThemeTokens(
@@ -541,8 +637,8 @@ abstract final class AbeTokens {
       border: 0xFFDCD1C1,
       input: 0xFFDCD1C1,
       ring: 0xFFC4622D,
-      success: 0xFF2F6B45,
-      successLight: 0xFFE6F0E8,
+      success: 0xFF3F6B3A,
+      successLight: 0xFFE3ECDF,
       warning: 0xFFA8511F,
       warningLight: 0xFFF6E2D2,
       error: 0xFF8A2B2B,
@@ -578,8 +674,8 @@ abstract final class AbeTokens {
       border: 0xFF4A3A31,
       input: 0xFF4A3A31,
       ring: 0xFFEBC9A8,
-      success: 0xFF2F6B45,
-      successLight: 0xFFE6F0E8,
+      success: 0xFF3F6B3A,
+      successLight: 0xFFE3ECDF,
       warning: 0xFFA8511F,
       warningLight: 0xFFF6E2D2,
       error: 0xFF8A2B2B,
@@ -653,6 +749,24 @@ abstract final class AbeTokens {
       size: 15.0,
       weight: 800,
     ),
+    mobileType: AbeMobileType(
+      title: AbeTextRole(family: 'Fraunces', size: 28.0, lineHeight: 36.0, weight: 500),
+      headline: AbeTextRole(family: 'Fraunces', size: 20.0, lineHeight: 28.0, weight: 600),
+      body: AbeTextRole(family: 'Inter', size: 15.0, lineHeight: 24.0, weight: 400),
+      label: AbeTextRole(family: 'Inter', size: 13.0, lineHeight: 20.0, weight: 600),
+      caption: AbeTextRole(family: 'Inter', size: 11.0, lineHeight: 16.0, weight: 400),
+    ),
+    mobileLayout: AbeMobileLayout(
+      gutter: 20.0,
+      sectionGap: 28.0,
+      itemGap: 12.0,
+      touchTarget: 48.0,
+      controlHeight: 48.0,
+      fieldHeight: 52.0,
+      cardRadius: 16.0,
+      sheetRadius: 24.0,
+    ),
+    supportsDark: false,
   );
 
   static const Map<String, AbeThemeTokens> themes = {'bible': bible, 'church': church, 'tuition': tuition};

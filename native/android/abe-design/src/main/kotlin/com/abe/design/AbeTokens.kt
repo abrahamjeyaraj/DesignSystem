@@ -6,6 +6,13 @@ package com.abe.design
 data class AbeShadowLayer(val x: Float, val y: Float, val blur: Float, val spread: Float, val alpha: Float)
 
 /** Colours are 0xAARRGGBB, ready for androidx.compose.ui.graphics.Color(Long). */
+data class AbeTextRole(
+    val family: String,
+    val size: Double,
+    val lineHeight: Double,
+    val weight: Int,
+)
+
 data class AbeColorScheme(
     val background: Long,
     val foreground: Long,
@@ -107,6 +114,25 @@ data class AbeLabelStyle(
     val weight: Int,
 )
 
+data class AbeMobileType(
+    val title: AbeTextRole,
+    val headline: AbeTextRole,
+    val body: AbeTextRole,
+    val label: AbeTextRole,
+    val caption: AbeTextRole,
+)
+
+data class AbeMobileLayout(
+    val gutter: Double,
+    val sectionGap: Double,
+    val itemGap: Double,
+    val touchTarget: Double,
+    val controlHeight: Double,
+    val fieldHeight: Double,
+    val cardRadius: Double,
+    val sheetRadius: Double,
+)
+
 data class AbeThemeTokens(
     val name: String,
     val light: AbeColorScheme,
@@ -121,6 +147,10 @@ data class AbeThemeTokens(
     val radius: AbeRadii,
     val shadow: AbeShadows,
     val label: AbeLabelStyle,
+    val mobileType: AbeMobileType,
+    val mobileLayout: AbeMobileLayout,
+    /** False when the app is light-only by design; adapters then ignore the system dark setting. */
+    val supportsDark: Boolean,
 ) {
     fun colors(dark: Boolean): AbeColorScheme = if (dark) this.dark else light
 }
@@ -263,6 +293,24 @@ object AbeTokens {
             size = 13.0,
             weight = 500,
         ),
+        mobileType = AbeMobileType(
+            title = AbeTextRole("Playfair Display", 28.0, 34.0, 700),
+            headline = AbeTextRole("Playfair Display", 20.0, 26.0, 600),
+            body = AbeTextRole("Geist", 16.0, 24.0, 400),
+            label = AbeTextRole("IBM Plex Mono", 14.0, 20.0, 600),
+            caption = AbeTextRole("Geist", 12.0, 16.0, 400),
+        ),
+        mobileLayout = AbeMobileLayout(
+            gutter = 16.0,
+            sectionGap = 24.0,
+            itemGap = 12.0,
+            touchTarget = 44.0,
+            controlHeight = 48.0,
+            fieldHeight = 48.0,
+            cardRadius = 12.0,
+            sheetRadius = 20.0,
+        ),
+        supportsDark = true,
     )
 
     val church = AbeThemeTokens(
@@ -399,6 +447,24 @@ object AbeTokens {
             size = 14.0,
             weight = 600,
         ),
+        mobileType = AbeMobileType(
+            title = AbeTextRole("Newsreader", 28.0, 34.0, 700),
+            headline = AbeTextRole("Newsreader", 20.0, 26.0, 600),
+            body = AbeTextRole("Geist", 16.0, 24.0, 400),
+            label = AbeTextRole("Geist", 14.0, 20.0, 600),
+            caption = AbeTextRole("Geist", 12.0, 16.0, 400),
+        ),
+        mobileLayout = AbeMobileLayout(
+            gutter = 16.0,
+            sectionGap = 24.0,
+            itemGap = 12.0,
+            touchTarget = 44.0,
+            controlHeight = 48.0,
+            fieldHeight = 48.0,
+            cardRadius = 12.0,
+            sheetRadius = 20.0,
+        ),
+        supportsDark = true,
     )
 
     val tuition = AbeThemeTokens(
@@ -423,8 +489,8 @@ object AbeTokens {
             border = 0xFFDCD1C1,
             input = 0xFFDCD1C1,
             ring = 0xFFC4622D,
-            success = 0xFF2F6B45,
-            successLight = 0xFFE6F0E8,
+            success = 0xFF3F6B3A,
+            successLight = 0xFFE3ECDF,
             warning = 0xFFA8511F,
             warningLight = 0xFFF6E2D2,
             error = 0xFF8A2B2B,
@@ -460,8 +526,8 @@ object AbeTokens {
             border = 0xFF4A3A31,
             input = 0xFF4A3A31,
             ring = 0xFFEBC9A8,
-            success = 0xFF2F6B45,
-            successLight = 0xFFE6F0E8,
+            success = 0xFF3F6B3A,
+            successLight = 0xFFE3ECDF,
             warning = 0xFFA8511F,
             warningLight = 0xFFF6E2D2,
             error = 0xFF8A2B2B,
@@ -535,6 +601,24 @@ object AbeTokens {
             size = 15.0,
             weight = 800,
         ),
+        mobileType = AbeMobileType(
+            title = AbeTextRole("Fraunces", 28.0, 36.0, 500),
+            headline = AbeTextRole("Fraunces", 20.0, 28.0, 600),
+            body = AbeTextRole("Inter", 15.0, 24.0, 400),
+            label = AbeTextRole("Inter", 13.0, 20.0, 600),
+            caption = AbeTextRole("Inter", 11.0, 16.0, 400),
+        ),
+        mobileLayout = AbeMobileLayout(
+            gutter = 20.0,
+            sectionGap = 28.0,
+            itemGap = 12.0,
+            touchTarget = 48.0,
+            controlHeight = 48.0,
+            fieldHeight = 52.0,
+            cardRadius = 16.0,
+            sheetRadius = 24.0,
+        ),
+        supportsDark = false,
     )
 
     val themes: Map<String, AbeThemeTokens> = mapOf("bible" to bible, "church" to church, "tuition" to tuition)

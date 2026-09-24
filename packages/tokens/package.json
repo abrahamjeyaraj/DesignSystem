@@ -1,5 +1,5 @@
 {
-  "name": "@abe/tokens",
+  "name": "@abrahamjeyaraj/tokens",
   "version": "0.1.0",
   "description": "Design tokens and per-app themes (Tailwind v4 CSS, TypeScript). Generated from tokens/*.json.",
   "private": true,

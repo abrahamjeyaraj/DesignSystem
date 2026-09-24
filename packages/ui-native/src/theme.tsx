@@ -1,4 +1,4 @@
-import { type ColorMode, type ColorScheme, type ThemeName, tokens } from '@abe/tokens';
+import { type ColorMode, type ColorScheme, type ThemeName, tokens } from '@abrahamjeyaraj/tokens';
 import { createContext, type ReactNode, useContext, useMemo } from 'react';
 import { type TextStyle, useColorScheme, type ViewStyle } from 'react-native';
 

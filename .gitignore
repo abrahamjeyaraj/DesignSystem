@@ -11,3 +11,5 @@ native/android/.gradle/
 native/android/.kotlin/
 native/flutter/build/
 native/flutter/.flutter-plugins*
+.build/
+.swiftpm/

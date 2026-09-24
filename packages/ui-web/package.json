@@ -1,7 +1,7 @@
 {
-  "name": "@abe/ui-web",
+  "name": "@abrahamjeyaraj/ui-web",
   "version": "0.1.0",
-  "description": "React + Radix + Tailwind v4 components (web and mobile web). Styling comes entirely from the active @abe/tokens theme.",
+  "description": "React + Radix + Tailwind v4 components (web and mobile web). Styling comes entirely from the active @abrahamjeyaraj/tokens theme.",
   "private": true,
   "type": "module",
   "sideEffects": ["*.css"],
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@abe/tokens": "workspace:*",
+    "@abrahamjeyaraj/tokens": "workspace:*",
     "@radix-ui/react-alert-dialog": "^1.1.23",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",

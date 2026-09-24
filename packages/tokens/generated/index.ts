@@ -429,7 +429,52 @@ export const tokens = {
         "tracking": 1.5,
         "size": 13,
         "weight": 500
-      }
+      },
+      "mobile": {
+        "type": {
+          "title": {
+            "font": "heading",
+            "size": 28,
+            "lineHeight": 34,
+            "weight": 700
+          },
+          "headline": {
+            "font": "heading",
+            "size": 20,
+            "lineHeight": 26,
+            "weight": 600
+          },
+          "body": {
+            "font": "body",
+            "size": 16,
+            "lineHeight": 24,
+            "weight": 400
+          },
+          "label": {
+            "font": "label",
+            "size": 14,
+            "lineHeight": 20,
+            "weight": 600
+          },
+          "caption": {
+            "font": "body",
+            "size": 12,
+            "lineHeight": 16,
+            "weight": 400
+          }
+        },
+        "layout": {
+          "gutter": 16,
+          "sectionGap": 24,
+          "itemGap": 12,
+          "touchTarget": 44,
+          "controlHeight": 48,
+          "fieldHeight": 48,
+          "cardRadius": 12,
+          "sheetRadius": 20
+        }
+      },
+      "supportsDark": true
     },
     "church": {
       "light": {
@@ -764,7 +809,52 @@ export const tokens = {
         "tracking": 0,
         "size": 14,
         "weight": 600
-      }
+      },
+      "mobile": {
+        "type": {
+          "title": {
+            "font": "heading",
+            "size": 28,
+            "lineHeight": 34,
+            "weight": 700
+          },
+          "headline": {
+            "font": "heading",
+            "size": 20,
+            "lineHeight": 26,
+            "weight": 600
+          },
+          "body": {
+            "font": "body",
+            "size": 16,
+            "lineHeight": 24,
+            "weight": 400
+          },
+          "label": {
+            "font": "label",
+            "size": 14,
+            "lineHeight": 20,
+            "weight": 600
+          },
+          "caption": {
+            "font": "body",
+            "size": 12,
+            "lineHeight": 16,
+            "weight": 400
+          }
+        },
+        "layout": {
+          "gutter": 16,
+          "sectionGap": 24,
+          "itemGap": 12,
+          "touchTarget": 44,
+          "controlHeight": 48,
+          "fieldHeight": 48,
+          "cardRadius": 12,
+          "sheetRadius": 20
+        }
+      },
+      "supportsDark": true
     },
     "tuition": {
       "light": {
@@ -787,8 +877,8 @@ export const tokens = {
         "border": "#dcd1c1",
         "input": "#dcd1c1",
         "ring": "#c4622d",
-        "success": "#2f6b45",
-        "success-light": "#e6f0e8",
+        "success": "#3f6b3a",
+        "success-light": "#e3ecdf",
         "warning": "#a8511f",
         "warning-light": "#f6e2d2",
         "error": "#8a2b2b",
@@ -824,8 +914,8 @@ export const tokens = {
         "border": "#4a3a31",
         "input": "#4a3a31",
         "ring": "#ebc9a8",
-        "success": "#2f6b45",
-        "success-light": "#e6f0e8",
+        "success": "#3f6b3a",
+        "success-light": "#e3ecdf",
         "warning": "#a8511f",
         "warning-light": "#f6e2d2",
         "error": "#8a2b2b",
@@ -1070,7 +1160,52 @@ export const tokens = {
         "tracking": 0,
         "size": 15,
         "weight": 800
-      }
+      },
+      "mobile": {
+        "type": {
+          "title": {
+            "font": "heading",
+            "size": 28,
+            "lineHeight": 36,
+            "weight": 500
+          },
+          "headline": {
+            "font": "heading",
+            "size": 20,
+            "lineHeight": 28,
+            "weight": 600
+          },
+          "body": {
+            "font": "body",
+            "size": 15,
+            "lineHeight": 24,
+            "weight": 400
+          },
+          "label": {
+            "font": "label",
+            "size": 13,
+            "lineHeight": 20,
+            "weight": 600
+          },
+          "caption": {
+            "font": "body",
+            "size": 11,
+            "lineHeight": 16,
+            "weight": 400
+          }
+        },
+        "layout": {
+          "gutter": 20,
+          "sectionGap": 28,
+          "itemGap": 12,
+          "touchTarget": 48,
+          "controlHeight": 48,
+          "fieldHeight": 52,
+          "cardRadius": 16,
+          "sheetRadius": 24
+        }
+      },
+      "supportsDark": false
     }
   }
 } as const;

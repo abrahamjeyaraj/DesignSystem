@@ -1,7 +1,7 @@
 /* Optional base layer shared by every theme. Import after a theme file:
      @import "tailwindcss";
-     @import "@abe/tokens/css/church.css";
-     @import "@abe/tokens/base.css";
+     @import "@abrahamjeyaraj/tokens/css/church.css";
+     @import "@abrahamjeyaraj/tokens/base.css";
 */
 
 @layer base {

@@ -32,7 +32,13 @@ interface Styled {
   radius: Record<string, number>;
   shadow: Record<string, ShadowLayer[]>;
   label: Label;
+  mobile: Mobile;
+  supportsDark: boolean;
 }
+
+/** Native / mobile typography and layout, in pt (SwiftUI) or dp/sp (Compose, Flutter, RN). */
+type TextRole = { font: string; size: number; lineHeight: number; weight: number };
+type Mobile = { type: Record<string, TextRole>; layout: Record<string, number> };
 
 export interface Base extends Styled {
   palette: Palette;
@@ -45,7 +51,8 @@ export interface Base extends Styled {
   minTouchTarget: number;
 }
 
-interface ThemeSource extends Partial<Styled> {
+interface ThemeSource extends Partial<Omit<Styled, "mobile">> {
+  mobile?: { type?: Record<string, Partial<TextRole>>; layout?: Record<string, number> };
   name: string;
   palette?: Record<string, Scale>;
   scales?: Record<string, string>;
@@ -124,6 +131,17 @@ export function resolveTheme(src: ThemeSource, base: Base): Theme {
     }
     (styled as unknown as Record<Overridable, unknown>)[group] = { ...base[group], ...override };
   }
+  const m = src.mobile ?? {};
+  for (const k of Object.keys(m.type ?? {})) if (!(k in base.mobile.type)) throw new Error(`${n}.mobile.type.${k}: not a key in base.json`);
+  for (const k of Object.keys(m.layout ?? {})) if (!(k in base.mobile.layout)) throw new Error(`${n}.mobile.layout.${k}: not a key in base.json`);
+  styled.mobile = {
+    type: Object.fromEntries(Object.entries(base.mobile.type).map(([k, v]) => [k, { ...v, ...(m.type?.[k] ?? {}) }])),
+    layout: { ...base.mobile.layout, ...m.layout },
+  };
+  for (const [k, r] of Object.entries(styled.mobile.type)) {
+    if (!(r.font in styled.fontFamily)) throw new Error(`${n}.mobile.type.${k}.font: "${r.font}" is not a fontFamily key`);
+  }
+  styled.supportsDark = src.supportsDark ?? base.supportsDark;
 
   const scales = Object.fromEntries(
     Object.entries(src.scales ?? {}).map(([alias, p]) => [alias, pickScale(palette, p, `${n}.scales.${alias}`)]),
@@ -181,7 +199,7 @@ const hex6 = (hex: Hex) => hex.slice(1).toUpperCase();
 export function themeCss(base: Base, t: Theme): string {
   const out: string[] = [
     `/* ${HEADER} */`,
-    `/* Theme "${t.name}".  Use:  @import "tailwindcss";  @import "@abe/tokens/css/${t.name}.css"; */`,
+    `/* Theme "${t.name}".  Use:  @import "tailwindcss";  @import "@abrahamjeyaraj/tokens/css/${t.name}.css"; */`,
     "",
     "@custom-variant dark (&:where(.dark, .dark *));",
     "",
@@ -264,6 +282,8 @@ export function tokensJson(base: Base, themes: Theme[]) {
           radius: t.radius,
           shadow: t.shadow,
           label: t.label,
+          mobile: t.mobile,
+          supportsDark: t.supportsDark,
         },
       ]),
     ),
@@ -295,7 +315,7 @@ export default tokens;
 
 // ---------- native (Swift / Kotlin / Dart) ----------
 
-type Kind = "color" | "double" | "int" | "string" | "shadow" | "bool";
+type Kind = "color" | "double" | "int" | "string" | "shadow" | "bool" | "textRole";
 interface Field {
   name: string;
   kind: Kind;
@@ -326,6 +346,21 @@ const STRUCTS: StructDef[] = [
       { name: "weight", kind: "int", value: t.label.weight },
     ],
   },
+  {
+    type: "MobileType",
+    fields: (t) =>
+      fieldsOf(t.mobile.type, "textRole", (r) => ({ ...(r as TextRole), family: t.fontFamily[(r as TextRole).font].family })),
+  },
+  { type: "MobileLayout", fields: (t) => fieldsOf(t.mobile.layout, "double") },
+];
+
+type ResolvedRole = TextRole & { family: string };
+/** Struct shared by every MobileType field. */
+const TEXT_ROLE_FIELDS: Field[] = [
+  { name: "family", kind: "string", value: null },
+  { name: "size", kind: "double", value: null },
+  { name: "lineHeight", kind: "double", value: null },
+  { name: "weight", kind: "int", value: null },
 ];
 
 interface Lang {
@@ -339,11 +374,12 @@ interface Lang {
 const num = (v: number, forceDecimal: boolean) => (forceDecimal && Number.isInteger(v) ? `${v}.0` : `${v}`);
 
 const SWIFT: Lang = {
-  type: { color: "UInt32", double: "Double", int: "Int", string: "String", shadow: "[AbeShadowLayer]", bool: "Bool" },
+  type: { color: "UInt32", double: "Double", int: "Int", string: "String", shadow: "[AbeShadowLayer]", bool: "Bool", textRole: "AbeTextRole" },
   lit: (k, v) =>
     k === "color" ? `0x${hex6(v as Hex)}`
     : k === "string" ? `"${v}"`
     : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(x: ${l.x}, y: ${l.y}, blur: ${l.blur}, spread: ${l.spread}, alpha: ${l.alpha})`).join(", ")}]`
+    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole(family: "${r.family}", size: ${r.size}, lineHeight: ${r.lineHeight}, weight: ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) =>
     `public struct ${name}: Sendable, Equatable {\n${fields.map((f) => `    public let ${f.name}: ${SWIFT.type[f.kind]}`).join("\n")}\n}`,
@@ -352,12 +388,13 @@ const SWIFT: Lang = {
 };
 
 const KOTLIN: Lang = {
-  type: { color: "Long", double: "Double", int: "Int", string: "String", shadow: "List<AbeShadowLayer>", bool: "Boolean" },
+  type: { color: "Long", double: "Double", int: "Int", string: "String", shadow: "List<AbeShadowLayer>", bool: "Boolean", textRole: "AbeTextRole" },
   lit: (k, v) =>
     k === "color" ? `0xFF${hex6(v as Hex)}`
     : k === "string" ? `"${v}"`
     : k === "double" ? num(v as number, true)
     : k === "shadow" ? `listOf(${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(${l.x}f, ${l.y}f, ${l.blur}f, ${l.spread}f, ${l.alpha}f)`).join(", ")})`
+    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole("${r.family}", ${num(r.size, true)}, ${num(r.lineHeight, true)}, ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) => `data class ${name}(\n${fields.map((f) => `    val ${f.name}: ${KOTLIN.type[f.kind]},`).join("\n")}\n)`,
   construct: (name, args, ind) => `${name}(\n${args.map(([k, v]) => `${ind}    ${k} = ${v},`).join("\n")}\n${ind})`,
@@ -365,12 +402,13 @@ const KOTLIN: Lang = {
 };
 
 const DART: Lang = {
-  type: { color: "int", double: "double", int: "int", string: "String", shadow: "List<AbeShadowLayer>", bool: "bool" },
+  type: { color: "int", double: "double", int: "int", string: "String", shadow: "List<AbeShadowLayer>", bool: "bool", textRole: "AbeTextRole" },
   lit: (k, v) =>
     k === "color" ? `0xFF${hex6(v as Hex)}`
     : k === "string" ? `'${v}'`
     : k === "double" ? num(v as number, true)
     : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(${num(l.x, true)}, ${num(l.y, true)}, ${num(l.blur, true)}, ${num(l.spread, true)}, ${l.alpha})`).join(", ")}]`
+    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole(family: '${r.family}', size: ${num(r.size, true)}, lineHeight: ${num(r.lineHeight, true)}, weight: ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) =>
     `class Abe${name} {\n  const Abe${name}({\n${fields.map((f) => `    required this.${f.name},`).join("\n")}\n  });\n\n${fields
@@ -387,7 +425,7 @@ function themeArgs(lang: Lang, t: Theme, ind: string, prefix: string): [string, 
   const darkTheme = { ...t, light: t.dark };
   const keyOf: Record<string, string> = {
     FontFamilies: "fontFamily", FontSizes: "fontSize", FontWeights: "fontWeight", LineHeights: "lineHeight",
-    Radii: "radius", Shadows: "shadow", LabelStyle: "label",
+    Radii: "radius", Shadows: "shadow", LabelStyle: "label", MobileType: "mobileType", MobileLayout: "mobileLayout",
   };
   return [
     ["name", lang.lit("string", t.name)],
@@ -396,6 +434,7 @@ function themeArgs(lang: Lang, t: Theme, ind: string, prefix: string): [string, 
     ["extraLight", lang.extras(t.extraLight)],
     ["extraDark", lang.extras(t.extraDark)],
     ...rest.map((d) => [keyOf[d.type], build(d, t)] as [string, string]),
+    ["supportsDark", lang.lit("bool", t.supportsDark)],
   ];
 }
 
@@ -415,6 +454,10 @@ export function swift(base: Base, themes: Theme[]): string {
     public let radius: AbeRadii
     public let shadow: AbeShadows
     public let label: AbeLabelStyle
+    public let mobileType: AbeMobileType
+    public let mobileLayout: AbeMobileLayout
+    /// False when the app is light-only by design; adapters then ignore the system dark setting.
+    public let supportsDark: Bool
 
     public func colors(dark isDark: Bool) -> AbeColorScheme { isDark ? dark : light }
 }`;
@@ -428,7 +471,7 @@ public struct AbeShadowLayer: Sendable, Equatable {
 }
 
 /// Colours are 0xRRGGBB.
-${STRUCTS.map((s) => SWIFT.struct(`Abe${s.type}`, s.fields(sample))).join("\n\n")}
+${[SWIFT.struct("AbeTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => SWIFT.struct(`Abe${s.type}`, s.fields(sample)))].join("\n\n")}
 
 ${themeStruct}
 
@@ -460,7 +503,7 @@ package com.abe.design
 data class AbeShadowLayer(val x: Float, val y: Float, val blur: Float, val spread: Float, val alpha: Float)
 
 /** Colours are 0xAARRGGBB, ready for androidx.compose.ui.graphics.Color(Long). */
-${STRUCTS.map((s) => KOTLIN.struct(`Abe${s.type}`, s.fields(sample))).join("\n\n")}
+${[KOTLIN.struct("AbeTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => KOTLIN.struct(`Abe${s.type}`, s.fields(sample)))].join("\n\n")}
 
 data class AbeThemeTokens(
     val name: String,
@@ -476,6 +519,10 @@ data class AbeThemeTokens(
     val radius: AbeRadii,
     val shadow: AbeShadows,
     val label: AbeLabelStyle,
+    val mobileType: AbeMobileType,
+    val mobileLayout: AbeMobileLayout,
+    /** False when the app is light-only by design; adapters then ignore the system dark setting. */
+    val supportsDark: Boolean,
 ) {
     fun colors(dark: Boolean): AbeColorScheme = if (dark) this.dark else light
 }
@@ -509,7 +556,7 @@ class AbeShadowLayer {
 }
 
 /// Colours are 0xAARRGGBB, ready for dart:ui Color(int).
-${STRUCTS.map((s) => DART.struct(s.type, s.fields(sample))).join("\n\n")}
+${[DART.struct("TextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => DART.struct(s.type, s.fields(sample)))].join("\n\n")}
 
 class AbeThemeTokens {
   const AbeThemeTokens({
@@ -525,6 +572,9 @@ class AbeThemeTokens {
     required this.radius,
     required this.shadow,
     required this.label,
+    required this.mobileType,
+    required this.mobileLayout,
+    required this.supportsDark,
   });
 
   final String name;
@@ -541,6 +591,11 @@ class AbeThemeTokens {
   final AbeRadii radius;
   final AbeShadows shadow;
   final AbeLabelStyle label;
+  final AbeMobileType mobileType;
+  final AbeMobileLayout mobileLayout;
+
+  /// False when the app is light-only by design; adapters then ignore the system dark setting.
+  final bool supportsDark;
 
   AbeColorScheme colors({required bool dark}) => dark ? this.dark : light;
 }

@@ -6,14 +6,14 @@ const pkg = resolve(import.meta.dir, '..');
 
 /** Compiles the way a consumer app would: tailwindcss + one theme + this package. */
 function compile(theme: string): string {
-  // Inside the package so bare imports (tailwindcss, @abe/tokens) resolve from its node_modules.
+  // Inside the package so bare imports (tailwindcss, @abrahamjeyaraj/tokens) resolve from its node_modules.
   mkdirSync(join(pkg, '.tmp'), { recursive: true });
   const dir = mkdtempSync(join(pkg, '.tmp', 'css-'));
   const input = join(dir, 'in.css');
   const output = join(dir, 'out.css');
   writeFileSync(
     input,
-    `@import "tailwindcss";\n@import "@abe/tokens/css/${theme}.css";\n@import "${join(pkg, "styles.css")}";\n@source inline("dark:bg-ink");\n`,
+    `@import "tailwindcss";\n@import "@abrahamjeyaraj/tokens/css/${theme}.css";\n@import "${join(pkg, "styles.css")}";\n@source inline("dark:bg-ink");\n`,
   );
   const run = Bun.spawnSync(['bunx', '@tailwindcss/cli', '-i', input, '-o', output], { cwd: pkg });
   if (run.exitCode !== 0) throw new Error(run.stderr.toString());

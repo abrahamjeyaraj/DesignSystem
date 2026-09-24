@@ -15,6 +15,27 @@
   },
   "radius": { "control": 8, "button": 9999, "card": 12, "xl": 12 },
   "label": { "case": "none", "tracking": 0, "size": 15, "weight": 800 },
+  "mobile": {
+    "$source": "Pen Native Design System (m-* variables, M / components)",
+    "type": {
+      "title": { "size": 28, "lineHeight": 36, "weight": 500 },
+      "headline": { "size": 20, "lineHeight": 28, "weight": 600 },
+      "body": { "size": 15, "lineHeight": 24, "weight": 400 },
+      "label": { "size": 13, "lineHeight": 20, "weight": 600 },
+      "caption": { "size": 11, "lineHeight": 16, "weight": 400 }
+    },
+    "layout": {
+      "gutter": 20,
+      "sectionGap": 28,
+      "itemGap": 12,
+      "touchTarget": 48,
+      "controlHeight": 48,
+      "fieldHeight": 52,
+      "cardRadius": 16,
+      "sheetRadius": 24
+    }
+  },
+  "supportsDark": false,
   "shadow": {
     "card": [{ "x": 0, "y": 8, "blur": 24, "spread": 0, "alpha": 0.08 }]
   },
@@ -38,8 +59,8 @@
     "border": "{cocoa.300}",
     "input": "{cocoa.300}",
     "ring": "{ember.500}",
-    "success": "#2f6b45",
-    "success-light": "#e6f0e8",
+    "success": "#3f6b3a",
+    "success-light": "#e3ecdf",
     "warning": "{ember.600}",
     "warning-light": "{ember.100}",
     "error": "{oxblood.600}",

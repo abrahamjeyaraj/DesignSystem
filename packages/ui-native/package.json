@@ -1,7 +1,7 @@
 {
-  "name": "@abe/ui-native",
+  "name": "@abrahamjeyaraj/ui-native",
   "version": "0.1.0",
-  "description": "React Native / Expo / react-native-web primitives themed by @abe/tokens.",
+  "description": "React Native / Expo / react-native-web primitives themed by @abrahamjeyaraj/tokens.",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@abe/tokens": "workspace:*"
+    "@abrahamjeyaraj/tokens": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0",

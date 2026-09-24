@@ -93,6 +93,29 @@ describe("themes keep their own look", () => {
   });
 });
 
+describe("mobile layer", () => {
+  test("tuition native matches Pen Native Design System", () => {
+    const t = byName("tuition");
+    expect(t.mobile.type.title).toEqual({ font: "heading", size: 28, lineHeight: 36, weight: 500 });
+    expect(t.mobile.type.body.size).toBe(15);
+    expect(t.mobile.layout.touchTarget).toBe(48);
+    expect(t.mobile.layout.sheetRadius).toBe(24);
+    expect(t.supportsDark).toBe(false);
+    expect(t.light.success).toBe("#3f6b3a"); // Pen "Paid" chip
+  });
+
+  test("other themes inherit base mobile defaults", () => {
+    expect(byName("church").mobile.layout.touchTarget).toBe(44);
+    expect(byName("church").supportsDark).toBe(true);
+  });
+
+  test("unknown mobile keys and fonts are rejected", () => {
+    const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/bible.json"), "utf8"));
+    expect(() => resolveTheme({ ...src, mobile: { layout: { huge: 1 } } }, base)).toThrow(/mobile\.layout\.huge/);
+    expect(() => resolveTheme({ ...src, mobile: { type: { body: { font: "comic" } } } }, base)).toThrow(/not a fontFamily key/);
+  });
+});
+
 describe("css", () => {
   const bible = themeCss(base, byName("bible"));
   const church = themeCss(base, byName("church"));

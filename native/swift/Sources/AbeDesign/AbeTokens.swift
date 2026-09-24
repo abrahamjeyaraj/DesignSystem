@@ -6,6 +6,13 @@ public struct AbeShadowLayer: Sendable, Equatable {
 }
 
 /// Colours are 0xRRGGBB.
+public struct AbeTextRole: Sendable, Equatable {
+    public let family: String
+    public let size: Double
+    public let lineHeight: Double
+    public let weight: Int
+}
+
 public struct AbeColorScheme: Sendable, Equatable {
     public let background: UInt32
     public let foreground: UInt32
@@ -107,6 +114,25 @@ public struct AbeLabelStyle: Sendable, Equatable {
     public let weight: Int
 }
 
+public struct AbeMobileType: Sendable, Equatable {
+    public let title: AbeTextRole
+    public let headline: AbeTextRole
+    public let body: AbeTextRole
+    public let label: AbeTextRole
+    public let caption: AbeTextRole
+}
+
+public struct AbeMobileLayout: Sendable, Equatable {
+    public let gutter: Double
+    public let sectionGap: Double
+    public let itemGap: Double
+    public let touchTarget: Double
+    public let controlHeight: Double
+    public let fieldHeight: Double
+    public let cardRadius: Double
+    public let sheetRadius: Double
+}
+
 public struct AbeThemeTokens: Sendable, Equatable {
     public let name: String
     public let light: AbeColorScheme
@@ -121,6 +147,10 @@ public struct AbeThemeTokens: Sendable, Equatable {
     public let radius: AbeRadii
     public let shadow: AbeShadows
     public let label: AbeLabelStyle
+    public let mobileType: AbeMobileType
+    public let mobileLayout: AbeMobileLayout
+    /// False when the app is light-only by design; adapters then ignore the system dark setting.
+    public let supportsDark: Bool
 
     public func colors(dark isDark: Bool) -> AbeColorScheme { isDark ? dark : light }
 }
@@ -262,7 +292,25 @@ public enum AbeTokens {
             tracking: 1.5,
             size: 13,
             weight: 500
-        )
+        ),
+        mobileType: AbeMobileType(
+            title: AbeTextRole(family: "Playfair Display", size: 28, lineHeight: 34, weight: 700),
+            headline: AbeTextRole(family: "Playfair Display", size: 20, lineHeight: 26, weight: 600),
+            body: AbeTextRole(family: "Geist", size: 16, lineHeight: 24, weight: 400),
+            label: AbeTextRole(family: "IBM Plex Mono", size: 14, lineHeight: 20, weight: 600),
+            caption: AbeTextRole(family: "Geist", size: 12, lineHeight: 16, weight: 400)
+        ),
+        mobileLayout: AbeMobileLayout(
+            gutter: 16,
+            sectionGap: 24,
+            itemGap: 12,
+            touchTarget: 44,
+            controlHeight: 48,
+            fieldHeight: 48,
+            cardRadius: 12,
+            sheetRadius: 20
+        ),
+        supportsDark: true
     )
 
     public static let church = AbeThemeTokens(
@@ -398,7 +446,25 @@ public enum AbeTokens {
             tracking: 0,
             size: 14,
             weight: 600
-        )
+        ),
+        mobileType: AbeMobileType(
+            title: AbeTextRole(family: "Newsreader", size: 28, lineHeight: 34, weight: 700),
+            headline: AbeTextRole(family: "Newsreader", size: 20, lineHeight: 26, weight: 600),
+            body: AbeTextRole(family: "Geist", size: 16, lineHeight: 24, weight: 400),
+            label: AbeTextRole(family: "Geist", size: 14, lineHeight: 20, weight: 600),
+            caption: AbeTextRole(family: "Geist", size: 12, lineHeight: 16, weight: 400)
+        ),
+        mobileLayout: AbeMobileLayout(
+            gutter: 16,
+            sectionGap: 24,
+            itemGap: 12,
+            touchTarget: 44,
+            controlHeight: 48,
+            fieldHeight: 48,
+            cardRadius: 12,
+            sheetRadius: 20
+        ),
+        supportsDark: true
     )
 
     public static let tuition = AbeThemeTokens(
@@ -423,8 +489,8 @@ public enum AbeTokens {
             border: 0xDCD1C1,
             input: 0xDCD1C1,
             ring: 0xC4622D,
-            success: 0x2F6B45,
-            successLight: 0xE6F0E8,
+            success: 0x3F6B3A,
+            successLight: 0xE3ECDF,
             warning: 0xA8511F,
             warningLight: 0xF6E2D2,
             error: 0x8A2B2B,
@@ -460,8 +526,8 @@ public enum AbeTokens {
             border: 0x4A3A31,
             input: 0x4A3A31,
             ring: 0xEBC9A8,
-            success: 0x2F6B45,
-            successLight: 0xE6F0E8,
+            success: 0x3F6B3A,
+            successLight: 0xE3ECDF,
             warning: 0xA8511F,
             warningLight: 0xF6E2D2,
             error: 0x8A2B2B,
@@ -534,7 +600,25 @@ public enum AbeTokens {
             tracking: 0,
             size: 15,
             weight: 800
-        )
+        ),
+        mobileType: AbeMobileType(
+            title: AbeTextRole(family: "Fraunces", size: 28, lineHeight: 36, weight: 500),
+            headline: AbeTextRole(family: "Fraunces", size: 20, lineHeight: 28, weight: 600),
+            body: AbeTextRole(family: "Inter", size: 15, lineHeight: 24, weight: 400),
+            label: AbeTextRole(family: "Inter", size: 13, lineHeight: 20, weight: 600),
+            caption: AbeTextRole(family: "Inter", size: 11, lineHeight: 16, weight: 400)
+        ),
+        mobileLayout: AbeMobileLayout(
+            gutter: 20,
+            sectionGap: 28,
+            itemGap: 12,
+            touchTarget: 48,
+            controlHeight: 48,
+            fieldHeight: 52,
+            cardRadius: 16,
+            sheetRadius: 24
+        ),
+        supportsDark: false
     )
 
     public static let themes: [String: AbeThemeTokens] = ["bible": bible, "church": church, "tuition": tuition]
