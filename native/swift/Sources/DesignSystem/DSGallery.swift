@@ -9,6 +9,11 @@ public struct DSGallery: View {
     @State private var selectedTab = "Today"
     @State private var searchText = ""
     @State private var fieldText = "₹12,000"
+    @State private var notesText = "Great progress this week."
+    @State private var markOn = true
+    @State private var stepperValue = 3
+    @State private var selectedPreset = "5"
+    @State private var selectedWeekDay = "fri"
 
     public init(theme: DSThemeTokens = DSTokens.tuition, colorScheme: ColorScheme? = nil) {
         self.theme = theme
@@ -85,6 +90,56 @@ public struct DSGallery: View {
                 DSEmptyState(systemImage: "tray", title: "No payments due", message: "New payment reminders will appear here.") {
                     DSButton("Add payment", leadingSystemImage: "plus") {}
                 }.padding(.horizontal, theme.mobileLayout.gutter)
+                DSSectionHeader("Pen v2 · Snackbar")
+                DSSnackbarBar(message: "Ananya +1 ★", action: DSSnackbarAction(title: "Undo", handler: {}))
+                    .padding(.horizontal, theme.mobileLayout.gutter)
+                DSSectionHeader("Week strip · Timeline")
+                DSWeekStrip(
+                    days: [
+                        DSWeekStripDay(id: "mon", weekdaySymbol: "M", dayNumber: 15, loadCount: 3),
+                        DSWeekStripDay(id: "fri", weekdaySymbol: "F", dayNumber: 19, loadCount: 4),
+                        DSWeekStripDay(id: "sat", weekdaySymbol: "S", dayNumber: 20, loadCount: 1),
+                    ],
+                    selectedDayID: selectedWeekDay,
+                    todayDayID: "fri",
+                    onSelect: { selectedWeekDay = $0.id }
+                ).padding(.horizontal, theme.mobileLayout.gutter)
+                DSTimelineRow(timeStart: "09:30", timeEnd: "10:30", state: .live) {
+                    Text("Class 10 · Morning").dsFont(.headline)
+                } footer: {
+                    DSChip("Attendance", tone: .accent)
+                }.padding(.horizontal, theme.mobileLayout.gutter)
+                DSSectionHeader("Count pill · Podium · Mark")
+                HStack {
+                    DSCountPill(symbol: "★", count: 42, action: {})
+                    DSMarkToggle(isMarked: $markOn)
+                }.padding(.horizontal, theme.mobileLayout.gutter)
+                DSPodium(entries: [
+                    DSPodiumEntry(id: "2", name: "Ananya", value: "42 ★ · #2", columnHeight: 120),
+                    DSPodiumEntry(id: "1", name: "Meera", value: "51 ★ · #1", columnHeight: 150, isLeader: true),
+                    DSPodiumEntry(id: "3", name: "Divya", value: "38 ★ · #3", columnHeight: 104),
+                ]) { entry in DSAvatar(initials: String(entry.name.prefix(2))) }
+                    .padding(.horizontal, theme.mobileLayout.gutter)
+                DSSectionHeader("Summary · Presets · Quick actions")
+                DSSummaryBar(items: [
+                    DSSummaryItem(label: "Present", value: "7", tone: .success),
+                    DSSummaryItem(label: "Absent", value: "1", tone: .error),
+                    DSSummaryItem(label: "Class avg", value: "92%"),
+                ]).padding(.horizontal, theme.mobileLayout.gutter)
+                DSPresetGrid(
+                    options: [DSPresetOption(id: "1", label: "+1"), DSPresetOption(id: "5", label: "+5"), DSPresetOption(id: "10", label: "+10")],
+                    selectedID: selectedPreset,
+                    onSelect: { selectedPreset = $0.id }
+                ).padding(.horizontal, theme.mobileLayout.gutter)
+                DSStepper(value: $stepperValue, in: 1...99).padding(.horizontal, theme.mobileLayout.gutter)
+                HStack {
+                    DSQuickActionTile(title: "Call", systemImage: "phone", action: {})
+                    DSQuickActionTile(title: "History", systemImage: "clock", action: {})
+                }.padding(.horizontal, theme.mobileLayout.gutter)
+                DSSectionHeader("Activity · Notes")
+                DSActivityRow(title: "Ananya +5 ★", detail: "Full marks · Physics test", timestamp: "16:52", systemImage: "star", actionTitle: "Undo", onAction: {})
+                DSMultilineField(label: "Notes", text: $notesText, maxLength: 500)
+                    .padding(.horizontal, theme.mobileLayout.gutter)
             }
             .padding(.vertical, theme.mobileLayout.gutter)
         }

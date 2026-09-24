@@ -82,6 +82,14 @@ Merged so far: Android (56b5058), iOS (22a63e1).
 - DSTabBar capsule height is a 64pt minimum instead of fixed on every platform; Android labels use a
   13sp line height. Fixes the clipped active label on Android seen with v0.2.3.
 
+## Released v0.3.0 (2026-09-24)
+- Pen v2 TuitionManager components on web (`@abrahamjeyaraj/ui-web`), React Native
+  (`@abrahamjeyaraj/ui-native`), Swift, Android Compose and Flutter: `DSSnackbar` (bar + host state),
+  `DSWeekStrip`, `DSTimelineRow`, `DSCountPill`, `DSPodium`, `DSMarkToggle`, `DSSummaryBar`,
+  `DSPresetGrid`, `DSStepper`, `DSQuickActionTile`, `DSActivityRow`, and multiline `DSField` /
+  `DSMultilineField` with character counter. All appear in each platform gallery; metrics follow
+  `tuition-manager.pen` (week cell 14r, load dots 4pt, star pill 36h, preset tiles 64h, mark 48).
+
 ## Released v0.2.3 (2026-09-24)
 - DSSectionHeader no longer adds its own horizontal gutter (Pen sets padding 0 inside screen
   content) and uses body 17/600 on every platform.

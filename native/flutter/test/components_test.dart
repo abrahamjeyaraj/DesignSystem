@@ -9,7 +9,7 @@ Widget _app(Widget child) => MaterialApp(
 
 void main() {
   testWidgets('every component renders in the gallery', (tester) async {
-    tester.view.physicalSize = const Size(390, 3000);
+    tester.view.physicalSize = const Size(390, 4200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -182,6 +182,28 @@ void main() {
       }
     },
   );
+
+  testWidgets('Pen v2 components meet touch target and expose semantics', (tester) async {
+    await tester.pumpWidget(
+      _app(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const DSSnackbarBar(message: 'Awarded', actionLabel: 'Undo', onAction: _noop),
+            DSCountPill(symbol: '★', count: 42, onPressed: _noop),
+            DSMarkToggle(marked: true, onChanged: (_) {}),
+          ],
+        ),
+      ),
+    );
+    expect(find.text('Awarded'), findsOneWidget);
+    expect(find.bySemanticsLabel('Undo'), findsOneWidget);
+    expect(find.textContaining('42'), findsWidgets);
+    expect(
+      tester.getSize(find.bySemanticsLabel('Undo')).height,
+      greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
+    );
+  });
 
   testWidgets(
     'chip status has non-colour cue and stat, titles, nav, section, empty state render',

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'ds_tokens.g.dart';
 import 'theme.dart';
 
+part 'dspen_v2_components.dart';
+
 enum DSButtonVariant { primary, secondary, ghost, destructive }
 
 enum DSChipTone { neutral, accent, success, warning, error }
@@ -1188,6 +1190,10 @@ class DSGallery extends StatefulWidget {
 
 class _DSGalleryState extends State<DSGallery> {
   int _segment = 0, _tab = 0;
+  bool _mark = true;
+  int _stepper = 3;
+  String _preset = '5';
+  String _weekDay = 'fri';
   @override
   Widget build(BuildContext context) => ListView(
     padding: EdgeInsets.all(DSTheme.of(context).tokens.mobileLayout.gutter),
@@ -1319,6 +1325,73 @@ class _DSGalleryState extends State<DSGallery> {
         title: 'Nothing due',
         message: 'You are all caught up.',
       ),
+      const DSSectionHeader(title: 'Pen v2'),
+      const DSSnackbarBar(message: 'Ananya +1 ★', actionLabel: 'Undo', onAction: _noop),
+      DSWeekStrip(
+        days: const [
+          DSWeekStripDay(id: 'mon', weekdaySymbol: 'M', dayNumber: 15, loadCount: 3),
+          DSWeekStripDay(id: 'fri', weekdaySymbol: 'F', dayNumber: 19, loadCount: 4),
+          DSWeekStripDay(id: 'sat', weekdaySymbol: 'S', dayNumber: 20, loadCount: 1),
+        ],
+        selectedDayId: _weekDay,
+        todayDayId: 'fri',
+        onSelect: (d) => setState(() => _weekDay = d.id),
+      ),
+      DSTimelineRow(
+        timeStart: '09:30',
+        timeEnd: '10:30',
+        state: DSTimelineRowState.live,
+        content: const DSText('Class 10 · Morning', style: DSTextStyle.headline),
+        footer: const DSChip(label: 'Attendance', tone: DSChipTone.accent),
+      ),
+      Row(
+        children: [
+          DSCountPill(symbol: '★', count: 42, onPressed: _noop),
+          DSMarkToggle(marked: _mark, onChanged: (v) => setState(() => _mark = v)),
+        ],
+      ),
+      DSPodium(
+        entries: const [
+          DSPodiumEntry(id: '2', name: 'Ananya', value: '42 ★ · #2', columnHeight: 120),
+          DSPodiumEntry(id: '1', name: 'Meera', value: '51 ★ · #1', columnHeight: 150, isLeader: true),
+          DSPodiumEntry(id: '3', name: 'Divya', value: '38 ★ · #3', columnHeight: 104),
+        ],
+        avatarBuilder: (e) => DSAvatar(initials: e.name.substring(0, 2)),
+      ),
+      const DSSummaryBar(
+        items: [
+          DSSummaryItem('Present', '7', tone: DSStatTone.success),
+          DSSummaryItem('Absent', '1', tone: DSStatTone.error),
+          DSSummaryItem('Class avg', '92%'),
+        ],
+      ),
+      DSPresetGrid(
+        options: const [
+          DSPresetOption('1', '+1'),
+          DSPresetOption('5', '+5'),
+          DSPresetOption('10', '+10'),
+        ],
+        selectedId: _preset,
+        onSelect: (o) => setState(() => _preset = o.id),
+      ),
+      DSStepper(value: _stepper, min: 1, max: 99, onChanged: (v) => setState(() => _stepper = v)),
+      Row(
+        children: [
+          Expanded(child: DSQuickActionTile(title: 'Call', icon: Icons.phone, onPressed: _noop)),
+          Expanded(child: DSQuickActionTile(title: 'History', icon: Icons.history, onPressed: _noop)),
+        ],
+      ),
+      const DSActivityRow(
+        title: 'Ananya +5 ★',
+        detail: 'Full marks · Physics test',
+        timestamp: '16:52',
+        icon: Icons.star,
+        actionLabel: 'Undo',
+        onAction: _noop,
+      ),
+      const DSMultilineField(label: 'Notes', initialValue: 'Great progress.'),
     ],
   );
 }
+
+void _noop() {}

@@ -13,6 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { type ColorMode, type ThemeName, tokens } from '@abrahamjeyaraj/tokens';
+import { PenV2GallerySection } from './pen-v2-components';
 import { DSThemeProvider, useDSTheme } from './theme';
 
 export const ICON_SIZE_SM = 18;
@@ -496,10 +497,14 @@ export interface DSFieldProps extends TextInputProps {
   label?: ReactNode;
   inputStyle?: StyleProp<TextStyle>;
   containerStyle?: StyleProp<ViewStyle>;
+  multiline?: boolean;
+  maxLength?: number;
+  showCharacterCount?: boolean;
 }
 
-export function DSField({ label, inputStyle, containerStyle, style, ...props }: DSFieldProps) {
+export function DSField({ label, inputStyle, containerStyle, style, multiline, maxLength, showCharacterCount, value, ...props }: DSFieldProps) {
   const t = useDSTheme();
+  const textLength = typeof value === 'string' ? value.length : 0;
   return (
     <View style={[{ gap: 6 }, containerStyle]}>
       {label && (
@@ -514,18 +519,24 @@ export function DSField({ label, inputStyle, containerStyle, style, ...props }: 
       <View
         style={[
           {
-            height: t.mobileLayout.fieldHeight,
+            minHeight: multiline ? t.mobileLayout.fieldHeight * 2 : t.mobileLayout.fieldHeight,
+            height: multiline ? undefined : t.mobileLayout.fieldHeight,
             paddingHorizontal: 16,
+            paddingVertical: multiline ? 12 : 0,
             borderRadius: t.radius.control,
             borderWidth: 1,
             borderColor: t.colors.line,
             backgroundColor: t.colors.card,
-            justifyContent: 'center',
+            justifyContent: multiline ? 'flex-start' : 'center',
           },
           style,
         ]}
       >
         <TextInput
+          multiline={multiline}
+          maxLength={maxLength}
+          value={value}
+          textAlignVertical={multiline ? 'top' : 'center'}
           placeholderTextColor={t.colors['muted-foreground']}
           style={[
             {
@@ -533,12 +544,18 @@ export function DSField({ label, inputStyle, containerStyle, style, ...props }: 
               color: t.colors.ink,
               fontFamily: t.fontFamily.body,
               padding: 0,
+              minHeight: multiline ? t.mobileLayout.fieldHeight * 1.5 : undefined,
             },
             inputStyle,
           ]}
           {...props}
         />
       </View>
+      {showCharacterCount && maxLength != null && (
+        <DSText variant="caption" style={{ textAlign: 'right' }}>
+          {textLength}/{maxLength}
+        </DSText>
+      )}
     </View>
   );
 }
@@ -1025,6 +1042,7 @@ export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: D
                   <DSProgress label="Progress" valueLabel="70%" value={0.7} />
                   <DSInkCard><DSText>Ink card content</DSText></DSInkCard>
                   <DSNudge title="Reminder ready" subtitle="Tap to review" leading={<DSText>♢</DSText>} onPress={() => {}} />
+                  <PenV2GallerySection />
                 </DSCard>
               </DSThemeProvider>
             ))}

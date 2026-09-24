@@ -19,3 +19,4 @@ export * from './tabs';
 export * from './tooltip';
 
 export * from './pen-components';
+export * from './pen-v2-components';

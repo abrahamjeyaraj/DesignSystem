@@ -30,6 +30,16 @@ const {
   DSProgress,
   DSInkCard,
   DSNudge,
+} = await import('../src/components');
+const {
+  DSSnackbarBar,
+  DSWeekStrip,
+  DSCountPill,
+  DSMarkToggle,
+  DSSummaryBar,
+  DSMultilineField,
+} = await import('../src/pen-v2-components');
+const {
   Text,
   Button,
   Card,
@@ -223,6 +233,25 @@ test('DSEmptyState renders icon, title, message and action', () => {
   expect(html).toContain('No Students');
   expect(html).toContain('Add a student to get started.');
   expect(html).toContain('Add Student');
+});
+
+test('Pen v2 components render with roles and touch-friendly actions', () => {
+  const html = render(
+    <>
+      <DSSnackbarBar message="Awarded +1" actionLabel="Undo" onAction={() => {}} />
+      <DSWeekStrip days={[{ id: 'fri', weekdaySymbol: 'F', dayNumber: 19, loadCount: 2 }]} selectedDayId="fri" onSelect={() => {}} />
+      <DSCountPill symbol="★" count={42} />
+      <DSMarkToggle value={true} onValueChange={() => {}} />
+      <DSSummaryBar items={[{ label: 'Present', value: '7', tone: 'success' }]} />
+      <DSMultilineField label="Notes" value="H" onChangeText={() => {}} />
+    </>
+  );
+  expect(html).toContain('Awarded +1');
+  expect(html).toContain('Undo');
+  expect(html).toContain('role="button"');
+  expect(html).toContain('role="switch"');
+  expect(html).toContain('7');
+  expect(html).toMatch(/1.*500/);
 });
 
 test('new Tuition Pen components render accessible controls and clamped progress', () => {

@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +38,11 @@ fun DSGallery(modifier: Modifier = Modifier) {
     var tab by remember { mutableIntStateOf(0) }
     var field by remember { mutableStateOf("₹12,000") }
     var search by remember { mutableStateOf("") }
+    var mark by remember { mutableStateOf(true) }
+    var stepper by remember { mutableIntStateOf(3) }
+    var preset by remember { mutableStateOf("5") }
+    var weekDay by remember { mutableStateOf("fri") }
+    var notes by remember { mutableStateOf("Great progress.") }
 
     Column(
         modifier = modifier
@@ -112,6 +119,56 @@ fun DSGallery(modifier: Modifier = Modifier) {
             selectedIndex = tab,
             onSelected = { tab = it },
         )
+        DSSectionHeader("Pen v2 components")
+        DSSnackbarBar("Ananya +1 ★", actionLabel = "Undo", onAction = {}, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
+        DSWeekStrip(
+            days = listOf(
+                DSWeekStripDay("mon", "M", 15, 3),
+                DSWeekStripDay("fri", "F", 19, 4),
+                DSWeekStripDay("sat", "S", 20, 1),
+            ),
+            selectedDayId = weekDay,
+            todayDayId = "fri",
+            onSelect = { weekDay = it.id },
+            modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
+        )
+        DSTimelineRow("09:30", "10:30", DSTimelineRowState.Live, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), content = {
+            DSText("Class 10 · Morning", DSTextStyle.Headline)
+        }, footer = { DSChip("Attendance", variant = DSChipVariant.Accent) })
+        Row(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            DSCountPill("★", 42, onClick = {})
+            DSMarkToggle(mark, onMarkedChange = { mark = it })
+        }
+        DSPodium(
+            entries = listOf(
+                DSPodiumEntry("2", "Ananya", "42 ★ · #2", 120.dp),
+                DSPodiumEntry("1", "Meera", "51 ★ · #1", 150.dp, isLeader = true),
+                DSPodiumEntry("3", "Divya", "38 ★ · #3", 104.dp),
+            ),
+            modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
+            avatar = { DSAvatar(it.name.take(2)) },
+        )
+        DSSummaryBar(
+            listOf(
+                DSSummaryItem("Present", "7", DSStatTone.Success),
+                DSSummaryItem("Absent", "1", DSStatTone.Error),
+                DSSummaryItem("Class avg", "92%"),
+            ),
+            modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
+        )
+        DSPresetGrid(
+            listOf(DSPresetOption("1", "+1"), DSPresetOption("5", "+5"), DSPresetOption("10", "+10")),
+            preset,
+            onSelect = { preset = it.id },
+            modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp),
+        )
+        DSStepper(stepper, onValueChange = { stepper = it }, range = 1..99, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
+        Row(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            DSQuickActionTile("Call", Icons.Default.Phone, onClick = {}, modifier = Modifier.weight(1f))
+            DSQuickActionTile("History", Icons.Default.Today, onClick = {}, modifier = Modifier.weight(1f))
+        }
+        DSActivityRow("Ananya +5 ★", "16:52", detail = "Full marks", icon = Icons.Default.Star, actionLabel = "Undo", onAction = {})
+        DSMultilineField("Notes", notes, onValueChange = { notes = it }, modifier = Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp))
         Column(Modifier.padding(horizontal = tokens.mobileLayout.gutter.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             DSText("Title style", DSTextStyle.Title)
             DSText("Headline style", DSTextStyle.Headline)

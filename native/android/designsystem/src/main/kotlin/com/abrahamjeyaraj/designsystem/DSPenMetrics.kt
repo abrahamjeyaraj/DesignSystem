@@ -22,4 +22,12 @@ internal object DSPenMetrics {
     val ChipLabelSize = 12f
     val TabActiveFillAlpha = 0.1f
     val TabBarCapsuleFillAlpha = 0.9f
+    val WeekCellRadius = 14.dp
+    val LoadDotSize = 4.dp
+    val CountPillHeight = 36.dp
+    val PresetTileHeight = 64.dp
+    val QuickActionRadius = 14.dp
+    val TimelineGutterWidth = 44.dp
+    val MarkToggleSize = 48.dp
+    val MarkIconSize = 22.dp
 }
