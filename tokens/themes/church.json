@@ -1,0 +1,117 @@
+{
+  "$description": "ChurchHQ \"Sanctuary\": warm cream page, white cards, pine accent, Geist + Newsreader. Extracted from ChurchManagement/apps/web/src/app/tokens.css and layout.tsx on 2026-09-23. Values marked derived in DESIGN.md are computed from its rgba(var(--ink), a) usage.",
+  "name": "church",
+  "palette": {
+    "pine": { "50": "#eef6f2", "100": "#d9ebe3", "200": "#b6d9c9", "300": "#86c0ac", "400": "#4fa086", "500": "#2b8568", "600": "#1a6b54", "700": "#145745", "900": "#0c3a2e" },
+    "success": { "400": "#34d399", "500": "#10b981", "600": "#059669", "700": "#047857" },
+    "warning": { "50": "#fff8eb", "100": "#fdecc8", "200": "#f8dda2", "400": "#fbbf24", "500": "#f59e0b", "600": "#d97706", "700": "#b45309" },
+    "danger": { "50": "#fff1f3", "100": "#ffe0e5", "200": "#fecdd6", "400": "#fb7185", "500": "#f43f5e", "600": "#e11d48", "700": "#be123c" },
+    "info": { "400": "#38bdf8", "500": "#0ea5e9", "600": "#0284c7", "700": "#0369a1" },
+    "gold": { "300": "#fcd34d", "400": "#fbbf24", "500": "#f59e0b" }
+  },
+  "scales": {
+    "accent": "pine",
+    "success": "success",
+    "warning": "warning",
+    "danger": "danger",
+    "info": "info",
+    "gold": "gold"
+  },
+  "darkScales": {
+    "accent": { "600": "#3a9b7a", "700": "#57b394" }
+  },
+  "fontFamily": {
+    "sans": { "family": "Geist", "webVar": "--font-geist-sans", "fallback": ["system-ui", "Arial", "Helvetica", "sans-serif"] },
+    "heading": { "family": "Newsreader", "webVar": "--font-newsreader", "fallback": ["Georgia", "serif"] },
+    "body": { "family": "Geist", "webVar": "--font-geist-sans", "fallback": ["system-ui", "Arial", "Helvetica", "sans-serif"] },
+    "mono": { "family": "Geist Mono", "webVar": "--font-geist-mono", "fallback": ["ui-monospace", "monospace"] },
+    "label": { "family": "Geist", "webVar": "--font-geist-sans", "fallback": ["system-ui", "Arial", "Helvetica", "sans-serif"] }
+  },
+  "radius": { "control": 10, "button": 10, "card": 15 },
+  "label": { "case": "none", "tracking": 0, "size": 14, "weight": 600 },
+  "shadow": {
+    "card": [
+      { "x": 0, "y": 1, "blur": 2, "spread": 0, "alpha": 0.045 },
+      { "x": 0, "y": 6, "blur": 16, "spread": 0, "alpha": 0.035 }
+    ],
+    "pop": [
+      { "x": 0, "y": 4, "blur": 16, "spread": 0, "alpha": 0.08 },
+      { "x": 0, "y": 12, "blur": 32, "spread": 0, "alpha": 0.1 }
+    ]
+  },
+  "light": {
+    "background": "#f8f6f1",
+    "foreground": "#1d1b16",
+    "card": "{white}",
+    "card-foreground": "#1d1b16",
+    "popover": "{white}",
+    "popover-foreground": "#1d1b16",
+    "primary": "{pine.600}",
+    "primary-foreground": "{white}",
+    "secondary": "#fbfaf6",
+    "secondary-foreground": "#1d1b16",
+    "muted": "#efece4",
+    "muted-foreground": "#6f6c63",
+    "accent": "{pine.600}",
+    "accent-foreground": "{white}",
+    "destructive": "{danger.600}",
+    "destructive-foreground": "{white}",
+    "border": "#e6e3dc",
+    "input": "#e6e3dc",
+    "ring": "{pine.600}",
+    "success": "{success.700}",
+    "success-light": "#ecfdf5",
+    "warning": "{warning.700}",
+    "warning-light": "{warning.50}",
+    "error": "{danger.700}",
+    "error-light": "{danger.50}",
+    "info": "{info.700}",
+    "info-light": "#f0f9ff",
+    "ink": "#1d1b16",
+    "ink-body": "#3d3a33",
+    "ink-muted": "#6f6c63",
+    "subtle": "#faf9f5",
+    "line": "#e6e3dc",
+    "line-hover": "#d6d2c8",
+    "action": "{pine.600}",
+    "action-foreground": "{white}"
+  },
+  "dark": {
+    "background": "#26241e",
+    "foreground": "#f1ede3",
+    "card": "#312e28",
+    "card-foreground": "#f1ede3",
+    "popover": "#312e28",
+    "popover-foreground": "#f1ede3",
+    "primary": "#3a9b7a",
+    "secondary": "#2b2924",
+    "secondary-foreground": "#f1ede3",
+    "muted": "#38352e",
+    "muted-foreground": "#b3ada0",
+    "accent": "#3a9b7a",
+    "border": "#3f3b33",
+    "input": "#3f3b33",
+    "ring": "#57b394",
+    "ink": "#f1ede3",
+    "ink-body": "#d6d1c4",
+    "ink-muted": "#b3ada0",
+    "subtle": "#38352e",
+    "line": "#3f3b33",
+    "line-hover": "#4d483f",
+    "action": "#3a9b7a"
+  },
+  "extra": {
+    "light": {
+      "panel": "#fbfaf6",
+      "surface": "{white}",
+      "shell-gutter": "#efece4",
+      "verified-blue": "#1d9bf0",
+      "gold-ink": "#9a7a2e"
+    },
+    "dark": {
+      "panel": "#2b2924",
+      "surface": "#312e28",
+      "shell-gutter": "#0e0d0a"
+    }
+  }
+}

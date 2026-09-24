@@ -1,0 +1,25 @@
+{
+  "name": "@abe/ui-native",
+  "version": "0.1.0",
+  "description": "React Native / Expo / react-native-web primitives themed by @abe/tokens.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@abe/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-native": ">=0.79.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "react": "19.2.8",
+    "react-native": "0.79.6"
+  }
+}

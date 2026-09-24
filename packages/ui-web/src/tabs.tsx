@@ -1,0 +1,67 @@
+'use client';
+
+import * as TabsPrimitive from '@radix-ui/react-tabs';
+import * as React from 'react';
+
+import { cn } from './cn';
+
+/**
+ * Tabs - Accessible tabs component
+ *
+ * Accessibility features (provided by Radix UI):
+ * - role="tablist" on TabsList
+ * - role="tab" on TabsTrigger
+ * - role="tabpanel" on TabsContent
+ * - aria-selected on active tab
+ * - aria-controls links tab to panel
+ * - Keyboard navigation (Arrow keys, Home, End)
+ * - Focus management
+ */
+const Tabs = TabsPrimitive.Root;
+
+const TabsList = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      'inline-flex items-center justify-start gap-1 border-b border-line overflow-x-auto scrollbar-hide',
+      className
+    )}
+    {...props}
+  />
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
+
+const TabsTrigger = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      'inline-flex items-center justify-center whitespace-nowrap min-h-[44px] min-w-[120px] px-4 py-3 label-text text-[11px] text-ink-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 -mb-px border-b-2 border-transparent hover:text-ink hover:border-line data-[state=active]:text-ink data-[state=active]:border-action data-[state=active]:font-medium',
+      className
+    )}
+    {...props}
+  />
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+
+const TabsContent = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Content
+    ref={ref}
+    className={cn(
+      'mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2',
+      className
+    )}
+    {...props}
+  />
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+
+export { Tabs, TabsContent, TabsList, TabsTrigger };

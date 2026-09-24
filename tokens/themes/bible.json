@@ -1,0 +1,153 @@
+{
+  "$description": "TheBibleProject: Warm Stone neutrals, Burnt Sienna accent, editorial gold CTA, IBM Plex Mono uppercase labels. Extracted from TheBibleProject/apps/web/src/app/globals.css and components/ui on 2026-09-23. Colour values are #rrggbb or {palette.step}; dark lists overrides only.",
+  "name": "bible",
+  "palette": {
+    "stone": { "50": "#fafaf8", "100": "#f5f5f0", "200": "#e8e8de", "300": "#d4d4c8", "400": "#b0b09e", "500": "#6d6d59", "600": "#6b6b56", "700": "#4a4a3a", "800": "#2e2e22", "900": "#1a1a12" },
+    "sienna": { "50": "#fdf7f5", "100": "#f9e9e3", "200": "#f3d3c7", "300": "#e6b5a1", "400": "#d89778", "500": "#c97a54", "600": "#b25d38", "700": "#8f4a2c", "800": "#6b3820", "900": "#482717" },
+    "indigo": { "50": "#f1f3f9", "100": "#dfe3f1", "200": "#c7d2eb", "300": "#a7c1dc", "400": "#81a3cc", "500": "#6385bc", "600": "#4f6ba7", "700": "#3d4d7a", "800": "#313d61", "900": "#293351" },
+    "sky": { "50": "#f0f7fc", "100": "#dceef9", "700": "#2f6b8c" },
+    "emerald": { "50": "#eef7f2", "100": "#d5eddf", "700": "#2d6b4a" },
+    "rose": { "50": "#faf2f2", "100": "#f4e1e1", "700": "#9c4242" }
+  },
+  "scales": { "primary": "stone", "secondary": "stone", "accent": "sienna" },
+  "tailwindAliases": {
+    "gray": "stone",
+    "slate": "stone",
+    "blue": "stone",
+    "amber": "sienna",
+    "indigo": "indigo",
+    "sky": "sky",
+    "emerald": "emerald",
+    "rose": "rose"
+  },
+  "fontFamily": {
+    "heading": { "family": "Playfair Display", "webVar": "--font-playfair", "fallback": ["serif"] },
+    "body": { "family": "Geist", "webVar": "--font-geist", "fallback": ["sans-serif"] },
+    "mono": { "family": "IBM Plex Mono", "webVar": "--font-ibm-plex-mono", "fallback": ["monospace"] },
+    "label": { "family": "IBM Plex Mono", "webVar": "--font-ibm-plex-mono", "fallback": ["monospace"] }
+  },
+  "fontSize": { "base": 15 },
+  "radius": { "control": 2, "button": 2, "card": 8 },
+  "label": { "case": "uppercase", "tracking": 1.5, "size": 13, "weight": 500 },
+  "shadow": {
+    "sm": [{ "x": 0, "y": 1, "blur": 2, "spread": 0, "alpha": 0.08 }],
+    "DEFAULT": [
+      { "x": 0, "y": 2, "blur": 4, "spread": 0, "alpha": 0.08 },
+      { "x": 0, "y": 1, "blur": 2, "spread": -1, "alpha": 0.06 }
+    ],
+    "md": [
+      { "x": 0, "y": 4, "blur": 6, "spread": -1, "alpha": 0.12 },
+      { "x": 0, "y": 2, "blur": 4, "spread": -2, "alpha": 0.08 }
+    ],
+    "lg": [
+      { "x": 0, "y": 10, "blur": 15, "spread": -3, "alpha": 0.12 },
+      { "x": 0, "y": 4, "blur": 6, "spread": -4, "alpha": 0.08 }
+    ],
+    "xl": [
+      { "x": 0, "y": 20, "blur": 25, "spread": -5, "alpha": 0.14 },
+      { "x": 0, "y": 8, "blur": 10, "spread": -6, "alpha": 0.1 }
+    ],
+    "card": [{ "x": 0, "y": 1, "blur": 2, "spread": 0, "alpha": 0.08 }]
+  },
+  "light": {
+    "background": "#f8f8f6",
+    "foreground": "{stone.900}",
+    "card": "{stone.50}",
+    "card-foreground": "{stone.900}",
+    "popover": "{white}",
+    "popover-foreground": "{stone.900}",
+    "primary": "{stone.600}",
+    "primary-foreground": "{white}",
+    "secondary": "{stone.100}",
+    "secondary-foreground": "{stone.900}",
+    "muted": "{stone.100}",
+    "muted-foreground": "{stone.500}",
+    "accent": "{sienna.500}",
+    "accent-foreground": "{white}",
+    "destructive": "#a83c3c",
+    "destructive-foreground": "{white}",
+    "border": "{stone.300}",
+    "input": "{stone.300}",
+    "ring": "{sienna.500}",
+    "success": "#3d6b4d",
+    "success-light": "#e8f3ec",
+    "warning": "#b8851f",
+    "warning-light": "#fcf5e5",
+    "error": "#a83c3c",
+    "error-light": "#fceaea",
+    "info": "#4a5d73",
+    "info-light": "#e8ecf1",
+    "ink": "#1a1a1a",
+    "ink-body": "#4a4a4a",
+    "ink-muted": "#666666",
+    "subtle": "#f4f2ef",
+    "line": "#e5e0d8",
+    "line-hover": "#e0dcd4",
+    "action": "#c8b496",
+    "action-foreground": "#1a1a1a"
+  },
+  "dark": {
+    "background": "{stone.900}",
+    "foreground": "{stone.50}",
+    "card": "{stone.800}",
+    "card-foreground": "{stone.50}",
+    "popover": "{stone.800}",
+    "popover-foreground": "{stone.50}",
+    "primary": "{stone.500}",
+    "secondary": "{stone.700}",
+    "secondary-foreground": "{stone.50}",
+    "muted": "{stone.700}",
+    "muted-foreground": "{stone.400}",
+    "accent": "{sienna.400}",
+    "accent-foreground": "{stone.900}",
+    "border": "{stone.700}",
+    "input": "{stone.700}",
+    "ring": "{sienna.400}",
+    "ink": "#f3f1ec",
+    "ink-body": "#c9c5bd",
+    "ink-muted": "#a8a39a",
+    "subtle": "#1c1b17",
+    "line": "#3a3730",
+    "line-hover": "#423f36",
+    "action": "#d9c9a8",
+    "action-foreground": "#1a1a1a"
+  },
+  "extra": {
+    "$description": "Bible-only colours kept so apps/web can migrate without renaming. Emitted as --color-<name> in CSS and as an extras map on native.",
+    "light": {
+      "ed-ink": "#1a1a1a",
+      "ed-body": "#4a4a4a",
+      "ed-muted": "#666666",
+      "ed-gold": "#c8b496",
+      "ed-blue": "#384f84",
+      "ed-border": "#e5e0d8",
+      "ed-bg": "#f4f2ef",
+      "ed-dark": "#1e1e1e",
+      "ed-placeholder": "#bbbbbb",
+      "ed-paper": "#f5f2ed",
+      "ed-card": "#ffffff",
+      "ed-footer": "#f8f7f5",
+      "ed-border-light": "#eeece8",
+      "ed-border-hover": "#e0dcd4",
+      "ed-hairline": "#999999",
+      "ed-brand-brown": "#b07c4b",
+      "ed-brown-text": "#8a5a2e",
+      "ed-warm-dark": "#29261b"
+    },
+    "dark": {
+      "ed-ink": "#f3f1ec",
+      "ed-body": "#c9c5bd",
+      "ed-muted": "#a8a39a",
+      "ed-border": "#3a3730",
+      "ed-bg": "#1c1b17",
+      "ed-paper": "#26241e",
+      "ed-card": "#232118",
+      "ed-footer": "#1a1915",
+      "ed-border-light": "#322f28",
+      "ed-border-hover": "#423f36",
+      "ed-brown-text": "#d9a86a",
+      "ed-blue": "#9db0d6",
+      "ed-gold": "#d9c9a8"
+    }
+  }
+}

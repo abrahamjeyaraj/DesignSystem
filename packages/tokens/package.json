@@ -1,0 +1,18 @@
+{
+  "name": "@abe/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens and per-app themes (Tailwind v4 CSS, TypeScript). Generated from tokens/*.json.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./generated/index.ts",
+    "./tokens.json": "./generated/tokens.json",
+    "./css/*.css": "./generated/css/*.css",
+    "./base.css": "./css/base.css"
+  },
+  "files": ["generated", "css"],
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "typecheck": "tsc --noEmit -p ."
+  }
+}
