@@ -2,16 +2,26 @@
   "name": "@abrahamjeyaraj/ui-web",
   "version": "0.1.0",
   "description": "React + Radix + Tailwind v4 components (web and mobile web). Styling comes entirely from the active @abrahamjeyaraj/tokens theme.",
-  "private": true,
   "type": "module",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./styles.css": "./styles.css",
-    "./*": "./src/*.tsx"
+    "./*": {
+      "source": "./src/*.tsx",
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "build": "bun build ./src/index.ts ./src/*.tsx ./src/*.ts --root ./src --outdir ./dist --external react --external react-dom --external react/jsx-runtime --external '@radix-ui/*' --external '@abrahamjeyaraj/*' --external lucide-react --external clsx --external tailwind-merge --external class-variance-authority && bunx tsc src/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir ./dist --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --skipLibCheck"
   },
   "dependencies": {
     "@abrahamjeyaraj/tokens": "workspace:*",
@@ -42,5 +52,16 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tailwindcss": "4.3.3"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
+  },
+  "files": [
+    "dist",
+    "styles.css"
+  ]
 }
