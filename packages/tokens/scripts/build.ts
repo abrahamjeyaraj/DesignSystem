@@ -374,12 +374,12 @@ interface Lang {
 const num = (v: number, forceDecimal: boolean) => (forceDecimal && Number.isInteger(v) ? `${v}.0` : `${v}`);
 
 const SWIFT: Lang = {
-  type: { color: "UInt32", double: "Double", int: "Int", string: "String", shadow: "[AbeShadowLayer]", bool: "Bool", textRole: "AbeTextRole" },
+  type: { color: "UInt32", double: "Double", int: "Int", string: "String", shadow: "[DSShadowLayer]", bool: "Bool", textRole: "DSTextRole" },
   lit: (k, v) =>
     k === "color" ? `0x${hex6(v as Hex)}`
     : k === "string" ? `"${v}"`
-    : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(x: ${l.x}, y: ${l.y}, blur: ${l.blur}, spread: ${l.spread}, alpha: ${l.alpha})`).join(", ")}]`
-    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole(family: "${r.family}", size: ${r.size}, lineHeight: ${r.lineHeight}, weight: ${r.weight})`)(v as ResolvedRole)
+    : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `DSShadowLayer(x: ${l.x}, y: ${l.y}, blur: ${l.blur}, spread: ${l.spread}, alpha: ${l.alpha})`).join(", ")}]`
+    : k === "textRole" ? ((r: ResolvedRole) => `DSTextRole(family: "${r.family}", size: ${r.size}, lineHeight: ${r.lineHeight}, weight: ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) =>
     `public struct ${name}: Sendable, Equatable {\n${fields.map((f) => `    public let ${f.name}: ${SWIFT.type[f.kind]}`).join("\n")}\n}`,
@@ -388,13 +388,13 @@ const SWIFT: Lang = {
 };
 
 const KOTLIN: Lang = {
-  type: { color: "Long", double: "Double", int: "Int", string: "String", shadow: "List<AbeShadowLayer>", bool: "Boolean", textRole: "AbeTextRole" },
+  type: { color: "Long", double: "Double", int: "Int", string: "String", shadow: "List<DSShadowLayer>", bool: "Boolean", textRole: "DSTextRole" },
   lit: (k, v) =>
     k === "color" ? `0xFF${hex6(v as Hex)}`
     : k === "string" ? `"${v}"`
     : k === "double" ? num(v as number, true)
-    : k === "shadow" ? `listOf(${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(${l.x}f, ${l.y}f, ${l.blur}f, ${l.spread}f, ${l.alpha}f)`).join(", ")})`
-    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole("${r.family}", ${num(r.size, true)}, ${num(r.lineHeight, true)}, ${r.weight})`)(v as ResolvedRole)
+    : k === "shadow" ? `listOf(${(v as ShadowLayer[]).map((l) => `DSShadowLayer(${l.x}f, ${l.y}f, ${l.blur}f, ${l.spread}f, ${l.alpha}f)`).join(", ")})`
+    : k === "textRole" ? ((r: ResolvedRole) => `DSTextRole("${r.family}", ${num(r.size, true)}, ${num(r.lineHeight, true)}, ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) => `data class ${name}(\n${fields.map((f) => `    val ${f.name}: ${KOTLIN.type[f.kind]},`).join("\n")}\n)`,
   construct: (name, args, ind) => `${name}(\n${args.map(([k, v]) => `${ind}    ${k} = ${v},`).join("\n")}\n${ind})`,
@@ -402,16 +402,16 @@ const KOTLIN: Lang = {
 };
 
 const DART: Lang = {
-  type: { color: "int", double: "double", int: "int", string: "String", shadow: "List<AbeShadowLayer>", bool: "bool", textRole: "AbeTextRole" },
+  type: { color: "int", double: "double", int: "int", string: "String", shadow: "List<DSShadowLayer>", bool: "bool", textRole: "DSTextRole" },
   lit: (k, v) =>
     k === "color" ? `0xFF${hex6(v as Hex)}`
     : k === "string" ? `'${v}'`
     : k === "double" ? num(v as number, true)
-    : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `AbeShadowLayer(${num(l.x, true)}, ${num(l.y, true)}, ${num(l.blur, true)}, ${num(l.spread, true)}, ${l.alpha})`).join(", ")}]`
-    : k === "textRole" ? ((r: ResolvedRole) => `AbeTextRole(family: '${r.family}', size: ${num(r.size, true)}, lineHeight: ${num(r.lineHeight, true)}, weight: ${r.weight})`)(v as ResolvedRole)
+    : k === "shadow" ? `[${(v as ShadowLayer[]).map((l) => `DSShadowLayer(${num(l.x, true)}, ${num(l.y, true)}, ${num(l.blur, true)}, ${num(l.spread, true)}, ${l.alpha})`).join(", ")}]`
+    : k === "textRole" ? ((r: ResolvedRole) => `DSTextRole(family: '${r.family}', size: ${num(r.size, true)}, lineHeight: ${num(r.lineHeight, true)}, weight: ${r.weight})`)(v as ResolvedRole)
     : `${v}`,
   struct: (name, fields) =>
-    `class Abe${name} {\n  const Abe${name}({\n${fields.map((f) => `    required this.${f.name},`).join("\n")}\n  });\n\n${fields
+    `class DS${name} {\n  const DS${name}({\n${fields.map((f) => `    required this.${f.name},`).join("\n")}\n  });\n\n${fields
       .map((f) => `  final ${DART.type[f.kind]} ${f.name};`)
       .join("\n")}\n}`,
   construct: (name, args, ind) => `${name}(\n${args.map(([k, v]) => `${ind}  ${k}: ${v},`).join("\n")}\n${ind})`,
@@ -440,48 +440,48 @@ function themeArgs(lang: Lang, t: Theme, ind: string, prefix: string): [string, 
 
 export function swift(base: Base, themes: Theme[]): string {
   const sample = themes[0];
-  const themeStruct = `public struct AbeThemeTokens: Sendable, Equatable {
+  const themeStruct = `public struct DSThemeTokens: Sendable, Equatable {
     public let name: String
-    public let light: AbeColorScheme
-    public let dark: AbeColorScheme
+    public let light: DSColorScheme
+    public let dark: DSColorScheme
     /// Brand-only colours (0xRRGGBB) outside the shared role contract.
     public let extraLight: [String: UInt32]
     public let extraDark: [String: UInt32]
-    public let fontFamily: AbeFontFamilies
-    public let fontSize: AbeFontSizes
-    public let fontWeight: AbeFontWeights
-    public let lineHeight: AbeLineHeights
-    public let radius: AbeRadii
-    public let shadow: AbeShadows
-    public let label: AbeLabelStyle
-    public let mobileType: AbeMobileType
-    public let mobileLayout: AbeMobileLayout
+    public let fontFamily: DSFontFamilies
+    public let fontSize: DSFontSizes
+    public let fontWeight: DSFontWeights
+    public let lineHeight: DSLineHeights
+    public let radius: DSRadii
+    public let shadow: DSShadows
+    public let label: DSLabelStyle
+    public let mobileType: DSMobileType
+    public let mobileLayout: DSMobileLayout
     /// False when the app is light-only by design; adapters then ignore the system dark setting.
     public let supportsDark: Bool
 
-    public func colors(dark isDark: Bool) -> AbeColorScheme { isDark ? dark : light }
+    public func colors(dark isDark: Bool) -> DSColorScheme { isDark ? dark : light }
 }`;
   const consts = (name: string, rec: Record<string, number>, type = "Double") =>
     [`    public enum ${name} {`, ...Object.entries(rec).map(([k, v]) => `        public static let ${ident(k)}: ${type} = ${v}`), "    }"].join("\n");
   return `// ${HEADER}
 // swiftlint:disable all
 
-public struct AbeShadowLayer: Sendable, Equatable {
+public struct DSShadowLayer: Sendable, Equatable {
     public let x: Double, y: Double, blur: Double, spread: Double, alpha: Double
 }
 
 /// Colours are 0xRRGGBB.
-${[SWIFT.struct("AbeTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => SWIFT.struct(`Abe${s.type}`, s.fields(sample)))].join("\n\n")}
+${[SWIFT.struct("DSTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => SWIFT.struct(`DS${s.type}`, s.fields(sample)))].join("\n\n")}
 
 ${themeStruct}
 
-public enum AbeTokens {
+public enum DSTokens {
     public static let defaultTheme = "${DEFAULT_THEME}"
     public static let minTouchTarget: Double = ${base.minTouchTarget}
 
-${themes.map((t) => `    public static let ${ident(t.name)} = ${SWIFT.construct("AbeThemeTokens", themeArgs(SWIFT, t, "    ", "Abe"), "    ")}`).join("\n\n")}
+${themes.map((t) => `    public static let ${ident(t.name)} = ${SWIFT.construct("DSThemeTokens", themeArgs(SWIFT, t, "    ", "DS"), "    ")}`).join("\n\n")}
 
-    public static let themes: [String: AbeThemeTokens] = [${themes.map((t) => `"${t.name}": ${ident(t.name)}`).join(", ")}]
+    public static let themes: [String: DSThemeTokens] = [${themes.map((t) => `"${t.name}": ${ident(t.name)}`).join(", ")}]
 
 ${consts("Spacing", base.spacing)}
 ${consts("Duration", base.duration)}
@@ -498,42 +498,42 @@ export function kotlin(base: Base, themes: Theme[]): string {
   return `// ${HEADER}
 @file:Suppress("unused")
 
-package com.abe.design
+package com.abrahamjeyaraj.designsystem
 
-data class AbeShadowLayer(val x: Float, val y: Float, val blur: Float, val spread: Float, val alpha: Float)
+data class DSShadowLayer(val x: Float, val y: Float, val blur: Float, val spread: Float, val alpha: Float)
 
 /** Colours are 0xAARRGGBB, ready for androidx.compose.ui.graphics.Color(Long). */
-${[KOTLIN.struct("AbeTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => KOTLIN.struct(`Abe${s.type}`, s.fields(sample)))].join("\n\n")}
+${[KOTLIN.struct("DSTextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => KOTLIN.struct(`DS${s.type}`, s.fields(sample)))].join("\n\n")}
 
-data class AbeThemeTokens(
+data class DSThemeTokens(
     val name: String,
-    val light: AbeColorScheme,
-    val dark: AbeColorScheme,
+    val light: DSColorScheme,
+    val dark: DSColorScheme,
     /** Brand-only colours outside the shared role contract. */
     val extraLight: Map<String, Long>,
     val extraDark: Map<String, Long>,
-    val fontFamily: AbeFontFamilies,
-    val fontSize: AbeFontSizes,
-    val fontWeight: AbeFontWeights,
-    val lineHeight: AbeLineHeights,
-    val radius: AbeRadii,
-    val shadow: AbeShadows,
-    val label: AbeLabelStyle,
-    val mobileType: AbeMobileType,
-    val mobileLayout: AbeMobileLayout,
+    val fontFamily: DSFontFamilies,
+    val fontSize: DSFontSizes,
+    val fontWeight: DSFontWeights,
+    val lineHeight: DSLineHeights,
+    val radius: DSRadii,
+    val shadow: DSShadows,
+    val label: DSLabelStyle,
+    val mobileType: DSMobileType,
+    val mobileLayout: DSMobileLayout,
     /** False when the app is light-only by design; adapters then ignore the system dark setting. */
     val supportsDark: Boolean,
 ) {
-    fun colors(dark: Boolean): AbeColorScheme = if (dark) this.dark else light
+    fun colors(dark: Boolean): DSColorScheme = if (dark) this.dark else light
 }
 
-object AbeTokens {
+object DSTokens {
     const val DEFAULT_THEME = "${DEFAULT_THEME}"
     const val MIN_TOUCH_TARGET: Int = ${base.minTouchTarget}
 
-${themes.map((t) => `    val ${ident(t.name)} = ${KOTLIN.construct("AbeThemeTokens", themeArgs(KOTLIN, t, "    ", "Abe"), "    ")}`).join("\n\n")}
+${themes.map((t) => `    val ${ident(t.name)} = ${KOTLIN.construct("DSThemeTokens", themeArgs(KOTLIN, t, "    ", "DS"), "    ")}`).join("\n\n")}
 
-    val themes: Map<String, AbeThemeTokens> = mapOf(${themes.map((t) => `"${t.name}" to ${ident(t.name)}`).join(", ")})
+    val themes: Map<String, DSThemeTokens> = mapOf(${themes.map((t) => `"${t.name}" to ${ident(t.name)}`).join(", ")})
 
 ${consts("Spacing", base.spacing)}
 ${consts("Duration", base.duration)}
@@ -550,16 +550,16 @@ export function dart(base: Base, themes: Theme[]): string {
   return `// ${HEADER}
 // ignore_for_file: constant_identifier_names
 
-class AbeShadowLayer {
-  const AbeShadowLayer(this.x, this.y, this.blur, this.spread, this.alpha);
+class DSShadowLayer {
+  const DSShadowLayer(this.x, this.y, this.blur, this.spread, this.alpha);
   final double x, y, blur, spread, alpha;
 }
 
 /// Colours are 0xAARRGGBB, ready for dart:ui Color(int).
 ${[DART.struct("TextRole", TEXT_ROLE_FIELDS), ...STRUCTS.map((s) => DART.struct(s.type, s.fields(sample)))].join("\n\n")}
 
-class AbeThemeTokens {
-  const AbeThemeTokens({
+class DSThemeTokens {
+  const DSThemeTokens({
     required this.name,
     required this.light,
     required this.dark,
@@ -578,42 +578,42 @@ class AbeThemeTokens {
   });
 
   final String name;
-  final AbeColorScheme light;
-  final AbeColorScheme dark;
+  final DSColorScheme light;
+  final DSColorScheme dark;
 
   /// Brand-only colours outside the shared role contract.
   final Map<String, int> extraLight;
   final Map<String, int> extraDark;
-  final AbeFontFamilies fontFamily;
-  final AbeFontSizes fontSize;
-  final AbeFontWeights fontWeight;
-  final AbeLineHeights lineHeight;
-  final AbeRadii radius;
-  final AbeShadows shadow;
-  final AbeLabelStyle label;
-  final AbeMobileType mobileType;
-  final AbeMobileLayout mobileLayout;
+  final DSFontFamilies fontFamily;
+  final DSFontSizes fontSize;
+  final DSFontWeights fontWeight;
+  final DSLineHeights lineHeight;
+  final DSRadii radius;
+  final DSShadows shadow;
+  final DSLabelStyle label;
+  final DSMobileType mobileType;
+  final DSMobileLayout mobileLayout;
 
   /// False when the app is light-only by design; adapters then ignore the system dark setting.
   final bool supportsDark;
 
-  AbeColorScheme colors({required bool dark}) => dark ? this.dark : light;
+  DSColorScheme colors({required bool dark}) => dark ? this.dark : light;
 }
 
-abstract final class AbeTokens {
+abstract final class DSTokens {
   static const String defaultTheme = '${DEFAULT_THEME}';
   static const double minTouchTarget = ${num(base.minTouchTarget, true)};
 
-${themes.map((t) => `  static const ${ident(t.name)} = ${DART.construct("AbeThemeTokens", themeArgs(DART, t, "  ", "Abe"), "  ")};`).join("\n\n")}
+${themes.map((t) => `  static const ${ident(t.name)} = ${DART.construct("DSThemeTokens", themeArgs(DART, t, "  ", "DS"), "  ")};`).join("\n\n")}
 
-  static const Map<String, AbeThemeTokens> themes = {${themes.map((t) => `'${t.name}': ${ident(t.name)}`).join(", ")}};
+  static const Map<String, DSThemeTokens> themes = {${themes.map((t) => `'${t.name}': ${ident(t.name)}`).join(", ")}};
 }
 
-${consts("AbeSpacing", base.spacing, "double")}
+${consts("DSSpacing", base.spacing, "double")}
 
-${consts("AbeDuration", base.duration, "int")}
+${consts("DSDuration", base.duration, "int")}
 
-${consts("AbeBreakpoint", base.breakpoint, "double")}
+${consts("DSBreakpoint", base.breakpoint, "double")}
 `;
 }
 
@@ -625,9 +625,9 @@ export function outputs(root = ROOT): Record<string, string> {
   for (const t of themes) files[`packages/tokens/generated/css/${t.name}.css`] = themeCss(base, t);
   files["packages/tokens/generated/tokens.json"] = `${JSON.stringify(tokensJson(base, themes), null, 2)}\n`;
   files["packages/tokens/generated/index.ts"] = tokensTs(base, themes);
-  files["native/swift/Sources/AbeDesign/AbeTokens.swift"] = swift(base, themes);
-  files["native/android/abe-design/src/main/kotlin/com/abe/design/AbeTokens.kt"] = kotlin(base, themes);
-  files["native/flutter/lib/src/abe_tokens.g.dart"] = dart(base, themes);
+  files["native/swift/Sources/DesignSystem/DSTokens.swift"] = swift(base, themes);
+  files["native/android/designsystem/src/main/kotlin/com/abrahamjeyaraj/designsystem/DSTokens.kt"] = kotlin(base, themes);
+  files["native/flutter/lib/src/ds_tokens.g.dart"] = dart(base, themes);
   return files;
 }
 

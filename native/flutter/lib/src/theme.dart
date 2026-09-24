@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'abe_tokens.g.dart';
+import 'ds_tokens.g.dart';
 
 /// Families explicitly registered by the host app's pubspec font assets.
 ///
 /// Flutter does not expose its font manifest at runtime. Apps that bundle a
 /// token family should register it here; otherwise system serif/sans fallbacks
 /// are selected automatically.
-abstract final class AbeFonts {
+abstract final class DSFonts {
   static final Set<String> registeredFamilies = <String>{};
 
   static void register(String family) => registeredFamilies.add(family);
@@ -16,14 +16,14 @@ abstract final class AbeFonts {
 }
 
 String _font(String family, {required bool serif}) =>
-    AbeFonts.registeredFamilies.contains(family)
+    DSFonts.registeredFamilies.contains(family)
     ? family
     : (serif ? 'serif' : 'sans-serif');
 
 /// Resolves an OS brightness to a supported theme brightness.
-abstract final class AbeThemeMode {
+abstract final class DSThemeMode {
   static Brightness forTheme(
-    AbeThemeTokens tokens,
+    DSThemeTokens tokens,
     Brightness platformBrightness,
   ) => tokens.supportsDark ? platformBrightness : Brightness.light;
 }
@@ -37,19 +37,19 @@ FontWeight _weight(int w) =>
 /// Theme colours + typography exposed as a ThemeExtension for roles Material has no slot for
 /// (ink, subtle, line, action, status colours, brand extras).
 @immutable
-class AbeTheme extends ThemeExtension<AbeTheme> {
-  const AbeTheme({
+class DSTheme extends ThemeExtension<DSTheme> {
+  const DSTheme({
     required this.tokens,
     required this.colors,
     required this.dark,
   });
 
-  final AbeThemeTokens tokens;
-  final AbeColorScheme colors;
+  final DSThemeTokens tokens;
+  final DSColorScheme colors;
   final bool dark;
 
-  static AbeTheme of(BuildContext context) =>
-      Theme.of(context).extension<AbeTheme>()!;
+  static DSTheme of(BuildContext context) =>
+      Theme.of(context).extension<DSTheme>()!;
 
   Color color(int argb) => Color(argb);
   Color? extra(String name) {
@@ -61,10 +61,10 @@ class AbeTheme extends ThemeExtension<AbeTheme> {
       _font(family, serif: serif);
 
   @override
-  AbeTheme copyWith({AbeThemeTokens? tokens, bool? dark}) {
+  DSTheme copyWith({DSThemeTokens? tokens, bool? dark}) {
     final t = tokens ?? this.tokens;
     final d = dark ?? this.dark;
-    return AbeTheme(
+    return DSTheme(
       tokens: t,
       colors: t.colors(dark: d),
       dark: d,
@@ -72,15 +72,15 @@ class AbeTheme extends ThemeExtension<AbeTheme> {
   }
 
   @override
-  AbeTheme lerp(covariant AbeTheme? other, double t) =>
+  DSTheme lerp(covariant DSTheme? other, double t) =>
       t < 0.5 ? this : (other ?? this);
 }
 
-ThemeData abeThemeData(
-  AbeThemeTokens tokens, {
+ThemeData dsThemeData(
+  DSThemeTokens tokens, {
   required Brightness brightness,
 }) {
-  final resolvedBrightness = AbeThemeMode.forTheme(tokens, brightness);
+  final resolvedBrightness = DSThemeMode.forTheme(tokens, brightness);
   final dark = resolvedBrightness == Brightness.dark;
   final c = tokens.colors(dark: dark);
   final label = tokens.label;
@@ -165,11 +165,11 @@ ThemeData abeThemeData(
         borderSide: BorderSide(color: Color(c.ring), width: 2),
       ),
     ),
-    extensions: [AbeTheme(tokens: tokens, colors: c, dark: dark)],
+    extensions: [DSTheme(tokens: tokens, colors: c, dark: dark)],
   );
 }
 
-TextStyle _mobileStyle(AbeTextRole role, int color, {bool serif = false}) =>
+TextStyle _mobileStyle(DSTextRole role, int color, {bool serif = false}) =>
     TextStyle(
       fontFamily: _font(role.family, serif: serif),
       fontSize: role.size,

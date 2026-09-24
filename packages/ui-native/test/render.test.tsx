@@ -4,28 +4,28 @@ mock.module('react-native', () => rnw);
 
 const React = (await import('react')).default;
 const { renderToString } = await import('react-dom/server');
-const { AbeThemeProvider } = await import('../src/theme');
+const { DSThemeProvider } = await import('../src/theme');
 const {
-  AbeText,
-  AbeButton,
-  AbeIconButton,
-  AbeChip,
-  AbeAvatar,
-  AbeListRow,
-  AbeStatTile,
-  AbeSegmented,
-  AbeField,
-  AbeSearchField,
-  AbeLargeTitle,
-  AbeNavBar,
-  AbeSheetHandle,
-  AbeSectionHeader,
-  AbeTabBar,
-  AbeCard,
-  AbeEmptyState,
-  AbeBadge,
-  AbeInput,
-  AbeGallery,
+  DSText,
+  DSButton,
+  DSIconButton,
+  DSChip,
+  DSAvatar,
+  DSListRow,
+  DSStatTile,
+  DSSegmented,
+  DSField,
+  DSSearchField,
+  DSLargeTitle,
+  DSNavBar,
+  DSSheetHandle,
+  DSSectionHeader,
+  DSTabBar,
+  DSCard,
+  DSEmptyState,
+  DSBadge,
+  DSInput,
+  DSGallery,
   Text,
   Button,
   Card,
@@ -34,17 +34,17 @@ const {
 } = await import('../src/components');
 
 function render(node: React.ReactNode, theme: 'tuition' | 'church' | 'bible' = 'tuition') {
-  return renderToString(<AbeThemeProvider theme={theme}>{node}</AbeThemeProvider>);
+  return renderToString(<DSThemeProvider theme={theme}>{node}</DSThemeProvider>);
 }
 
-test('AbeText renders all variants with allowFontScaling', () => {
+test('DSText renders all variants with allowFontScaling', () => {
   const html = render(
     <>
-      <AbeText variant="title">Title Text</AbeText>
-      <AbeText variant="headline">Headline Text</AbeText>
-      <AbeText variant="body">Body Text</AbeText>
-      <AbeText variant="label">Label Text</AbeText>
-      <AbeText variant="caption">Caption Text</AbeText>
+      <DSText variant="title">Title Text</DSText>
+      <DSText variant="headline">Headline Text</DSText>
+      <DSText variant="body">Body Text</DSText>
+      <DSText variant="label">Label Text</DSText>
+      <DSText variant="caption">Caption Text</DSText>
     </>
   );
   expect(html).toContain('Title Text');
@@ -54,15 +54,15 @@ test('AbeText renders all variants with allowFontScaling', () => {
   expect(html).toContain('Caption Text');
 });
 
-test('AbeButton renders all variants with button role', () => {
+test('DSButton renders all variants with button role', () => {
   const html = render(
     <>
-      <AbeButton variant="primary">Primary</AbeButton>
-      <AbeButton variant="secondary">Secondary</AbeButton>
-      <AbeButton variant="outline">Outline</AbeButton>
-      <AbeButton variant="ghost">Ghost</AbeButton>
-      <AbeButton variant="destructive">Destructive</AbeButton>
-      <AbeButton disabled>Disabled</AbeButton>
+      <DSButton variant="primary">Primary</DSButton>
+      <DSButton variant="secondary">Secondary</DSButton>
+      <DSButton variant="outline">Outline</DSButton>
+      <DSButton variant="ghost">Ghost</DSButton>
+      <DSButton variant="destructive">Destructive</DSButton>
+      <DSButton disabled>Disabled</DSButton>
     </>
   );
   expect(html).toContain('role="button"');
@@ -71,21 +71,21 @@ test('AbeButton renders all variants with button role', () => {
   expect(html).toContain('Destructive');
 });
 
-test('AbeIconButton renders with touch target and accessibility label', () => {
-  const html = render(<AbeIconButton icon="★" accessibilityLabel="Favorite" />);
+test('DSIconButton renders with touch target and accessibility label', () => {
+  const html = render(<DSIconButton icon="★" accessibilityLabel="Favorite" />);
   expect(html).toContain('role="button"');
   expect(html).toContain('aria-label="Favorite"');
   expect(html).toContain('★');
 });
 
-test('AbeChip renders all tones with non-colour-only accessibility', () => {
+test('DSChip renders all tones with non-colour-only accessibility', () => {
   const html = render(
     <>
-      <AbeChip tone="neutral">Neutral</AbeChip>
-      <AbeChip tone="accent">Accent</AbeChip>
-      <AbeChip tone="success">Paid</AbeChip>
-      <AbeChip tone="warning">Due</AbeChip>
-      <AbeChip tone="error">Overdue</AbeChip>
+      <DSChip tone="neutral">Neutral</DSChip>
+      <DSChip tone="accent">Accent</DSChip>
+      <DSChip tone="success">Paid</DSChip>
+      <DSChip tone="warning">Due</DSChip>
+      <DSChip tone="error">Overdue</DSChip>
     </>
   );
   expect(html).toContain('Paid');
@@ -94,19 +94,19 @@ test('AbeChip renders all tones with non-colour-only accessibility', () => {
   expect(html).toContain('aria-label="success Paid"');
 });
 
-test('AbeAvatar renders initials with image role', () => {
-  const html = render(<AbeAvatar initials="AR" accessibilityLabel="Ananya Raghavan" />);
+test('DSAvatar renders initials with image role', () => {
+  const html = render(<DSAvatar initials="AR" accessibilityLabel="Ananya Raghavan" />);
   expect(html).toContain('role="img"');
   expect(html).toContain('AR');
 });
 
-test('AbeListRow renders leading, title, subtitle, trailing and chevron', () => {
+test('DSListRow renders leading, title, subtitle, trailing and chevron', () => {
   const html = render(
-    <AbeListRow
-      leading={<AbeAvatar initials="AR" />}
+    <DSListRow
+      leading={<DSAvatar initials="AR" />}
       title="Ananya Raghavan"
       subtitle="Class 10 · Maths, Physics"
-      trailing={<AbeChip tone="success">Paid</AbeChip>}
+      trailing={<DSChip tone="success">Paid</DSChip>}
       chevron="›"
       onPress={() => {}}
     />
@@ -118,18 +118,18 @@ test('AbeListRow renders leading, title, subtitle, trailing and chevron', () => 
   expect(html).toContain('role="button"');
 });
 
-test('AbeStatTile renders label, value and tone meta', () => {
+test('DSStatTile renders label, value and tone meta', () => {
   const html = render(
-    <AbeStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
+    <DSStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
   );
   expect(html).toContain('Collected');
   expect(html).toContain('₹3,84,000');
   expect(html).toContain('+12% vs Aug');
 });
 
-test('AbeSegmented renders tabs and tablist role', () => {
+test('DSSegmented renders tabs and tablist role', () => {
   const html = render(
-    <AbeSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="Due" />
+    <DSSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="Due" />
   );
   expect(html).toContain('role="tablist"');
   expect(html).toContain('role="tab"');
@@ -137,50 +137,50 @@ test('AbeSegmented renders tabs and tablist role', () => {
   expect(html).toContain('Due');
 });
 
-test('AbeField renders label and text input', () => {
-  const html = render(<AbeField label="Amount" placeholder="₹12,000" defaultValue="₹12,000" />);
+test('DSField renders label and text input', () => {
+  const html = render(<DSField label="Amount" placeholder="₹12,000" defaultValue="₹12,000" />);
   expect(html).toContain('Amount');
   expect(html).toContain('₹12,000');
 });
 
-test('AbeSearchField renders search role and placeholder', () => {
-  const html = render(<AbeSearchField placeholder="Search students" icon="🔍" />);
+test('DSSearchField renders search role and placeholder', () => {
+  const html = render(<DSSearchField placeholder="Search students" icon="🔍" />);
   expect(html).toContain('role="search"');
   expect(html).toContain('Search students');
   expect(html).toContain('🔍');
 });
 
-test('AbeLargeTitle renders eyebrow and title with header role', () => {
+test('DSLargeTitle renders eyebrow and title with header role', () => {
   const html = render(
-    <AbeLargeTitle eyebrow="Friday, 19 September" title="Today" trailing={<AbeButton size="sm">Action</AbeButton>} />
+    <DSLargeTitle eyebrow="Friday, 19 September" title="Today" trailing={<DSButton size="sm">Action</DSButton>} />
   );
   expect(html).toContain('role="heading"');
   expect(html).toContain('Friday, 19 September');
   expect(html).toContain('Today');
 });
 
-test('AbeNavBar renders header role with title and actions', () => {
-  const html = render(<AbeNavBar leading="Back" title="Student" trailing="More" />);
+test('DSNavBar renders header role with title and actions', () => {
+  const html = render(<DSNavBar leading="Back" title="Student" trailing="More" />);
   expect(html).toContain('role="heading"');
   expect(html).toContain('Student');
   expect(html).toContain('Back');
   expect(html).toContain('More');
 });
 
-test('AbeSheetHandle renders grabber', () => {
-  const html = render(<AbeSheetHandle />);
+test('DSSheetHandle renders grabber', () => {
+  const html = render(<DSSheetHandle />);
   expect(html).toContain('aria-label="Sheet handle"');
 });
 
-test('AbeSectionHeader renders title and action', () => {
-  const html = render(<AbeSectionHeader title="Classes today" action="See all" onAction={() => {}} />);
+test('DSSectionHeader renders title and action', () => {
+  const html = render(<DSSectionHeader title="Classes today" action="See all" onAction={() => {}} />);
   expect(html).toContain('Classes today');
   expect(html).toContain('See all');
 });
 
-test('AbeTabBar renders floating capsule with tab items', () => {
+test('DSTabBar renders floating capsule with tab items', () => {
   const html = render(
-    <AbeTabBar
+    <DSTabBar
       items={[
         { label: 'Today', value: 'today', icon: '📅' },
         { label: 'Students', value: 'students', icon: '👥' },
@@ -196,7 +196,7 @@ test('AbeTabBar renders floating capsule with tab items', () => {
   expect(html).toContain('Fees');
 });
 
-test('AbeCard and backwards-compatible primitives render', () => {
+test('DSCard and backwards-compatible primitives render', () => {
   const html = render(
     <Card>
       <Text>Card content</Text>
@@ -211,9 +211,9 @@ test('AbeCard and backwards-compatible primitives render', () => {
   expect(html).toContain('Click');
 });
 
-test('AbeEmptyState renders icon, title, message and action', () => {
+test('DSEmptyState renders icon, title, message and action', () => {
   const html = render(
-    <AbeEmptyState icon="📂" title="No Students" message="Add a student to get started." action={<AbeButton>Add Student</AbeButton>} />
+    <DSEmptyState icon="📂" title="No Students" message="Add a student to get started." action={<DSButton>Add Student</DSButton>} />
   );
   expect(html).toContain('📂');
   expect(html).toContain('No Students');
@@ -221,8 +221,8 @@ test('AbeEmptyState renders icon, title, message and action', () => {
   expect(html).toContain('Add Student');
 });
 
-test('AbeGallery renders all 3 themes and honours supportsDark', () => {
-  const html = renderToString(<AbeGallery />);
+test('DSGallery renders all 3 themes and honours supportsDark', () => {
+  const html = renderToString(<DSGallery />);
   expect(html).toContain('tuition (light)');
   expect(html).toContain('Light only - supportsDark: false');
   expect(html).toContain('church (light)');
@@ -230,11 +230,11 @@ test('AbeGallery renders all 3 themes and honours supportsDark', () => {
   expect(html).toContain('bible (light)');
   expect(html).toContain('bible (dark)');
 
-  const tuitionOnly = renderToString(<AbeGallery theme="tuition" />);
+  const tuitionOnly = renderToString(<DSGallery theme="tuition" />);
   expect(tuitionOnly).toContain('tuition (light)');
   expect(tuitionOnly).not.toContain('church');
 
-  const tuitionDarkRequested = renderToString(<AbeGallery theme="tuition" mode="dark" />);
+  const tuitionDarkRequested = renderToString(<DSGallery theme="tuition" mode="dark" />);
   expect(tuitionDarkRequested).toContain('tuition (light)');
   expect(tuitionDarkRequested).not.toContain('tuition (dark)');
 });

@@ -9,7 +9,7 @@ Turn your platform's adapter into a component SDK that renders the Pen "Native D
 first and ChurchHQ / TheBibleProject can reuse it with their own themes.
 
 ## Hard rules
-- Values come from the generated tokens (`AbeTokens.<theme>`: `light/dark` roles, `mobileType`,
+- Values come from the generated tokens (`DSTokens.<theme>`: `light/dark` roles, `mobileType`,
   `mobileLayout`, `radius`, `label`, `extraLight/extraDark`, `supportsDark`). No hex literals, no
   numbers that belong to a theme. Pen literals map to roles:
   - `$accent` = `primary`/`action`; `$on-accent` = `action-foreground`
@@ -28,7 +28,7 @@ first and ChurchHQ / TheBibleProject can reuse it with their own themes.
 - Fonts: resolve the theme family if the app bundles it, else fall back to system serif (heading
   roles) or system sans (others). No bundled font files, no network.
 - Accessibility: labels/roles on every interactive component; chips and status not colour-only.
-- Every component has an `Abe` prefix (or lives in an `Abe` namespace) to avoid clashing with app types.
+- Every component has a `DS` prefix (or lives in a `DS` namespace) to avoid clashing with app types.
 
 ## Components (minimum)
 Text styles (title, headline, body, label, caption) · Button (primary, secondary, ghost, destructive;

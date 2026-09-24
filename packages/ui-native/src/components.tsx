@@ -13,7 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { type ColorMode, type ThemeName, tokens } from '@abrahamjeyaraj/tokens';
-import { AbeThemeProvider, useAbeTheme } from './theme';
+import { DSThemeProvider, useDSTheme } from './theme';
 
 export const ICON_SIZE_SM = 18;
 export const ICON_SIZE_MD = 20;
@@ -26,7 +26,7 @@ export const CHIP_PADDING_X = 10;
 
 type Tone = 'neutral' | 'accent' | 'success' | 'warning' | 'error' | 'info';
 
-const toneStyle = (t: ReturnType<typeof useAbeTheme>, tone: Tone) => ({
+const toneStyle = (t: ReturnType<typeof useDSTheme>, tone: Tone) => ({
   neutral: { bg: t.colors.secondary, fg: t.colors['secondary-foreground'] },
   accent: { bg: t.colors.accent, fg: t.colors['accent-foreground'] },
   success: { bg: t.colors['success-light'], fg: t.colors.success },
@@ -39,12 +39,12 @@ const toneStyle = (t: ReturnType<typeof useAbeTheme>, tone: Tone) => ({
 
 export type TextVariant = 'title' | 'headline' | 'body' | 'label' | 'caption' | 'heading' | 'muted';
 
-export interface AbeTextProps extends RNTextProps {
+export interface DSTextProps extends RNTextProps {
   variant?: TextVariant;
 }
 
-export function AbeText({ variant = 'body', style, allowFontScaling = true, ...props }: AbeTextProps) {
-  const t = useAbeTheme();
+export function DSText({ variant = 'body', style, allowFontScaling = true, ...props }: DSTextProps) {
+  const t = useDSTheme();
   const m = t.mobileType;
   const roles: Record<TextVariant, TextStyle> = {
     title: {
@@ -106,7 +106,7 @@ export function AbeText({ variant = 'body', style, allowFontScaling = true, ...p
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive' | 'outline' | 'default';
 export type ButtonSize = 'sm' | 'default' | 'lg';
 
-export interface AbeButtonProps extends Omit<PressableProps, 'style' | 'children'> {
+export interface DSButtonProps extends Omit<PressableProps, 'style' | 'children'> {
   children?: ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -115,7 +115,7 @@ export interface AbeButtonProps extends Omit<PressableProps, 'style' | 'children
   textStyle?: StyleProp<TextStyle>;
 }
 
-export function AbeButton({
+export function DSButton({
   children,
   variant = 'primary',
   size = 'default',
@@ -124,8 +124,8 @@ export function AbeButton({
   style,
   textStyle,
   ...props
-}: AbeButtonProps) {
-  const t = useAbeTheme();
+}: DSButtonProps) {
+  const t = useDSTheme();
   const v = variant === 'default' ? 'primary' : variant;
   const surface = {
     primary: [t.colors.action, t.colors['action-foreground']],
@@ -163,9 +163,9 @@ export function AbeButton({
     >
       {leadingIcon}
       {typeof children === 'string' ? (
-        <AbeText variant="label" style={[{ color: fg }, textStyle]}>
+        <DSText variant="label" style={[{ color: fg }, textStyle]}>
           {children}
-        </AbeText>
+        </DSText>
       ) : (
         children
       )}
@@ -175,13 +175,13 @@ export function AbeButton({
 
 // ---------- IconButton ----------
 
-export interface AbeIconButtonProps extends Omit<PressableProps, 'children'> {
+export interface DSIconButtonProps extends Omit<PressableProps, 'children'> {
   icon: ReactNode;
   accessibilityLabel: string;
 }
 
-export function AbeIconButton({ icon, accessibilityLabel, style, ...props }: AbeIconButtonProps) {
-  const t = useAbeTheme();
+export function DSIconButton({ icon, accessibilityLabel, style, ...props }: DSIconButtonProps) {
+  const t = useDSTheme();
   const size = Math.max(t.mobileLayout.touchTarget, 44);
   return (
     <Pressable
@@ -203,20 +203,20 @@ export function AbeIconButton({ icon, accessibilityLabel, style, ...props }: Abe
       ]}
       {...props}
     >
-      {typeof icon === 'string' ? <AbeText variant="body">{icon}</AbeText> : icon}
+      {typeof icon === 'string' ? <DSText variant="body">{icon}</DSText> : icon}
     </Pressable>
   );
 }
 
 // ---------- Chip ----------
 
-export interface AbeChipProps extends ViewProps {
+export interface DSChipProps extends ViewProps {
   tone?: Exclude<Tone, 'info'>;
   children: ReactNode;
 }
 
-export function AbeChip({ tone = 'neutral', children, style, ...props }: AbeChipProps) {
-  const t = useAbeTheme();
+export function DSChip({ tone = 'neutral', children, style, ...props }: DSChipProps) {
+  const t = useDSTheme();
   const s = toneStyle(t, tone);
   return (
     <View
@@ -235,9 +235,9 @@ export function AbeChip({ tone = 'neutral', children, style, ...props }: AbeChip
       {...props}
     >
       {typeof children === 'string' ? (
-        <AbeText variant="label" style={{ color: s.fg, fontSize: 12 }}>
+        <DSText variant="label" style={{ color: s.fg, fontSize: 12 }}>
           {children}
-        </AbeText>
+        </DSText>
       ) : (
         children
       )}
@@ -247,14 +247,14 @@ export function AbeChip({ tone = 'neutral', children, style, ...props }: AbeChip
 
 // ---------- Avatar ----------
 
-export interface AbeAvatarProps {
+export interface DSAvatarProps {
   initials: string;
   accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeAvatar({ initials, accessibilityLabel, style }: AbeAvatarProps) {
-  const t = useAbeTheme();
+export function DSAvatar({ initials, accessibilityLabel, style }: DSAvatarProps) {
+  const t = useDSTheme();
   return (
     <View
       accessibilityRole="image"
@@ -271,16 +271,16 @@ export function AbeAvatar({ initials, accessibilityLabel, style }: AbeAvatarProp
         style,
       ]}
     >
-      <AbeText variant="label" style={{ color: t.colors.action, fontSize: 14 }}>
+      <DSText variant="label" style={{ color: t.colors.action, fontSize: 14 }}>
         {initials}
-      </AbeText>
+      </DSText>
     </View>
   );
 }
 
 // ---------- ListRow ----------
 
-export interface AbeListRowProps {
+export interface DSListRowProps {
   leading?: ReactNode;
   title: ReactNode;
   subtitle?: ReactNode;
@@ -290,34 +290,34 @@ export interface AbeListRowProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeListRow({ leading, title, subtitle, trailing, chevron, onPress, style }: AbeListRowProps) {
-  const t = useAbeTheme();
+export function DSListRow({ leading, title, subtitle, trailing, chevron, onPress, style }: DSListRowProps) {
+  const t = useDSTheme();
   const content = (
     <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', gap: 12, paddingHorizontal: 16 }}>
-      {typeof leading === 'string' ? <AbeText variant="body">{leading}</AbeText> : leading}
+      {typeof leading === 'string' ? <DSText variant="body">{leading}</DSText> : leading}
       <View style={{ flex: 1, gap: 2 }}>
         {typeof title === 'string' ? (
-          <AbeText variant="body" style={{ fontWeight: t.weight(600) }}>
+          <DSText variant="body" style={{ fontWeight: t.weight(600) }}>
             {title}
-          </AbeText>
+          </DSText>
         ) : (
           title
         )}
         {typeof subtitle === 'string' ? (
-          <AbeText variant="label" style={{ color: t.colors['muted-foreground'] }}>
+          <DSText variant="label" style={{ color: t.colors['muted-foreground'] }}>
             {subtitle}
-          </AbeText>
+          </DSText>
         ) : (
           subtitle
         )}
       </View>
-      {typeof trailing === 'string' ? <AbeText variant="body">{trailing}</AbeText> : trailing}
+      {typeof trailing === 'string' ? <DSText variant="body">{trailing}</DSText> : trailing}
       {chevron && (
         <View style={{ width: ICON_SIZE_SM, height: ICON_SIZE_SM, alignItems: 'center', justifyContent: 'center' }}>
           {typeof chevron === 'string' ? (
-            <AbeText variant="label" style={{ color: t.colors['muted-foreground'] }}>
+            <DSText variant="label" style={{ color: t.colors['muted-foreground'] }}>
               {chevron}
-            </AbeText>
+            </DSText>
           ) : (
             chevron
           )}
@@ -362,7 +362,7 @@ export function AbeListRow({ leading, title, subtitle, trailing, chevron, onPres
 
 // ---------- StatTile ----------
 
-export interface AbeStatTileProps {
+export interface DSStatTileProps {
   label: ReactNode;
   value: ReactNode;
   meta?: ReactNode;
@@ -370,8 +370,8 @@ export interface AbeStatTileProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeStatTile({ label, value, meta, tone = 'neutral', style }: AbeStatTileProps) {
-  const t = useAbeTheme();
+export function DSStatTile({ label, value, meta, tone = 'neutral', style }: DSStatTileProps) {
+  const t = useDSTheme();
   const s = toneStyle(t, tone);
   return (
     <View
@@ -390,24 +390,24 @@ export function AbeStatTile({ label, value, meta, tone = 'neutral', style }: Abe
       ]}
     >
       {typeof label === 'string' ? (
-        <AbeText variant="label" style={{ color: t.colors['muted-foreground'] }}>
+        <DSText variant="label" style={{ color: t.colors['muted-foreground'] }}>
           {label}
-        </AbeText>
+        </DSText>
       ) : (
         label
       )}
       {typeof value === 'string' || typeof value === 'number' ? (
-        <AbeText variant="title" style={{ fontSize: 24, fontFamily: t.mobileType.title.family }}>
+        <DSText variant="title" style={{ fontSize: 24, fontFamily: t.mobileType.title.family }}>
           {value}
-        </AbeText>
+        </DSText>
       ) : (
         value
       )}
       {meta && (
         typeof meta === 'string' ? (
-          <AbeText variant="label" style={{ color: s.fg, fontSize: 12 }}>
+          <DSText variant="label" style={{ color: s.fg, fontSize: 12 }}>
             {meta}
-          </AbeText>
+          </DSText>
         ) : (
           meta
         )
@@ -418,21 +418,21 @@ export function AbeStatTile({ label, value, meta, tone = 'neutral', style }: Abe
 
 // ---------- Segmented ----------
 
-export interface AbeSegmentedItem {
+export interface DSSegmentedItem {
   label: string;
   value: string;
 }
 
-export interface AbeSegmentedProps {
-  items: (AbeSegmentedItem | string)[];
+export interface DSSegmentedProps {
+  items: (DSSegmentedItem | string)[];
   selected: string;
   onChange?: (value: string) => void;
   onSelect?: (value: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeSegmented({ items, selected, onChange, onSelect, style }: AbeSegmentedProps) {
-  const t = useAbeTheme();
+export function DSSegmented({ items, selected, onChange, onSelect, style }: DSSegmentedProps) {
+  const t = useDSTheme();
   const handleSelect = (val: string) => {
     onChange?.(val);
     onSelect?.(val);
@@ -474,7 +474,7 @@ export function AbeSegmented({ items, selected, onChange, onSelect, style }: Abe
               },
             ]}
           >
-            <AbeText
+            <DSText
               variant="label"
               style={{
                 color: active ? t.colors.ink : t.colors['ink-body'],
@@ -482,7 +482,7 @@ export function AbeSegmented({ items, selected, onChange, onSelect, style }: Abe
               }}
             >
               {item.label}
-            </AbeText>
+            </DSText>
           </Pressable>
         );
       })}
@@ -492,21 +492,21 @@ export function AbeSegmented({ items, selected, onChange, onSelect, style }: Abe
 
 // ---------- Field ----------
 
-export interface AbeFieldProps extends TextInputProps {
+export interface DSFieldProps extends TextInputProps {
   label?: ReactNode;
   inputStyle?: StyleProp<TextStyle>;
   containerStyle?: StyleProp<ViewStyle>;
 }
 
-export function AbeField({ label, inputStyle, containerStyle, style, ...props }: AbeFieldProps) {
-  const t = useAbeTheme();
+export function DSField({ label, inputStyle, containerStyle, style, ...props }: DSFieldProps) {
+  const t = useDSTheme();
   return (
     <View style={[{ gap: 6 }, containerStyle]}>
       {label && (
         typeof label === 'string' ? (
-          <AbeText variant="label" style={{ color: t.colors['ink-body'] }}>
+          <DSText variant="label" style={{ color: t.colors['ink-body'] }}>
             {label}
-          </AbeText>
+          </DSText>
         ) : (
           label
         )
@@ -545,14 +545,14 @@ export function AbeField({ label, inputStyle, containerStyle, style, ...props }:
 
 // ---------- SearchField ----------
 
-export interface AbeSearchFieldProps extends TextInputProps {
+export interface DSSearchFieldProps extends TextInputProps {
   icon?: ReactNode;
   style?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
 }
 
-export function AbeSearchField({ icon, style, inputStyle, ...props }: AbeSearchFieldProps) {
-  const t = useAbeTheme();
+export function DSSearchField({ icon, style, inputStyle, ...props }: DSSearchFieldProps) {
+  const t = useDSTheme();
   return (
     <View
       accessibilityRole="search"
@@ -571,7 +571,7 @@ export function AbeSearchField({ icon, style, inputStyle, ...props }: AbeSearchF
     >
       {icon && (
         <View style={{ width: ICON_SIZE_SM, height: ICON_SIZE_SM, alignItems: 'center', justifyContent: 'center' }}>
-          {typeof icon === 'string' ? <AbeText variant="body">{icon}</AbeText> : icon}
+          {typeof icon === 'string' ? <DSText variant="body">{icon}</DSText> : icon}
         </View>
       )}
       <TextInput
@@ -594,31 +594,31 @@ export function AbeSearchField({ icon, style, inputStyle, ...props }: AbeSearchF
 
 // ---------- LargeTitle ----------
 
-export interface AbeLargeTitleProps {
+export interface DSLargeTitleProps {
   eyebrow?: ReactNode;
   title: ReactNode;
   trailing?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeLargeTitle({ eyebrow, title, trailing, style }: AbeLargeTitleProps) {
-  const t = useAbeTheme();
+export function DSLargeTitle({ eyebrow, title, trailing, style }: DSLargeTitleProps) {
+  const t = useDSTheme();
   return (
     <View accessibilityRole="header" style={[{ paddingVertical: 8, paddingHorizontal: 20, gap: 4 }, style]}>
       {eyebrow && (
         typeof eyebrow === 'string' ? (
-          <AbeText variant="label" style={{ color: t.colors['muted-foreground'] }}>
+          <DSText variant="label" style={{ color: t.colors['muted-foreground'] }}>
             {eyebrow}
-          </AbeText>
+          </DSText>
         ) : (
           eyebrow
         )
       )}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         {typeof title === 'string' ? (
-          <AbeText variant="title" style={{ fontFamily: t.mobileType.title.family, fontSize: t.mobileType.title.size }}>
+          <DSText variant="title" style={{ fontFamily: t.mobileType.title.family, fontSize: t.mobileType.title.size }}>
             {title}
-          </AbeText>
+          </DSText>
         ) : (
           title
         )}
@@ -630,15 +630,15 @@ export function AbeLargeTitle({ eyebrow, title, trailing, style }: AbeLargeTitle
 
 // ---------- NavBar ----------
 
-export interface AbeNavBarProps {
+export interface DSNavBarProps {
   leading?: ReactNode;
   title: ReactNode;
   trailing?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeNavBar({ leading, title, trailing, style }: AbeNavBarProps) {
-  const t = useAbeTheme();
+export function DSNavBar({ leading, title, trailing, style }: DSNavBarProps) {
+  const t = useDSTheme();
   return (
     <View
       accessibilityRole="header"
@@ -654,17 +654,17 @@ export function AbeNavBar({ leading, title, trailing, style }: AbeNavBarProps) {
       ]}
     >
       <View style={{ minWidth: 44, alignItems: 'flex-start' }}>
-        {typeof leading === 'string' ? <AbeText variant="body">{leading}</AbeText> : leading}
+        {typeof leading === 'string' ? <DSText variant="body">{leading}</DSText> : leading}
       </View>
       {typeof title === 'string' ? (
-        <AbeText variant="body" style={{ fontSize: 16, fontWeight: t.weight(600) }}>
+        <DSText variant="body" style={{ fontSize: 16, fontWeight: t.weight(600) }}>
           {title}
-        </AbeText>
+        </DSText>
       ) : (
         title
       )}
       <View style={{ minWidth: 44, alignItems: 'flex-end' }}>
-        {typeof trailing === 'string' ? <AbeText variant="body">{trailing}</AbeText> : trailing}
+        {typeof trailing === 'string' ? <DSText variant="body">{trailing}</DSText> : trailing}
       </View>
     </View>
   );
@@ -672,8 +672,8 @@ export function AbeNavBar({ leading, title, trailing, style }: AbeNavBarProps) {
 
 // ---------- SheetHandle ----------
 
-export function AbeSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
-  const t = useAbeTheme();
+export function DSSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
+  const t = useDSTheme();
   return (
     <View
       accessibilityRole="adjustable"
@@ -687,7 +687,7 @@ export function AbeSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
 
 // ---------- SectionHeader ----------
 
-export interface AbeSectionHeaderProps {
+export interface DSSectionHeaderProps {
   title: ReactNode;
   action?: ReactNode;
   actionTitle?: ReactNode;
@@ -695,8 +695,8 @@ export interface AbeSectionHeaderProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeSectionHeader({ title, action, actionTitle, onAction, style }: AbeSectionHeaderProps) {
-  const t = useAbeTheme();
+export function DSSectionHeader({ title, action, actionTitle, onAction, style }: DSSectionHeaderProps) {
+  const t = useDSTheme();
   const act = action ?? actionTitle;
   return (
     <View
@@ -711,9 +711,9 @@ export function AbeSectionHeader({ title, action, actionTitle, onAction, style }
       ]}
     >
       {typeof title === 'string' ? (
-        <AbeText variant="body" style={{ fontSize: 17, fontWeight: t.weight(600) }}>
+        <DSText variant="body" style={{ fontSize: 17, fontWeight: t.weight(600) }}>
           {title}
-        </AbeText>
+        </DSText>
       ) : (
         title
       )}
@@ -724,9 +724,9 @@ export function AbeSectionHeader({ title, action, actionTitle, onAction, style }
           style={{ minHeight: t.mobileLayout.touchTarget, minWidth: t.mobileLayout.touchTarget, justifyContent: 'center', alignItems: 'center' }}
         >
           {typeof act === 'string' ? (
-            <AbeText variant="label" style={{ color: t.colors.action, fontWeight: t.weight(600) }}>
+            <DSText variant="label" style={{ color: t.colors.action, fontWeight: t.weight(600) }}>
               {act}
-            </AbeText>
+            </DSText>
           ) : (
             act
           )}
@@ -738,15 +738,15 @@ export function AbeSectionHeader({ title, action, actionTitle, onAction, style }
 
 // ---------- TabBar ----------
 
-export interface AbeTabItem {
+export interface DSTabItem {
   label: string;
   value: string;
   icon?: ReactNode;
 }
 
-export interface AbeTabBarProps {
-  items?: AbeTabItem[];
-  tabs?: AbeTabItem[];
+export interface DSTabBarProps {
+  items?: DSTabItem[];
+  tabs?: DSTabItem[];
   selected?: string;
   activeTab?: string;
   onChange?: (value: string) => void;
@@ -754,7 +754,7 @@ export interface AbeTabBarProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeTabBar({
+export function DSTabBar({
   items,
   tabs,
   selected,
@@ -762,8 +762,8 @@ export function AbeTabBar({
   onChange,
   onTabPress,
   style,
-}: AbeTabBarProps) {
-  const t = useAbeTheme();
+}: DSTabBarProps) {
+  const t = useDSTheme();
   const tabList = items ?? tabs ?? [];
   const current = selected ?? activeTab ?? (tabList[0]?.value ?? '');
   const handleSelect = (val: string) => {
@@ -807,8 +807,8 @@ export function AbeTabBar({
               backgroundColor: active ? `${t.colors.action}1A` : 'transparent',
             }}
           >
-            {typeof item.icon === 'string' ? <AbeText variant="body">{item.icon}</AbeText> : item.icon}
-            <AbeText
+            {typeof item.icon === 'string' ? <DSText variant="body">{item.icon}</DSText> : item.icon}
+            <DSText
               variant="caption"
               style={{
                 fontSize: 10.5,
@@ -817,7 +817,7 @@ export function AbeTabBar({
               }}
             >
               {item.label}
-            </AbeText>
+            </DSText>
           </Pressable>
         );
       })}
@@ -827,8 +827,8 @@ export function AbeTabBar({
 
 // ---------- Card ----------
 
-export function AbeCard({ style, ...props }: ViewProps) {
-  const t = useAbeTheme();
+export function DSCard({ style, ...props }: ViewProps) {
+  const t = useDSTheme();
   return (
     <View
       style={[
@@ -849,7 +849,7 @@ export function AbeCard({ style, ...props }: ViewProps) {
 
 // ---------- EmptyState ----------
 
-export interface AbeEmptyStateProps {
+export interface DSEmptyStateProps {
   icon?: ReactNode;
   title: ReactNode;
   message?: ReactNode;
@@ -857,21 +857,21 @@ export interface AbeEmptyStateProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeEmptyState({ icon, title, message, action, style }: AbeEmptyStateProps) {
+export function DSEmptyState({ icon, title, message, action, style }: DSEmptyStateProps) {
   return (
     <View style={[{ alignItems: 'center', justifyContent: 'center', gap: 12, padding: 32 }, style]}>
-      {typeof icon === 'string' ? <AbeText style={{ fontSize: 32 }}>{icon}</AbeText> : icon}
+      {typeof icon === 'string' ? <DSText style={{ fontSize: 32 }}>{icon}</DSText> : icon}
       {typeof title === 'string' ? (
-        <AbeText variant="headline" style={{ textAlign: 'center' }}>
+        <DSText variant="headline" style={{ textAlign: 'center' }}>
           {title}
-        </AbeText>
+        </DSText>
       ) : (
         title
       )}
       {typeof message === 'string' ? (
-        <AbeText variant="muted" style={{ textAlign: 'center' }}>
+        <DSText variant="muted" style={{ textAlign: 'center' }}>
           {message}
-        </AbeText>
+        </DSText>
       ) : (
         message
       )}
@@ -882,14 +882,14 @@ export function AbeEmptyState({ icon, title, message, action, style }: AbeEmptyS
 
 // ---------- Badge ----------
 
-export interface AbeBadgeProps {
+export interface DSBadgeProps {
   tone?: Tone;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeBadge({ tone = 'neutral', children, style }: AbeBadgeProps) {
-  const t = useAbeTheme();
+export function DSBadge({ tone = 'neutral', children, style }: DSBadgeProps) {
+  const t = useDSTheme();
   const s = toneStyle(t, tone);
   return (
     <View
@@ -905,9 +905,9 @@ export function AbeBadge({ tone = 'neutral', children, style }: AbeBadgeProps) {
       ]}
     >
       {typeof children === 'string' ? (
-        <AbeText variant="caption" style={{ color: s.fg, fontWeight: t.weight(600) }}>
+        <DSText variant="caption" style={{ color: s.fg, fontWeight: t.weight(600) }}>
           {children}
-        </AbeText>
+        </DSText>
       ) : (
         children
       )}
@@ -917,8 +917,8 @@ export function AbeBadge({ tone = 'neutral', children, style }: AbeBadgeProps) {
 
 // ---------- Input ----------
 
-export function AbeInput({ style, ...props }: TextInputProps) {
-  const t = useAbeTheme();
+export function DSInput({ style, ...props }: TextInputProps) {
+  const t = useDSTheme();
   return (
     <TextInput
       placeholderTextColor={t.colors['ink-muted']}
@@ -943,13 +943,13 @@ export function AbeInput({ style, ...props }: TextInputProps) {
 
 // ---------- Gallery ----------
 
-export interface AbeGalleryProps {
+export interface DSGalleryProps {
   theme?: ThemeName;
   mode?: ColorMode;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AbeGallery({ theme: selectedTheme, mode: selectedMode, style }: AbeGalleryProps = {}) {
+export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: DSGalleryProps = {}) {
   const themesToRender: readonly ThemeName[] = selectedTheme ? [selectedTheme] : (['tuition', 'church', 'bible'] as const);
 
   return (
@@ -967,51 +967,51 @@ export function AbeGallery({ theme: selectedTheme, mode: selectedMode, style }: 
 
         return (
           <View key={themeName} style={{ marginBottom: 24, gap: 16 }}>
-            <AbeText variant="title" style={{ paddingHorizontal: 16 }}>
+            <DSText variant="title" style={{ paddingHorizontal: 16 }}>
               {themeName.toUpperCase()} {themeTokens.supportsDark ? '' : '(Light only - supportsDark: false)'}
-            </AbeText>
+            </DSText>
             {modesToRender.map((mode) => (
-              <AbeThemeProvider key={`${themeName}-${mode}`} theme={themeName} mode={mode}>
-                <AbeCard style={{ margin: 8, gap: 12 }}>
-                  <AbeLargeTitle eyebrow={`${themeName} · ${mode}`} title={`${themeName} (${mode})`} />
-                  <AbeNavBar
+              <DSThemeProvider key={`${themeName}-${mode}`} theme={themeName} mode={mode}>
+                <DSCard style={{ margin: 8, gap: 12 }}>
+                  <DSLargeTitle eyebrow={`${themeName} · ${mode}`} title={`${themeName} (${mode})`} />
+                  <DSNavBar
                     title="Navigation"
-                    leading={<AbeButton size="sm" variant="ghost">Back</AbeButton>}
-                    trailing={<AbeIconButton icon="⚙" accessibilityLabel="Settings" />}
+                    leading={<DSButton size="sm" variant="ghost">Back</DSButton>}
+                    trailing={<DSIconButton icon="⚙" accessibilityLabel="Settings" />}
                   />
-                  <AbeSectionHeader title="Section Header" action="See all" onAction={() => {}} />
-                  <AbeText variant="title">Title text</AbeText>
-                  <AbeText variant="headline">Headline text</AbeText>
-                  <AbeText variant="body">Body text with theme tokens</AbeText>
-                  <AbeText variant="label">Label text</AbeText>
-                  <AbeText variant="caption">Caption text</AbeText>
+                  <DSSectionHeader title="Section Header" action="See all" onAction={() => {}} />
+                  <DSText variant="title">Title text</DSText>
+                  <DSText variant="headline">Headline text</DSText>
+                  <DSText variant="body">Body text with theme tokens</DSText>
+                  <DSText variant="label">Label text</DSText>
+                  <DSText variant="caption">Caption text</DSText>
                   <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-                    <AbeButton variant="primary">Primary</AbeButton>
-                    <AbeButton variant="secondary">Secondary</AbeButton>
-                    <AbeButton variant="outline">Outline</AbeButton>
-                    <AbeButton variant="ghost">Ghost</AbeButton>
-                    <AbeButton variant="destructive">Destructive</AbeButton>
+                    <DSButton variant="primary">Primary</DSButton>
+                    <DSButton variant="secondary">Secondary</DSButton>
+                    <DSButton variant="outline">Outline</DSButton>
+                    <DSButton variant="ghost">Ghost</DSButton>
+                    <DSButton variant="destructive">Destructive</DSButton>
                   </View>
                   <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-                    <AbeAvatar initials="AJ" />
-                    <AbeChip tone="neutral">Neutral</AbeChip>
-                    <AbeChip tone="accent">Accent</AbeChip>
-                    <AbeChip tone="success">Paid</AbeChip>
-                    <AbeChip tone="warning">Due</AbeChip>
-                    <AbeChip tone="error">Overdue</AbeChip>
-                    <AbeBadge tone="info">Info</AbeBadge>
+                    <DSAvatar initials="AJ" />
+                    <DSChip tone="neutral">Neutral</DSChip>
+                    <DSChip tone="accent">Accent</DSChip>
+                    <DSChip tone="success">Paid</DSChip>
+                    <DSChip tone="warning">Due</DSChip>
+                    <DSChip tone="error">Overdue</DSChip>
+                    <DSBadge tone="info">Info</DSBadge>
                   </View>
-                  <AbeListRow leading={<AbeAvatar initials="TS" />} title="Student Name" subtitle="Class 10 · Maths" chevron="›" onPress={() => {}} />
-                  <AbeStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
-                  <AbeSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="All" />
-                  <AbeField label="Field Label" placeholder="Enter value..." />
-                  <AbeSearchField placeholder="Search students..." icon="🔍" />
-                  <AbeSheetHandle />
-                  <AbeTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
-                  <AbeEmptyState title="Empty State" message="No records found in this section." action={<AbeButton size="sm">Create record</AbeButton>} />
-                  <AbeInput placeholder="Standard Input..." />
-                </AbeCard>
-              </AbeThemeProvider>
+                  <DSListRow leading={<DSAvatar initials="TS" />} title="Student Name" subtitle="Class 10 · Maths" chevron="›" onPress={() => {}} />
+                  <DSStatTile label="Collected" value="₹3,84,000" meta="+12% vs Aug" tone="success" />
+                  <DSSegmented items={['All', 'Due', 'Overdue', 'Paid']} selected="All" />
+                  <DSField label="Field Label" placeholder="Enter value..." />
+                  <DSSearchField placeholder="Search students..." icon="🔍" />
+                  <DSSheetHandle />
+                  <DSTabBar items={[{ label: 'Today', value: 'today', icon: '📅' }, { label: 'Students', value: 'students', icon: '👥' }]} selected="today" />
+                  <DSEmptyState title="Empty State" message="No records found in this section." action={<DSButton size="sm">Create record</DSButton>} />
+                  <DSInput placeholder="Standard Input..." />
+                </DSCard>
+              </DSThemeProvider>
             ))}
           </View>
         );
@@ -1021,48 +1021,48 @@ export function AbeGallery({ theme: selectedTheme, mode: selectedMode, style }: 
 }
 
 // Backward-compatible type aliases
-export type TextProps = AbeTextProps;
-export type ButtonProps = AbeButtonProps;
+export type TextProps = DSTextProps;
+export type ButtonProps = DSButtonProps;
 export type BadgeTone = Tone;
-export type IconButtonProps = AbeIconButtonProps;
-export type ChipProps = AbeChipProps;
-export type AvatarProps = AbeAvatarProps;
-export type ListRowProps = AbeListRowProps;
-export type StatTileProps = AbeStatTileProps;
-export type SegmentedProps = AbeSegmentedProps;
-export type FieldProps = AbeFieldProps;
-export type SearchFieldProps = AbeSearchFieldProps;
-export type LargeTitleProps = AbeLargeTitleProps;
-export type NavBarProps = AbeNavBarProps;
+export type IconButtonProps = DSIconButtonProps;
+export type ChipProps = DSChipProps;
+export type AvatarProps = DSAvatarProps;
+export type ListRowProps = DSListRowProps;
+export type StatTileProps = DSStatTileProps;
+export type SegmentedProps = DSSegmentedProps;
+export type FieldProps = DSFieldProps;
+export type SearchFieldProps = DSSearchFieldProps;
+export type LargeTitleProps = DSLargeTitleProps;
+export type NavBarProps = DSNavBarProps;
 export type SheetHandleProps = { style?: StyleProp<ViewStyle> };
-export type SectionHeaderProps = AbeSectionHeaderProps;
-export type TabBarProps = AbeTabBarProps;
+export type SectionHeaderProps = DSSectionHeaderProps;
+export type TabBarProps = DSTabBarProps;
 export type CardProps = ViewProps;
-export type EmptyStateProps = AbeEmptyStateProps;
-export type BadgeProps = AbeBadgeProps;
+export type EmptyStateProps = DSEmptyStateProps;
+export type BadgeProps = DSBadgeProps;
 export type InputProps = TextInputProps;
-export type GalleryProps = AbeGalleryProps;
+export type GalleryProps = DSGalleryProps;
 
 // Backward-compatible component aliases
 export {
-  AbeText as Text,
-  AbeButton as Button,
-  AbeIconButton as IconButton,
-  AbeChip as Chip,
-  AbeAvatar as Avatar,
-  AbeListRow as ListRow,
-  AbeStatTile as StatTile,
-  AbeSegmented as Segmented,
-  AbeField as Field,
-  AbeSearchField as SearchField,
-  AbeLargeTitle as LargeTitle,
-  AbeNavBar as NavBar,
-  AbeSheetHandle as SheetHandle,
-  AbeSectionHeader as SectionHeader,
-  AbeTabBar as TabBar,
-  AbeCard as Card,
-  AbeEmptyState as EmptyState,
-  AbeBadge as Badge,
-  AbeInput as Input,
-  AbeGallery as Gallery,
+  DSText as Text,
+  DSButton as Button,
+  DSIconButton as IconButton,
+  DSChip as Chip,
+  DSAvatar as Avatar,
+  DSListRow as ListRow,
+  DSStatTile as StatTile,
+  DSSegmented as Segmented,
+  DSField as Field,
+  DSSearchField as SearchField,
+  DSLargeTitle as LargeTitle,
+  DSNavBar as NavBar,
+  DSSheetHandle as SheetHandle,
+  DSSectionHeader as SectionHeader,
+  DSTabBar as TabBar,
+  DSCard as Card,
+  DSEmptyState as EmptyState,
+  DSBadge as Badge,
+  DSInput as Input,
+  DSGallery as Gallery,
 };

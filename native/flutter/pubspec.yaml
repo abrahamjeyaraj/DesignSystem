@@ -1,6 +1,6 @@
-name: abe_design
-description: Flutter theme for the Abe design system. Tokens are generated from tokens/*.json.
-version: 0.1.0
+name: design_system
+description: Flutter theme for the DS design system. Tokens are generated from tokens/*.json.
+version: 0.2.0
 publish_to: none
 
 environment:

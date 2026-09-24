@@ -8,8 +8,8 @@ Shared design system for TheBibleProject, ChurchManagement (ChurchHQ) and Tuitio
 ## Rules
 
 - `tokens/*.json` is the only hand-edited source of token values. Never edit files under
-  `packages/tokens/generated/`, `native/swift/Sources/AbeDesign/AbeTokens.swift`,
-  `native/android/.../AbeTokens.kt` or `native/flutter/lib/src/abe_tokens.g.dart`; run `bun run tokens`.
+  `packages/tokens/generated/`, `native/swift/Sources/DesignSystem/DSTokens.swift`,
+  `native/android/.../DSTokens.kt` or `native/flutter/lib/src/ds_tokens.g.dart`; run `bun run tokens`.
 - Components use role names only (`bg-action`, `text-ink`, `border-line`, `rounded-button`,
   `label-text`). No hex literals, no stock palette classes (`gray-500`), no brand font variables.
 - A theme may change values, never keys. A new role or scale key goes in `base.json` and gets a value

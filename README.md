@@ -1,4 +1,4 @@
-# Abe Design System
+# Design System
 
 One design system for TheBibleProject, ChurchHQ (ChurchManagement) and TuitionManager.
 **Shared:** components, token names, scales, and structure. **Per app:** colours, fonts, type
@@ -13,43 +13,81 @@ tokens/themes/<app>.json    bible | church | tuition: palette, role colours, fon
 packages/tokens     @abrahamjeyaraj/tokens     Tailwind v4 CSS per theme + typed TS object
 packages/ui-web     @abrahamjeyaraj/ui-web     React + Radix + Tailwind components (web and mobile web)
 packages/ui-native  @abrahamjeyaraj/ui-native  React Native / Expo / react-native-web primitives
-native/swift        AbeDesign       SwiftPM: tokens + SwiftUI environment, Color(abeHex:), button style
-native/android      :abe-design     Android library: tokens + Compose AbeTheme (Material3 bridge)
-native/flutter      abe_design      Dart package: tokens + ThemeData + AbeTheme extension
+native/swift        DesignSystem       SwiftPM: tokens + SwiftUI environment, Color(dsHex:), button style
+native/android      :designsystem     Android library: tokens + Compose DSTheme (Material3 bridge)
+native/flutter      design_system      Dart package: tokens + ThemeData + DSTheme extension
 ```
 
 Generated files are committed, so Xcode, Gradle and pub consumers never need Bun.
 
-## Use it
+## Install
 
-**Next.js (Tailwind v4)**: add `"@abrahamjeyaraj/ui-web": "file:../../../DesignSystem/packages/ui-web"` and
-`"@abrahamjeyaraj/tokens": "file:../../../DesignSystem/packages/tokens"`, set `transpilePackages: ["@abrahamjeyaraj/ui-web", "@abrahamjeyaraj/tokens"]`, then:
+Everything is private. npm and Maven come from GitHub Packages; Swift and Flutter come from a git tag.
+Any machine or CI job that installs needs a GitHub token with `read:packages` (classic PAT, or
+`GITHUB_TOKEN` inside GitHub Actions). Releases: push a `v*` tag; the workflows publish npm + Maven.
+
+**iOS (SwiftUI)**: Xcode > Add Package > `https://github.com/abrahamjeyaraj/DesignSystem`, from `0.2.0`,
+product `DesignSystem` (Xcode must be signed in to GitHub).
+
+```swift
+import DesignSystem
+RootView().dsTheme(DSTokens.tuition)          // DSButton, DSListRow, .dsFont(.title), DSGallery ...
+```
+
+**Android (Compose)**: `settings.gradle.kts`
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google(); mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/abrahamjeyaraj/DesignSystem")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+```
+
+`implementation("com.abrahamjeyaraj:designsystem:0.2.0")`, put `gpr.user` / `gpr.key` in
+`~/.gradle/gradle.properties`, then `DSTheme(DSTokens.tuition) { ... }`.
+
+**React Native / Expo / react-native-web and React web**: `.npmrc` (or `bunfig.toml` scope)
+
+```
+@abrahamjeyaraj:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+`bun add @abrahamjeyaraj/ui-native` (pulls `@abrahamjeyaraj/tokens`), then
+`<DSThemeProvider theme="tuition">` and `DSButton`, `DSListRow`, `useDSTheme()` ...
+Web: `bun add @abrahamjeyaraj/ui-web` and in CSS:
 
 ```css
 @import "tailwindcss";
-@import "@abrahamjeyaraj/tokens/css/church.css";   /* your app's theme */
-@import "@abrahamjeyaraj/tokens/base.css";         /* optional body/heading base layer */
-@import "@abrahamjeyaraj/ui-web/styles.css";       /* lets Tailwind see the component classes */
+@import "@abrahamjeyaraj/tokens/css/church.css";
+@import "@abrahamjeyaraj/tokens/base.css";
+@import "@abrahamjeyaraj/ui-web/styles.css";
 ```
 
-```tsx
-import { Button, Card, Input } from "@abrahamjeyaraj/ui-web";
+Load the theme fonts with `next/font` under the CSS variable named in the theme JSON (`webVar`).
+
+**Flutter**
+
+```yaml
+dependencies:
+  design_system:
+    git:
+      url: git@github.com:abrahamjeyaraj/DesignSystem.git
+      ref: v0.2.0
+      path: native/flutter
 ```
 
-Load the theme's fonts with `next/font` using the CSS variable named in the theme JSON (`webVar`),
-e.g. church: `--font-geist-sans`, `--font-geist-mono`, `--font-newsreader`. Dark mode is the `.dark` class.
+`MaterialApp(theme: dsThemeData(DSTokens.tuition, brightness: Brightness.light), ...)`.
 
-**React Native / Expo / react-native-web**: wrap the root in `<AbeThemeProvider theme="tuition">`,
-then use `Button`, `Card`, `Input`, `Text`, `Badge`, or `useAbeTheme()` for raw values.
-
-**SwiftUI**: add `native/swift` as a local package; `.abeTheme(AbeTokens.church)` at the root; read
-`@Environment(\.abeTheme)`; `Color(abeHex: theme.colors(for: scheme).action)`; `.buttonStyle(AbeButtonStyle())`.
-
-**Compose**: `include(":abe-design")` with `project(":abe-design").projectDir = file("…/DesignSystem/native/android/abe-design")`;
-wrap in `AbeTheme(AbeTokens.tuition) { … }`; `Abe.current.colors` for non-Material roles.
-
-**Flutter**: `abe_design: { path: …/DesignSystem/native/flutter }`;
-`theme: abeThemeData(AbeTokens.church, brightness: Brightness.light)`; `AbeTheme.of(context)` for extra roles.
+Every SDK ships a gallery (`DSGallery`) showing all components per theme in light and dark.
 
 ## Change the look
 

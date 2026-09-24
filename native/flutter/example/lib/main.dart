@@ -1,4 +1,4 @@
-import 'package:abe_design/abe_design.dart';
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const GalleryApp());
@@ -11,29 +11,29 @@ class GalleryApp extends StatefulWidget {
 }
 
 class _GalleryAppState extends State<GalleryApp> {
-  AbeThemeTokens _tokens = AbeTokens.tuition;
+  DSThemeTokens _tokens = DSTokens.tuition;
   ThemeMode _mode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
-    final light = abeThemeData(_tokens, brightness: Brightness.light);
-    final dark = abeThemeData(_tokens, brightness: Brightness.dark);
+    final light = dsThemeData(_tokens, brightness: Brightness.light);
+    final dark = dsThemeData(_tokens, brightness: Brightness.dark);
     return MaterialApp(
-      title: 'Abe Design Gallery',
+      title: 'DS Design Gallery',
       theme: light,
       darkTheme: dark,
       themeMode: _mode,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Abe Design Gallery'),
+          title: const Text('DS Design Gallery'),
           actions: [
             PopupMenuButton<String>(
               tooltip: 'Choose theme',
               onSelected: (name) => setState(
                 () => _tokens = switch (name) {
-                  'Church' => AbeTokens.church,
-                  'Bible' => AbeTokens.bible,
-                  _ => AbeTokens.tuition,
+                  'Church' => DSTokens.church,
+                  'Bible' => DSTokens.bible,
+                  _ => DSTokens.tuition,
                 },
               ),
               itemBuilder: (context) => const [
@@ -59,7 +59,7 @@ class _GalleryAppState extends State<GalleryApp> {
             ),
           ],
         ),
-        body: const AbeGallery(),
+        body: const DSGallery(),
       ),
     );
   }

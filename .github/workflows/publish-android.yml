@@ -21,11 +21,11 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Publish abe-design to GitHub Packages
+      - name: Publish designsystem to GitHub Packages
         working-directory: native/android
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          ./gradlew :abe-design:publish -PabeVersion="$VERSION"
+          ./gradlew :designsystem:publish -PabeVersion="$VERSION"

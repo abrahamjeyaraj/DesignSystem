@@ -1,9 +1,9 @@
-import 'package:abe_design/abe_design.dart';
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _app(Widget child) => MaterialApp(
-  theme: abeThemeData(AbeTokens.tuition, brightness: Brightness.light),
+  theme: dsThemeData(DSTokens.tuition, brightness: Brightness.light),
   home: Scaffold(body: child),
 );
 
@@ -13,7 +13,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_app(const AbeGallery()));
+    await tester.pumpWidget(_app(const DSGallery()));
     await tester.pumpAndSettle();
     for (final label in [
       'Buttons',
@@ -43,11 +43,11 @@ void main() {
         const Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AbeText('Heading', style: AbeTextStyle.headline),
-            AbeStatusBar(time: '9:41'),
-            AbeAvatar(initials: 'AR'),
-            AbeSheetHandle(),
-            AbeCard(child: Text('Card body')),
+            DSText('Heading', style: DSTextStyle.headline),
+            DSStatusBar(time: '9:41'),
+            DSAvatar(initials: 'AR'),
+            DSSheetHandle(),
+            DSCard(child: Text('Card body')),
           ],
         ),
       ),
@@ -66,23 +66,23 @@ void main() {
           const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AbeButton(label: 'Primary action', onPressed: _noop),
-              AbeButton(
+              DSButton(label: 'Primary action', onPressed: _noop),
+              DSButton(
                 label: 'Secondary action',
-                variant: AbeButtonVariant.secondary,
+                variant: DSButtonVariant.secondary,
                 onPressed: _noop,
               ),
-              AbeButton(
+              DSButton(
                 label: 'Ghost action',
-                variant: AbeButtonVariant.ghost,
+                variant: DSButtonVariant.ghost,
                 onPressed: _noop,
               ),
-              AbeButton(
+              DSButton(
                 label: 'Remove',
-                variant: AbeButtonVariant.destructive,
+                variant: DSButtonVariant.destructive,
                 onPressed: _noop,
               ),
-              AbeIconButton(
+              DSIconButton(
                 icon: Icons.add,
                 semanticLabel: 'Add record',
                 onPressed: _noop,
@@ -109,7 +109,7 @@ void main() {
       ]) {
         expect(
           tester.getSize(f).height,
-          greaterThanOrEqualTo(AbeTokens.tuition.mobileLayout.touchTarget),
+          greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
         );
       }
     },
@@ -124,22 +124,22 @@ void main() {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AbeListRow(
+              DSListRow(
                 title: 'Student',
                 subtitle: 'Class 10',
                 onTap: () => rowTapped = true,
               ),
-              AbeSegmentedControl(
+              DSSegmentedControl(
                 items: const ['All', 'Due'],
                 selected: 0,
                 onChanged: (v) => selected = v,
               ),
-              const AbeField(label: 'Amount', hintText: 'Enter amount'),
-              const AbeSearchField(hintText: 'Search students'),
-              AbeTabBar(
+              const DSField(label: 'Amount', hintText: 'Enter amount'),
+              const DSSearchField(hintText: 'Search students'),
+              DSTabBar(
                 items: const [
-                  AbeTabItem(label: 'Today', icon: Icons.today),
-                  AbeTabItem(label: 'Fees', icon: Icons.money),
+                  DSTabItem(label: 'Today', icon: Icons.today),
+                  DSTabItem(label: 'Fees', icon: Icons.money),
                 ],
                 selectedIndex: 0,
                 onChanged: (v) => tab = v,
@@ -176,7 +176,7 @@ void main() {
       ]) {
         expect(
           tester.getSize(f).height,
-          greaterThanOrEqualTo(AbeTokens.tuition.mobileLayout.touchTarget),
+          greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
           reason: '$f should meet target',
         );
       }
@@ -191,17 +191,17 @@ void main() {
           const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AbeChip(label: 'Paid', tone: AbeChipTone.success),
-              AbeStatTile(
+              DSChip(label: 'Paid', tone: DSChipTone.success),
+              DSStatTile(
                 label: 'Collected',
                 value: '240',
                 meta: 'Updated',
-                tone: AbeStatTone.success,
+                tone: DSStatTone.success,
               ),
-              AbeLargeTitle(eyebrow: 'Today', title: 'Dashboard'),
-              AbeNavBar(title: 'Student'),
-              AbeSectionHeader(title: 'Classes', actionLabel: 'See all'),
-              AbeEmptyState(
+              DSLargeTitle(eyebrow: 'Today', title: 'Dashboard'),
+              DSNavBar(title: 'Student'),
+              DSSectionHeader(title: 'Classes', actionLabel: 'See all'),
+              DSEmptyState(
                 icon: Icons.inbox,
                 title: 'No results',
                 message: 'Try another search.',

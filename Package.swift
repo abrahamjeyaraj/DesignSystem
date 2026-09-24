@@ -3,11 +3,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "AbeDesign",
+    name: "DesignSystem",
     platforms: [.iOS(.v16), .macOS(.v13), .tvOS(.v16), .watchOS(.v9)],
-    products: [.library(name: "AbeDesign", targets: ["AbeDesign"])],
+    products: [.library(name: "DesignSystem", targets: ["DesignSystem"])],
     targets: [
-        .target(name: "AbeDesign", path: "native/swift/Sources/AbeDesign"),
-        .testTarget(name: "AbeDesignTests", dependencies: ["AbeDesign"], path: "native/swift/Tests/AbeDesignTests"),
+        .target(name: "DesignSystem", path: "native/swift/Sources/DesignSystem"),
+        .testTarget(name: "DesignSystemTests", dependencies: ["DesignSystem"], path: "native/swift/Tests/DesignSystemTests"),
     ]
 )

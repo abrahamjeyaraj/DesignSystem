@@ -1,11 +1,13 @@
 # DesignSystem design
 
-status: v0.1 created 2026-09-23. No consumer app wired yet.
+status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutter). No consumer app wired yet.
 
 ## Decisions
 
-- **Separate repo** at `~/Development/Projects/DesignSystem`, consumed by path (`file:` / local
-  package). Not published to a registry.
+- **Separate private repo** `abrahamjeyaraj/DesignSystem`. Distribution: npm and Maven via GitHub
+  Packages (publish on tag `v*`), SwiftPM and Flutter via git tag.
+- **Generic naming** so the repo can go public later: `DesignSystem` module, `DS` type prefix,
+  `com.abrahamjeyaraj:designsystem`, `design_system`, `@abrahamjeyaraj/*`.
 - **Shared structure, own look.** All apps share components, role names and scale keys. Each
   theme owns palette, colours, fonts, type sizes, radii, shadows and label style.
 - **Role contract** (`base.json` `roles`) has two layers:
@@ -21,7 +23,7 @@ status: v0.1 created 2026-09-23. No consumer app wired yet.
   tuition Inter 800.
 - **Custom generator** (`packages/tokens/scripts/build.ts`) instead of Style Dictionary. It has
   zero dependencies, validates the contract, and emits CSS, TS, Swift, Kotlin and Dart.
-- **Native type names are `Abe`-prefixed** so they don't collide with SwiftUI/Material3
+- **Native type names are `DS`-prefixed** so they don't collide with SwiftUI/Material3
   `ColorScheme`.
 
 ## Provenance
@@ -51,7 +53,8 @@ status: v0.1 created 2026-09-23. No consumer app wired yet.
 1. Wire consumers: ChurchHQ web, TuitionManager web and native, then Bible web. None use this yet.
 2. Accessibility: tuition `muted-foreground` #8b7c6d on #fbf7f0 is about 3.9:1 (below AA for
    body text). It is kept as-is from the app. Tuition accent-on-cream is also low.
-3. Bible iOS/Android: replace hand-written DesignSystem/Tokens with `AbeDesign` / `:abe-design`.
-4. React Native components are primitives only (Text, Button, Card, Input, Badge). Dialogs, menus
-   and tabs are not ported yet.
-5. Git remote not created. Push only on request.
+3. Bible iOS/Android: replace hand-written DesignSystem/Tokens with `DesignSystem` / `:designsystem`.
+4. Web (`ui-web`) and native SDKs have different component sets: web has dialogs/menus/tabs from
+   Bible; native has the Pen mobile set. Converge when a second app needs a missing one.
+5. Pen deviations: status/nav bar heights use `controlHeight` (48) vs Pen 54/52; tab bar shadow uses
+   platform elevation. Tuition web sizes still use base defaults, not Pen's web scale (11.5-34).

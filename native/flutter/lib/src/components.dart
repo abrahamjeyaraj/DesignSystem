@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'abe_tokens.g.dart';
+import 'ds_tokens.g.dart';
 import 'theme.dart';
 
-enum AbeButtonVariant { primary, secondary, ghost, destructive }
+enum DSButtonVariant { primary, secondary, ghost, destructive }
 
-enum AbeChipTone { neutral, accent, success, warning, error }
+enum DSChipTone { neutral, accent, success, warning, error }
 
-enum AbeStatTone { neutral, success, warning, error }
+enum DSStatTone { neutral, success, warning, error }
 
 TextStyle _role(
   BuildContext context,
-  AbeTextRole role,
+  DSTextRole role,
   int color, {
   bool heading = false,
 }) {
-  final theme = AbeTheme.of(context);
+  final theme = DSTheme.of(context);
   return TextStyle(
     fontFamily: theme.font(role.family, serif: heading),
     fontSize: role.size,
@@ -27,36 +27,36 @@ TextStyle _role(
 }
 
 /// Theme-driven type styles for the five mobile type roles.
-class AbeText extends StatelessWidget {
-  const AbeText(
+class DSText extends StatelessWidget {
+  const DSText(
     this.data, {
     super.key,
-    this.style = AbeTextStyle.body,
+    this.style = DSTextStyle.body,
     this.maxLines,
     this.textAlign,
   });
   final String data;
-  final AbeTextStyle style;
+  final DSTextStyle style;
   final int? maxLines;
   final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     final (role, color, heading) = switch (style) {
-      AbeTextStyle.title => (t.tokens.mobileType.title, t.colors.ink, true),
-      AbeTextStyle.headline => (
+      DSTextStyle.title => (t.tokens.mobileType.title, t.colors.ink, true),
+      DSTextStyle.headline => (
         t.tokens.mobileType.headline,
         t.colors.ink,
         true,
       ),
-      AbeTextStyle.body => (t.tokens.mobileType.body, t.colors.inkBody, false),
-      AbeTextStyle.label => (
+      DSTextStyle.body => (t.tokens.mobileType.body, t.colors.inkBody, false),
+      DSTextStyle.label => (
         t.tokens.mobileType.label,
         t.colors.inkBody,
         false,
       ),
-      AbeTextStyle.caption => (
+      DSTextStyle.caption => (
         t.tokens.mobileType.caption,
         t.colors.inkMuted,
         false,
@@ -72,37 +72,37 @@ class AbeText extends StatelessWidget {
   }
 }
 
-enum AbeTextStyle { title, headline, body, label, caption }
+enum DSTextStyle { title, headline, body, label, caption }
 
-class AbeButton extends StatelessWidget {
-  const AbeButton({
+class DSButton extends StatelessWidget {
+  const DSButton({
     super.key,
     required this.label,
     required this.onPressed,
-    this.variant = AbeButtonVariant.primary,
+    this.variant = DSButtonVariant.primary,
     this.leadingIcon,
     this.semanticLabel,
   });
   final String label;
   final VoidCallback? onPressed;
-  final AbeButtonVariant variant;
+  final DSButtonVariant variant;
   final IconData? leadingIcon;
   final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     final c = t.colors;
     final background = switch (variant) {
-      AbeButtonVariant.primary => Color(c.action),
-      AbeButtonVariant.secondary => Color(c.card),
-      AbeButtonVariant.ghost => Colors.transparent,
-      AbeButtonVariant.destructive => Color(c.error),
+      DSButtonVariant.primary => Color(c.action),
+      DSButtonVariant.secondary => Color(c.card),
+      DSButtonVariant.ghost => Colors.transparent,
+      DSButtonVariant.destructive => Color(c.error),
     };
     final foreground = switch (variant) {
-      AbeButtonVariant.primary => c.actionForeground,
-      AbeButtonVariant.secondary || AbeButtonVariant.ghost => c.ink,
-      AbeButtonVariant.destructive => c.errorLight,
+      DSButtonVariant.primary => c.actionForeground,
+      DSButtonVariant.secondary || DSButtonVariant.ghost => c.ink,
+      DSButtonVariant.destructive => c.errorLight,
     };
     final child = Row(
       mainAxisSize: MainAxisSize.min,
@@ -120,7 +120,7 @@ class AbeButton extends StatelessWidget {
     );
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(t.tokens.radius.button),
-      side: variant == AbeButtonVariant.secondary
+      side: variant == DSButtonVariant.secondary
           ? BorderSide(color: Color(c.line))
           : BorderSide.none,
     );
@@ -133,8 +133,8 @@ class AbeButton extends StatelessWidget {
             minHeight: t.tokens.mobileLayout.touchTarget,
           ),
           child: switch (variant) {
-            AbeButtonVariant.primary ||
-            AbeButtonVariant.destructive => FilledButton(
+            DSButtonVariant.primary ||
+            DSButtonVariant.destructive => FilledButton(
               onPressed: onPressed,
               style: FilledButton.styleFrom(
                 backgroundColor: background,
@@ -144,7 +144,7 @@ class AbeButton extends StatelessWidget {
               ),
               child: child,
             ),
-            AbeButtonVariant.secondary => OutlinedButton(
+            DSButtonVariant.secondary => OutlinedButton(
               onPressed: onPressed,
               style: OutlinedButton.styleFrom(
                 backgroundColor: background,
@@ -155,7 +155,7 @@ class AbeButton extends StatelessWidget {
               ),
               child: child,
             ),
-            AbeButtonVariant.ghost => TextButton(
+            DSButtonVariant.ghost => TextButton(
               onPressed: onPressed,
               style: TextButton.styleFrom(
                 foregroundColor: Color(foreground),
@@ -170,8 +170,8 @@ class AbeButton extends StatelessWidget {
   }
 }
 
-class AbeIconButton extends StatelessWidget {
-  const AbeIconButton({
+class DSIconButton extends StatelessWidget {
+  const DSIconButton({
     super.key,
     required this.icon,
     required this.semanticLabel,
@@ -182,7 +182,7 @@ class AbeIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     return Semantics(
       button: true,
       label: semanticLabel,
@@ -205,29 +205,29 @@ class AbeIconButton extends StatelessWidget {
   }
 }
 
-class AbeChip extends StatelessWidget {
-  const AbeChip({
+class DSChip extends StatelessWidget {
+  const DSChip({
     super.key,
     required this.label,
-    this.tone = AbeChipTone.neutral,
+    this.tone = DSChipTone.neutral,
     this.icon,
   });
   final String label;
-  final AbeChipTone tone;
+  final DSChipTone tone;
   final IconData? icon;
   @override
   Widget build(BuildContext context) {
-    final c = AbeTheme.of(context).colors;
+    final c = DSTheme.of(context).colors;
     final (bg, fg, iconData) = switch (tone) {
-      AbeChipTone.neutral => (c.secondary, c.inkBody, Icons.label_outline),
-      AbeChipTone.accent => (c.primary, c.primaryForeground, Icons.bolt),
-      AbeChipTone.success => (
+      DSChipTone.neutral => (c.secondary, c.inkBody, Icons.label_outline),
+      DSChipTone.accent => (c.primary, c.primaryForeground, Icons.bolt),
+      DSChipTone.success => (
         c.successLight,
         c.success,
         Icons.check_circle_outline,
       ),
-      AbeChipTone.warning => (c.warningLight, c.warning, Icons.schedule),
-      AbeChipTone.error => (c.errorLight, c.error, Icons.error_outline),
+      DSChipTone.warning => (c.warningLight, c.warning, Icons.schedule),
+      DSChipTone.error => (c.errorLight, c.error, Icons.error_outline),
     };
     return Semantics(
       label: '$label, ${tone.name}',
@@ -237,25 +237,25 @@ class AbeChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: Color(bg),
             borderRadius: BorderRadius.circular(
-              AbeTheme.of(context).tokens.radius.full,
+              DSTheme.of(context).tokens.radius.full,
             ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon ?? iconData, size: 18, color: Color(fg)),
-              SizedBox(width: AbeTheme.of(context).tokens.mobileLayout.itemGap),
+              SizedBox(width: DSTheme.of(context).tokens.mobileLayout.itemGap),
               Text(
                 label,
                 textScaler: MediaQuery.textScalerOf(context),
                 style:
                     _role(
                       context,
-                      AbeTheme.of(context).tokens.mobileType.caption,
+                      DSTheme.of(context).tokens.mobileType.caption,
                       fg,
                     ).copyWith(
                       fontWeight:
-                          FontWeight.values[((AbeTheme.of(
+                          FontWeight.values[((DSTheme.of(
                                             context,
                                           ).tokens.mobileType.label.weight /
                                           100)
@@ -272,13 +272,13 @@ class AbeChip extends StatelessWidget {
   }
 }
 
-class AbeAvatar extends StatelessWidget {
-  const AbeAvatar({super.key, required this.initials, this.semanticLabel});
+class DSAvatar extends StatelessWidget {
+  const DSAvatar({super.key, required this.initials, this.semanticLabel});
   final String initials;
   final String? semanticLabel;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     return Semantics(
       image: true,
       label: semanticLabel ?? initials,
@@ -306,8 +306,8 @@ class AbeAvatar extends StatelessWidget {
   }
 }
 
-class AbeListRow extends StatelessWidget {
-  const AbeListRow({
+class DSListRow extends StatelessWidget {
+  const DSListRow({
     super.key,
     required this.title,
     this.subtitle,
@@ -323,7 +323,7 @@ class AbeListRow extends StatelessWidget {
   final bool showChevron;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     final row = Padding(
       padding: EdgeInsets.symmetric(
         horizontal: t.tokens.mobileLayout.gutter,
@@ -339,9 +339,9 @@ class AbeListRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AbeText(title, style: AbeTextStyle.body),
+                DSText(title, style: DSTextStyle.body),
                 if (subtitle != null)
-                  AbeText(subtitle!, style: AbeTextStyle.label),
+                  DSText(subtitle!, style: DSTextStyle.label),
               ],
             ),
           ),
@@ -381,25 +381,25 @@ class AbeListRow extends StatelessWidget {
   }
 }
 
-class AbeStatTile extends StatelessWidget {
-  const AbeStatTile({
+class DSStatTile extends StatelessWidget {
+  const DSStatTile({
     super.key,
     required this.label,
     required this.value,
     this.meta,
-    this.tone = AbeStatTone.neutral,
+    this.tone = DSStatTone.neutral,
   });
   final String label, value;
   final String? meta;
-  final AbeStatTone tone;
+  final DSStatTone tone;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     final int metaColor = switch (tone) {
-      AbeStatTone.neutral => t.colors.inkMuted,
-      AbeStatTone.success => t.colors.success,
-      AbeStatTone.warning => t.colors.warning,
-      AbeStatTone.error => t.colors.error,
+      DSStatTone.neutral => t.colors.inkMuted,
+      DSStatTone.success => t.colors.success,
+      DSStatTone.warning => t.colors.warning,
+      DSStatTone.error => t.colors.error,
     };
     return Container(
       padding: EdgeInsets.all(t.tokens.mobileLayout.gutter),
@@ -411,7 +411,7 @@ class AbeStatTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AbeText(label, style: AbeTextStyle.label),
+          DSText(label, style: DSTextStyle.label),
           Text(
             value,
             textScaler: MediaQuery.textScalerOf(context),
@@ -432,8 +432,8 @@ class AbeStatTile extends StatelessWidget {
   }
 }
 
-class AbeSegmentedControl extends StatelessWidget {
-  const AbeSegmentedControl({
+class DSSegmentedControl extends StatelessWidget {
+  const DSSegmentedControl({
     super.key,
     required this.items,
     required this.selected,
@@ -444,7 +444,7 @@ class AbeSegmentedControl extends StatelessWidget {
   final ValueChanged<int> onChanged;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     return Semantics(
       container: true,
       label: 'Options',
@@ -494,8 +494,8 @@ class AbeSegmentedControl extends StatelessWidget {
   }
 }
 
-class AbeField extends StatelessWidget {
-  const AbeField({
+class DSField extends StatelessWidget {
+  const DSField({
     super.key,
     required this.label,
     this.controller,
@@ -511,11 +511,11 @@ class AbeField extends StatelessWidget {
   final TextInputType? keyboardType;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AbeText(label, style: AbeTextStyle.label),
+        DSText(label, style: DSTextStyle.label),
         SizedBox(height: t.tokens.mobileLayout.itemGap),
         SizedBox(
           height: t.tokens.mobileLayout.fieldHeight,
@@ -546,8 +546,8 @@ class AbeField extends StatelessWidget {
   }
 }
 
-class AbeSearchField extends StatelessWidget {
-  const AbeSearchField({
+class DSSearchField extends StatelessWidget {
+  const DSSearchField({
     super.key,
     this.hintText = 'Search',
     this.controller,
@@ -558,7 +558,7 @@ class AbeSearchField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   @override
   Widget build(BuildContext context) {
-    final theme = AbeTheme.of(context);
+    final theme = DSTheme.of(context);
     final c = theme.colors;
     return TextField(
       controller: controller,
@@ -570,7 +570,7 @@ class AbeSearchField extends StatelessWidget {
         fillColor: Color(c.secondary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
-            AbeTheme.of(context).tokens.radius.full,
+            DSTheme.of(context).tokens.radius.full,
           ),
           borderSide: BorderSide.none,
         ),
@@ -585,8 +585,8 @@ class AbeSearchField extends StatelessWidget {
   }
 }
 
-class AbeLargeTitle extends StatelessWidget {
-  const AbeLargeTitle({
+class DSLargeTitle extends StatelessWidget {
+  const DSLargeTitle({
     super.key,
     this.eyebrow,
     required this.title,
@@ -597,13 +597,13 @@ class AbeLargeTitle extends StatelessWidget {
   final Widget? trailing;
   @override
   Widget build(BuildContext context) {
-    final c = AbeTheme.of(context).colors;
+    final c = DSTheme.of(context).colors;
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        AbeTheme.of(context).tokens.mobileLayout.gutter,
-        AbeTheme.of(context).tokens.mobileLayout.itemGap,
-        AbeTheme.of(context).tokens.mobileLayout.gutter,
-        AbeTheme.of(context).tokens.mobileLayout.itemGap,
+        DSTheme.of(context).tokens.mobileLayout.gutter,
+        DSTheme.of(context).tokens.mobileLayout.itemGap,
+        DSTheme.of(context).tokens.mobileLayout.gutter,
+        DSTheme.of(context).tokens.mobileLayout.itemGap,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -613,13 +613,13 @@ class AbeLargeTitle extends StatelessWidget {
               eyebrow!,
               style: _role(
                 context,
-                AbeTheme.of(context).tokens.mobileType.label,
+                DSTheme.of(context).tokens.mobileType.label,
                 c.inkMuted,
               ),
             ),
           Row(
             children: [
-              Expanded(child: AbeText(title, style: AbeTextStyle.title)),
+              Expanded(child: DSText(title, style: DSTextStyle.title)),
               if (trailing != null) trailing!,
             ],
           ),
@@ -629,8 +629,8 @@ class AbeLargeTitle extends StatelessWidget {
   }
 }
 
-class AbeNavBar extends StatelessWidget {
-  const AbeNavBar({
+class DSNavBar extends StatelessWidget {
+  const DSNavBar({
     super.key,
     required this.title,
     this.leading,
@@ -640,10 +640,10 @@ class AbeNavBar extends StatelessWidget {
   final Widget? leading, trailing;
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: AbeTheme.of(context).tokens.mobileLayout.controlHeight,
+    height: DSTheme.of(context).tokens.mobileLayout.controlHeight,
     child: Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: AbeTheme.of(context).tokens.mobileLayout.gutter,
+        horizontal: DSTheme.of(context).tokens.mobileLayout.gutter,
       ),
       child: Row(
         children: [
@@ -653,10 +653,10 @@ class AbeNavBar extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  color: Color(AbeTheme.of(context).colors.ink),
-                  fontSize: AbeTheme.of(context).tokens.mobileType.body.size,
+                  color: Color(DSTheme.of(context).colors.ink),
+                  fontSize: DSTheme.of(context).tokens.mobileType.body.size,
                   fontWeight:
-                      FontWeight.values[((AbeTheme.of(
+                      FontWeight.values[((DSTheme.of(
                                         context,
                                       ).tokens.mobileType.body.weight /
                                       100)
@@ -674,8 +674,8 @@ class AbeNavBar extends StatelessWidget {
   );
 }
 
-class AbeSheetHandle extends StatelessWidget {
-  const AbeSheetHandle({super.key});
+class DSSheetHandle extends StatelessWidget {
+  const DSSheetHandle({super.key});
   @override
   Widget build(BuildContext context) => SizedBox(
     height: 20,
@@ -684,7 +684,7 @@ class AbeSheetHandle extends StatelessWidget {
         width: 40,
         height: 5,
         decoration: BoxDecoration(
-          color: Color(AbeTheme.of(context).colors.line),
+          color: Color(DSTheme.of(context).colors.line),
           borderRadius: BorderRadius.circular(3),
         ),
       ),
@@ -692,8 +692,8 @@ class AbeSheetHandle extends StatelessWidget {
   );
 }
 
-class AbeSectionHeader extends StatelessWidget {
-  const AbeSectionHeader({
+class DSSectionHeader extends StatelessWidget {
+  const DSSectionHeader({
     super.key,
     required this.title,
     this.actionLabel,
@@ -705,7 +705,7 @@ class AbeSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.symmetric(
-      horizontal: AbeTheme.of(context).tokens.mobileLayout.gutter,
+      horizontal: DSTheme.of(context).tokens.mobileLayout.gutter,
     ),
     child: Row(
       children: [
@@ -713,10 +713,10 @@ class AbeSectionHeader extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              color: Color(AbeTheme.of(context).colors.ink),
-              fontSize: AbeTheme.of(context).tokens.mobileType.headline.size,
+              color: Color(DSTheme.of(context).colors.ink),
+              fontSize: DSTheme.of(context).tokens.mobileType.headline.size,
               fontWeight:
-                  FontWeight.values[((AbeTheme.of(
+                  FontWeight.values[((DSTheme.of(
                                     context,
                                   ).tokens.mobileType.headline.weight /
                                   100)
@@ -732,7 +732,7 @@ class AbeSectionHeader extends StatelessWidget {
             style: TextButton.styleFrom(
               minimumSize: Size(
                 0,
-                AbeTheme.of(context).tokens.mobileLayout.touchTarget,
+                DSTheme.of(context).tokens.mobileLayout.touchTarget,
               ),
             ),
             child: Text(actionLabel!),
@@ -742,8 +742,8 @@ class AbeSectionHeader extends StatelessWidget {
   );
 }
 
-class AbeTabItem {
-  const AbeTabItem({
+class DSTabItem {
+  const DSTabItem({
     required this.label,
     required this.icon,
     this.semanticLabel,
@@ -753,19 +753,19 @@ class AbeTabItem {
   final String? semanticLabel;
 }
 
-class AbeTabBar extends StatelessWidget {
-  const AbeTabBar({
+class DSTabBar extends StatelessWidget {
+  const DSTabBar({
     super.key,
     required this.items,
     required this.selectedIndex,
     required this.onChanged,
   });
-  final List<AbeTabItem> items;
+  final List<DSTabItem> items;
   final int selectedIndex;
   final ValueChanged<int> onChanged;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -853,14 +853,14 @@ class AbeTabBar extends StatelessWidget {
   }
 }
 
-class AbeCard extends StatelessWidget {
-  const AbeCard({super.key, required this.child, this.padding, this.onTap});
+class DSCard extends StatelessWidget {
+  const DSCard({super.key, required this.child, this.padding, this.onTap});
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    final t = AbeTheme.of(context);
+    final t = DSTheme.of(context);
     final content = Padding(
       padding: padding ?? EdgeInsets.all(t.tokens.mobileLayout.gutter),
       child: child,
@@ -892,8 +892,8 @@ class AbeCard extends StatelessWidget {
   }
 }
 
-class AbeEmptyState extends StatelessWidget {
-  const AbeEmptyState({
+class DSEmptyState extends StatelessWidget {
+  const DSEmptyState({
     super.key,
     required this.icon,
     required this.title,
@@ -905,26 +905,26 @@ class AbeEmptyState extends StatelessWidget {
   final Widget? action;
   @override
   Widget build(BuildContext context) {
-    final c = AbeTheme.of(context).colors;
+    final c = DSTheme.of(context).colors;
     return Center(
       child: Padding(
         padding: EdgeInsets.all(
-          AbeTheme.of(context).tokens.mobileLayout.gutter,
+          DSTheme.of(context).tokens.mobileLayout.gutter,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 22, color: Color(c.inkMuted)),
-            SizedBox(height: AbeTheme.of(context).tokens.mobileLayout.itemGap),
-            AbeText(title, style: AbeTextStyle.headline),
-            SizedBox(height: AbeTheme.of(context).tokens.mobileLayout.itemGap),
+            SizedBox(height: DSTheme.of(context).tokens.mobileLayout.itemGap),
+            DSText(title, style: DSTextStyle.headline),
+            SizedBox(height: DSTheme.of(context).tokens.mobileLayout.itemGap),
             Text(
               message,
               textAlign: TextAlign.center,
               style: TextStyle(color: Color(c.inkBody)),
             ),
             if (action != null) ...[
-              SizedBox(height: AbeTheme.of(context).tokens.mobileLayout.gutter),
+              SizedBox(height: DSTheme.of(context).tokens.mobileLayout.gutter),
               action!,
             ],
           ],
@@ -934,8 +934,8 @@ class AbeEmptyState extends StatelessWidget {
   }
 }
 
-class AbeStatusBar extends StatelessWidget {
-  const AbeStatusBar({
+class DSStatusBar extends StatelessWidget {
+  const DSStatusBar({
     super.key,
     required this.time,
     this.indicators = const [
@@ -948,22 +948,22 @@ class AbeStatusBar extends StatelessWidget {
   final List<IconData> indicators;
   @override
   Widget build(BuildContext context) {
-    final color = Color(AbeTheme.of(context).colors.ink);
+    final color = Color(DSTheme.of(context).colors.ink);
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: AbeTheme.of(context).tokens.mobileLayout.gutter,
+        horizontal: DSTheme.of(context).tokens.mobileLayout.gutter,
       ),
       child: SizedBox(
-        height: AbeTheme.of(context).tokens.mobileLayout.controlHeight,
+        height: DSTheme.of(context).tokens.mobileLayout.controlHeight,
         child: Row(
           children: [
             Text(
               time,
               style: TextStyle(
                 color: color,
-                fontSize: AbeTheme.of(context).tokens.mobileType.body.size,
+                fontSize: DSTheme.of(context).tokens.mobileType.body.size,
                 fontWeight:
-                    FontWeight.values[((AbeTheme.of(
+                    FontWeight.values[((DSTheme.of(
                                       context,
                                     ).tokens.mobileType.body.weight /
                                     100)
@@ -976,7 +976,7 @@ class AbeStatusBar extends StatelessWidget {
             for (final icon in indicators)
               Padding(
                 padding: EdgeInsets.only(
-                  left: AbeTheme.of(context).tokens.mobileLayout.itemGap / 2,
+                  left: DSTheme.of(context).tokens.mobileLayout.itemGap / 2,
                 ),
                 child: Icon(icon, size: 18, color: color),
               ),
@@ -987,108 +987,108 @@ class AbeStatusBar extends StatelessWidget {
   }
 }
 
-/// Shows every Abe component in a compact scrollable specimen sheet.
-class AbeGallery extends StatefulWidget {
-  const AbeGallery({super.key});
+/// Shows every DS component in a compact scrollable specimen sheet.
+class DSGallery extends StatefulWidget {
+  const DSGallery({super.key});
   @override
-  State<AbeGallery> createState() => _AbeGalleryState();
+  State<DSGallery> createState() => _DSGalleryState();
 }
 
-class _AbeGalleryState extends State<AbeGallery> {
+class _DSGalleryState extends State<DSGallery> {
   int _segment = 0, _tab = 0;
   @override
   Widget build(BuildContext context) => ListView(
-    padding: EdgeInsets.all(AbeTheme.of(context).tokens.mobileLayout.gutter),
+    padding: EdgeInsets.all(DSTheme.of(context).tokens.mobileLayout.gutter),
     children: [
-      const AbeStatusBar(time: '9:41'),
-      const AbeSectionHeader(title: 'Typography'),
-      const AbeText('Title style', style: AbeTextStyle.title),
-      const AbeText('Headline style', style: AbeTextStyle.headline),
-      const AbeText('Body style', style: AbeTextStyle.body),
-      const AbeText('Label style', style: AbeTextStyle.label),
-      const AbeText('Caption style', style: AbeTextStyle.caption),
-      AbeLargeTitle(
+      const DSStatusBar(time: '9:41'),
+      const DSSectionHeader(title: 'Typography'),
+      const DSText('Title style', style: DSTextStyle.title),
+      const DSText('Headline style', style: DSTextStyle.headline),
+      const DSText('Body style', style: DSTextStyle.body),
+      const DSText('Label style', style: DSTextStyle.label),
+      const DSText('Caption style', style: DSTextStyle.caption),
+      DSLargeTitle(
         eyebrow: 'Friday, 19 September',
         title: 'Today',
-        trailing: AbeIconButton(
+        trailing: DSIconButton(
           icon: Icons.add,
           semanticLabel: 'Add',
           onPressed: () {},
         ),
       ),
-      const AbeSectionHeader(title: 'Buttons'),
+      const DSSectionHeader(title: 'Buttons'),
       Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
-          for (final v in AbeButtonVariant.values)
-            AbeButton(label: v.name, variant: v, onPressed: () {}),
+          for (final v in DSButtonVariant.values)
+            DSButton(label: v.name, variant: v, onPressed: () {}),
         ],
       ),
-      const AbeSectionHeader(title: 'Chips'),
+      const DSSectionHeader(title: 'Chips'),
       const Wrap(
         spacing: 8,
         children: [
-          AbeChip(label: 'Class 10'),
-          AbeChip(label: 'Active', tone: AbeChipTone.accent),
-          AbeChip(label: 'Paid', tone: AbeChipTone.success),
-          AbeChip(label: 'Due', tone: AbeChipTone.warning),
-          AbeChip(label: 'Overdue', tone: AbeChipTone.error),
+          DSChip(label: 'Class 10'),
+          DSChip(label: 'Active', tone: DSChipTone.accent),
+          DSChip(label: 'Paid', tone: DSChipTone.success),
+          DSChip(label: 'Due', tone: DSChipTone.warning),
+          DSChip(label: 'Overdue', tone: DSChipTone.error),
         ],
       ),
-      const AbeSectionHeader(title: 'Profile'),
-      const AbeCard(
-        child: AbeListRow(
+      const DSSectionHeader(title: 'Profile'),
+      const DSCard(
+        child: DSListRow(
           title: 'Ananya Raghavan',
           subtitle: 'Class 10 · Maths, Physics',
-          leading: AbeAvatar(initials: 'AR'),
-          trailing: AbeChip(label: 'Paid', tone: AbeChipTone.success),
+          leading: DSAvatar(initials: 'AR'),
+          trailing: DSChip(label: 'Paid', tone: DSChipTone.success),
         ),
       ),
-      const AbeSectionHeader(title: 'Statistics'),
-      const AbeStatTile(
+      const DSSectionHeader(title: 'Statistics'),
+      const DSStatTile(
         label: 'Collected',
         value: '₹3,84,000',
         meta: '+12% vs Aug',
-        tone: AbeStatTone.success,
+        tone: DSStatTone.success,
       ),
-      const AbeSectionHeader(title: 'Filters'),
-      AbeSegmentedControl(
+      const DSSectionHeader(title: 'Filters'),
+      DSSegmentedControl(
         items: const ['All', 'Due', 'Overdue', 'Paid'],
         selected: _segment,
         onChanged: (i) => setState(() => _segment = i),
       ),
-      const AbeSectionHeader(title: 'Fields'),
-      const AbeField(label: 'Amount', initialValue: '₹12,000'),
-      const AbeSearchField(hintText: 'Search students'),
-      const AbeSectionHeader(title: 'Navigation'),
-      AbeNavBar(
+      const DSSectionHeader(title: 'Fields'),
+      const DSField(label: 'Amount', initialValue: '₹12,000'),
+      const DSSearchField(hintText: 'Search students'),
+      const DSSectionHeader(title: 'Navigation'),
+      DSNavBar(
         title: 'Student',
-        leading: AbeIconButton(
+        leading: DSIconButton(
           icon: Icons.arrow_back,
           semanticLabel: 'Back',
           onPressed: () {},
         ),
-        trailing: AbeIconButton(
+        trailing: DSIconButton(
           icon: Icons.more_horiz,
           semanticLabel: 'More',
           onPressed: () {},
         ),
       ),
-      const AbeSheetHandle(),
-      AbeTabBar(
+      const DSSheetHandle(),
+      DSTabBar(
         items: const [
-          AbeTabItem(label: 'Today', icon: Icons.today),
-          AbeTabItem(label: 'Students', icon: Icons.people),
-          AbeTabItem(label: 'Fees', icon: Icons.payments),
-          AbeTabItem(label: 'Classes', icon: Icons.class_),
-          AbeTabItem(label: 'More', icon: Icons.more_horiz),
+          DSTabItem(label: 'Today', icon: Icons.today),
+          DSTabItem(label: 'Students', icon: Icons.people),
+          DSTabItem(label: 'Fees', icon: Icons.payments),
+          DSTabItem(label: 'Classes', icon: Icons.class_),
+          DSTabItem(label: 'More', icon: Icons.more_horiz),
         ],
         selectedIndex: _tab,
         onChanged: (i) => setState(() => _tab = i),
       ),
-      const AbeSectionHeader(title: 'Empty state', actionLabel: 'See all'),
-      const AbeEmptyState(
+      const DSSectionHeader(title: 'Empty state', actionLabel: 'See all'),
+      const DSEmptyState(
         icon: Icons.inbox_outlined,
         title: 'Nothing due',
         message: 'You are all caught up.',

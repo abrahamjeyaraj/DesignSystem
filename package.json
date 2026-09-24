@@ -1,6 +1,6 @@
 {
-  "name": "abe-design-system",
-  "version": "0.1.0",
+  "name": "design-system",
+  "version": "0.2.0",
   "description": "Shared design system for TheBibleProject, ChurchHQ and TuitionManager: one token source, per-app themes, web + React Native + SwiftUI + Compose + Flutter",
   "private": true,
   "type": "module",
