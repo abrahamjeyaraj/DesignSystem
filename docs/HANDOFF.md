@@ -56,3 +56,16 @@ Merged so far: Android (56b5058), iOS (22a63e1).
 - Trap: bun publish ignores publishConfig.registry; npm version/publish choke on workspace:*.
 - Trap: local gh token lacks read:packages; consumers need a PAT with read:packages.
 - Next: migrate TuitionManager ios-native + android-native (needs user go-ahead).
+
+## v0.2.1 + TuitionManager migration (2026-09-23)
+- v0.2.1 released (tag 4d21c13): tab label fix all platforms, Android heading slots, Android CI
+  version fix (v0.2.0 Maven went out as 0.0.0-SNAPSHOT; SNAPSHOT publish now refused).
+- Token: classic PAT read:packages stored in ~/.secrets.zsh (GITHUB_PACKAGES_TOKEN),
+  ~/.gradle/gradle.properties (gpr.user/gpr.key), ~/.npmrc (scope + env ref). Verified 200s.
+- TuitionManager Android migrated + merged locally (5c4a358, ddde98b), NOT pushed (main ahead 7 incl.
+  user's own web commits). Resolves designsystem:0.2.1 from GitHub Packages, 27 tests pass.
+- TuitionManager iOS thr_3ivjvzmyca: sent back (grey bg, double tab bar, small titles, double chevron,
+  empty search, nested card); must bump to 0.2.1 and capture before shots.
+- Web: waiting on user (tokens-only vs full ui-web swap).
+- SDK gaps queued for next minor: selectable chip, field validation, outline destructive button,
+  optional empty-state message, section-title size token, themed native list/form container, date picker.
