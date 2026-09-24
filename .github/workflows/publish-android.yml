@@ -28,4 +28,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          ./gradlew :designsystem:publish -PabeVersion="$VERSION"
+          ./gradlew :designsystem:publish -PdsVersion="$VERSION"

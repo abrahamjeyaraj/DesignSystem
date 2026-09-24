@@ -53,3 +53,11 @@ afterEvaluate {
         }
     }
 }
+
+// Never publish a default SNAPSHOT to GitHub Packages (v0.2.0 shipped as 0.0.0-SNAPSHOT because the
+// workflow passed the wrong property name).
+tasks.matching { it.name.startsWith("publish") && it.name.endsWith("ToGitHubPackagesRepository") }.configureEach {
+    doFirst {
+        require(!dsVersion.endsWith("SNAPSHOT")) { "Refusing to publish $dsVersion: pass -PdsVersion=<x.y.z>" }
+    }
+}

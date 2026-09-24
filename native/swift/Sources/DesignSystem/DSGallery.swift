@@ -20,7 +20,7 @@ public struct DSGallery: View {
         ScrollView {
             VStack(alignment: .leading, spacing: theme.mobileLayout.sectionGap) {
                 DSStatusBar()
-                DSLargeTitle(eyebrow: "ABE DESIGN · \(theme.name.uppercased())", title: "Component gallery") {
+                DSLargeTitle(eyebrow: "DESIGN SYSTEM · \(theme.name.uppercased())", title: "Component gallery") {
                     DSIconButton(systemImage: "bell", accessibilityLabel: "Notifications") {}
                 }
                 DSSectionHeader("Buttons") { Text("Primary · Secondary · Ghost · Destructive").dsFont(.caption).foregroundStyle(Color(dsHex: colors.inkMuted)) }
