@@ -24,6 +24,10 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm publish --workspace=@abrahamjeyaraj/tokens
-      - run: npm publish --workspace=@abrahamjeyaraj/ui-web
-      - run: npm publish --workspace=@abrahamjeyaraj/ui-native
+      # bun publish (not npm) rewrites "workspace:*" dependencies to the released version.
+      - run: bun publish
+        working-directory: packages/tokens
+      - run: bun publish
+        working-directory: packages/ui-web
+      - run: bun publish
+        working-directory: packages/ui-native

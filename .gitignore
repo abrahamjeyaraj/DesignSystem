@@ -14,3 +14,5 @@ native/flutter/.flutter-plugins*
 .build/
 .swiftpm/
 native/flutter/example/pubspec.lock
+packages/*/dist/
+*.tgz
