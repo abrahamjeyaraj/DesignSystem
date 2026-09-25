@@ -14,7 +14,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { type Base, kotlinTheme, resolveTheme, swiftTheme, type ThemeSource, themeCss } from "./build";
+import { type Base, kotlinTheme, resolveTheme, sourceFor, swiftTheme, type ThemeSource, themeCss } from "./build";
 
 const BASE = join(import.meta.dir, "../generated/base.json");
 const USAGE = `usage: ds-tokens css <theme.json> <out.css> [--check]
@@ -27,14 +27,24 @@ export function generate(target: Target, themePath: string, outPath: string, opt
   const cwd = opts.cwd ?? process.cwd();
   const base = JSON.parse(readFileSync(BASE, "utf8")) as Base;
   const src = JSON.parse(readFileSync(resolve(cwd, themePath), "utf8")) as ThemeSource;
-  const source = relative(dirname(resolve(cwd, outPath)), resolve(cwd, themePath)) || themePath;
-  const theme = resolveTheme(src, base);
-  if (target === "swift") return swiftTheme(theme, source);
+  const source = sourceLabel(resolve(cwd, themePath), cwd);
+  const theme = resolveTheme(sourceFor(src, null), base);
+  if (target === "swift") {
+    return swiftTheme(resolveTheme(sourceFor(src, "ios"), base), source, resolveTheme(sourceFor(src, "tvos"), base));
+  }
   if (target === "kotlin") {
     if (!opts.pkg) throw new Error("kotlin needs --package <pkg>");
-    return kotlinTheme(theme, source, opts.pkg);
+    return kotlinTheme(resolveTheme(sourceFor(src, "android"), base), source, opts.pkg);
   }
   return themeCss(base, theme, source);
+}
+
+/** Theme path relative to its git repo root (else the cwd), so headers don't depend on output depth. */
+function sourceLabel(themeFile: string, cwd: string): string {
+  for (let dir = dirname(themeFile); dirname(dir) !== dir; dir = dirname(dir)) {
+    if (existsSync(join(dir, ".git"))) return relative(dir, themeFile);
+  }
+  return relative(cwd, themeFile);
 }
 
 export const generateCss = (themePath: string, outPath: string, cwd = process.cwd()) =>

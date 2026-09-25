@@ -20,7 +20,7 @@ public extension Color {
 }
 
 private struct DSThemeKey: EnvironmentKey {
-    static let defaultValue: DSThemeTokens = DSTokens.bible
+    static let defaultValue: DSThemeTokens = DSTokens.themes[DSTokens.defaultTheme]!
 }
 
 public extension EnvironmentValues {

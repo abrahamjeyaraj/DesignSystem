@@ -125,7 +125,15 @@ bunx ds-tokens kotlin theme/app.json src/main/java/.../AppTheme.kt --package com
 
 Both accept `--check`. The Swift file extends `DSThemeTokens` with a static theme; the Kotlin file
 declares `<Name>Theme` in the given package. Set `mobile` and native `fontFamily` names in the
-theme JSON to fonts the app bundles.
+theme JSON to fonts the app bundles. Headers name the theme path relative to its git repo root.
+
+A theme can override type, shape and `mobile` values per platform, for example fonts a TV target
+bundles: `"platforms": { "tvos": { "fontFamily": { "heading": { ... } } } }`. Keys are `ios`,
+`tvos` and `android`; the Swift file then carries an `#if os(tvOS)` value.
+
+Compose: the library bundles no fonts, so pass `fonts = { name -> ... }` to `DSTheme` or every role
+falls back to serif (headings) or the system sans. `DSTheme(..., applyMaterial = false)` provides
+only the DS tokens under the app's own `MaterialTheme`.
 
 ## Checks
 
