@@ -24,8 +24,10 @@ Generated files are committed, so Xcode, Gradle and pub consumers never need Bun
 
 Everything is private. npm and Maven come from GitHub Packages; Swift and Flutter come from a git tag.
 Any machine or CI job that installs needs a GitHub token with `read:packages` (classic PAT, or
-`GITHUB_TOKEN` inside GitHub Actions). Releases: push a `v*` tag once; the `Release` workflow runs `turbo run release`, which gates and
-publishes npm + Maven.
+`GITHUB_TOKEN` inside GitHub Actions). Releases: push a `v*` tag once; the `Release` workflow runs `bun run ci` then `bun run release`,
+which publishes npm + Maven. `CI` runs `bun run ci` on every push to `main` and every PR. Both run on
+the Mac mini self-hosted runner `macmini-DesignSystem` (`~/actions-runner/runner.sh` on the Mac
+mini manages it).
 
 **iOS (SwiftUI)**: Xcode > Add Package > `https://github.com/abrahamjeyaraj/DesignSystem`, from `0.2.0`,
 product `DesignSystem` (Xcode must be signed in to GitHub).

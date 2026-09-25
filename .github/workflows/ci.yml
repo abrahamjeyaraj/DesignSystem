@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ci:
+    # Mac mini self-hosted runner: the only machine that can run every platform, Swift included.
+    runs-on: [self-hosted, macOS, ARM64, macmini]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.9
+          channel: stable
+      - name: Turbo cache outside the checkout
+        # checkout cleans ignored files, so .turbo/ would not survive between runs.
+        run: echo "TURBO_CACHE_DIR=$HOME/.cache/turbo/DesignSystem" >> "$GITHUB_ENV"
+      - run: bun install --frozen-lockfile
+      - run: bun run ci
