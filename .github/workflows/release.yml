@@ -33,13 +33,12 @@ jobs:
         run: echo "TURBO_CACHE_DIR=$HOME/.cache/turbo/DesignSystem" >> "$GITHUB_ENV"
       - run: bun install --frozen-lockfile
       - name: Set release version
-        # npm version cannot parse "workspace:*" deps, so set the field directly.
+        # Also refreshes bun.lock (bun publish reads workspace versions from it) and fails if any
+        # packed @abrahamjeyaraj/* dependency disagrees with the release version.
         run: |
           VERSION="${{ inputs.version || github.ref_name }}"; VERSION="${VERSION#v}"
           echo "DS_VERSION=$VERSION" >> "$GITHUB_ENV"
-          for p in tokens ui-web ui-native; do
-            DS_VERSION="$VERSION" bun -e 'const f = "packages/" + process.argv[1] + "/package.json"; const j = await Bun.file(f).json(); j.version = process.env.DS_VERSION; await Bun.write(f, JSON.stringify(j, null, 2) + "\n");' "$p"
-          done
+          bun scripts/set-version.ts "$VERSION"
       - name: Configure npm authentication
         # Checkout-local and expanded by bun at publish time: the shared machine never stores the
         # token, and homegenie's ~/.npmrc is left alone.
