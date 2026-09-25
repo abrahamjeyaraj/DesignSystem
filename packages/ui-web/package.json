@@ -21,7 +21,9 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p .",
-    "build": "bun build ./src/index.ts ./src/*.tsx ./src/*.ts --root ./src --outdir ./dist --external react --external react-dom --external react/jsx-runtime --external '@radix-ui/*' --external '@abrahamjeyaraj/*' --external lucide-react --external clsx --external tailwind-merge --external class-variance-authority && bunx tsc src/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir ./dist --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --skipLibCheck"
+    "build": "bun build ./src/index.ts ./src/*.tsx ./src/*.ts --root ./src --outdir ./dist --external react --external react-dom --external react/jsx-runtime --external '@radix-ui/*' --external '@abrahamjeyaraj/*' --external lucide-react --external clsx --external tailwind-merge --external class-variance-authority && bunx tsc src/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir ./dist --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --skipLibCheck",
+    "test": "bun test --conditions source test",
+    "release": "bun publish --registry https://npm.pkg.github.com"
   },
   "dependencies": {
     "@abrahamjeyaraj/tokens": "workspace:*",
@@ -62,6 +64,7 @@
   },
   "files": [
     "dist",
+    "src",
     "styles.css"
   ]
 }

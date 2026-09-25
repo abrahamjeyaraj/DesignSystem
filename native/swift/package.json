@@ -1,0 +1,12 @@
+{
+  "name": "@abrahamjeyaraj/native-swift",
+  "private": true,
+  "description": "Turbo tasks for the SwiftPM adapter. The manifest is the repo-root Package.swift; releases ship as git tags.",
+  "scripts": {
+    "build": "cd ../.. && swift build",
+    "test": "cd ../.. && swift test"
+  },
+  "devDependencies": {
+    "@abrahamjeyaraj/tokens": "workspace:*"
+  }
+}

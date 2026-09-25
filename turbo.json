@@ -1,0 +1,48 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "stream",
+  "envMode": "loose",
+  "tasks": {
+    "tokens:check": {
+      "outputs": []
+    },
+    "@abrahamjeyaraj/tokens#tokens:check": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tokens/**", "$TURBO_ROOT$/native/swift/Sources/DesignSystem/DSTokens.swift", "$TURBO_ROOT$/native/android/designsystem/src/**/DSTokens.kt", "$TURBO_ROOT$/native/flutter/lib/src/ds_tokens.g.dart"],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^tokens:check"],
+      "outputs": []
+    },
+    "build": {
+      "dependsOn": ["^build", "^tokens:check"],
+      "outputs": ["dist/**"]
+    },
+    "@abrahamjeyaraj/tokens#build": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tokens/**"],
+      "outputs": ["dist/**", "generated/**"]
+    },
+    "@abrahamjeyaraj/native-swift#build": {
+      "dependsOn": ["^tokens:check"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/Package.swift"],
+      "outputs": []
+    },
+    "@abrahamjeyaraj/native-swift#test": {
+      "dependsOn": ["^tokens:check"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/Package.swift"],
+      "outputs": []
+    },
+    "@abrahamjeyaraj/native-android#build": {
+      "dependsOn": ["^tokens:check"],
+      "outputs": ["designsystem/build/outputs/aar/**"]
+    },
+    "release": {
+      "dependsOn": ["^release", "tokens:check", "build", "test", "typecheck"],
+      "cache": false
+    }
+  }
+}

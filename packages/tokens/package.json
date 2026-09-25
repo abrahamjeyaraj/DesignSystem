@@ -20,8 +20,11 @@
     "css"
   ],
   "scripts": {
+    "tokens:check": "bun scripts/build.ts --check",
     "build": "bun scripts/build.ts && bun build generated/index.ts --outdir dist && bunx tsc generated/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir dist --skipLibCheck",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "test": "bun test --conditions source scripts",
+    "release": "bun publish --registry https://npm.pkg.github.com"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

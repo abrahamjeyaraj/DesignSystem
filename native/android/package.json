@@ -1,0 +1,13 @@
+{
+  "name": "@abrahamjeyaraj/native-android",
+  "private": true,
+  "description": "Turbo tasks for the Compose adapter. release publishes the AAR to GitHub Packages Maven (needs DS_VERSION, GITHUB_ACTOR, GITHUB_TOKEN).",
+  "scripts": {
+    "build": "./gradlew :designsystem:assembleRelease --console=plain -q",
+    "test": "./gradlew :designsystem:testDebugUnitTest --console=plain -q",
+    "release": "./gradlew :designsystem:publish -PdsVersion=\"$DS_VERSION\" --console=plain"
+  },
+  "devDependencies": {
+    "@abrahamjeyaraj/tokens": "workspace:*"
+  }
+}

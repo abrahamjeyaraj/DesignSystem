@@ -13,7 +13,8 @@
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --external react --external react-native --external react-native-web --external '@abrahamjeyaraj/*' && bunx tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit -p .",
-    "test": "bun test test"
+    "test": "bun test --conditions source test",
+    "release": "bun publish --registry https://npm.pkg.github.com"
   },
   "dependencies": {
     "@abrahamjeyaraj/tokens": "workspace:*"

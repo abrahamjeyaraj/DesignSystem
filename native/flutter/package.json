@@ -1,0 +1,11 @@
+{
+  "name": "@abrahamjeyaraj/native-flutter",
+  "private": true,
+  "description": "Turbo tasks for the Flutter adapter. Releases ship as git tags.",
+  "scripts": {
+    "test": "flutter pub get >/dev/null && flutter analyze && flutter test"
+  },
+  "devDependencies": {
+    "@abrahamjeyaraj/tokens": "workspace:*"
+  }
+}

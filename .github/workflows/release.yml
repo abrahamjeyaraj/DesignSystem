@@ -1,0 +1,44 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 0.2.0), for re-running a release"
+        required: true
+permissions:
+  packages: write
+  contents: read
+# A tag pushed twice must not publish twice: GitHub Packages rejects an existing version with 409.
+concurrency:
+  group: release-${{ inputs.version || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - run: bun install
+      - name: Set release version
+        # npm version cannot parse "workspace:*" deps, so set the field directly.
+        run: |
+          VERSION="${{ inputs.version || github.ref_name }}"; VERSION="${VERSION#v}"
+          echo "DS_VERSION=$VERSION" >> "$GITHUB_ENV"
+          for p in tokens ui-web ui-native; do
+            DS_VERSION="$VERSION" bun -e 'const f = "packages/" + process.argv[1] + "/package.json"; const j = await Bun.file(f).json(); j.version = process.env.DS_VERSION; await Bun.write(f, JSON.stringify(j, null, 2) + "\n");' "$p"
+          done
+      - name: Configure npm authentication
+        run: printf '@abrahamjeyaraj:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$GITHUB_TOKEN" > ~/.npmrc
+      # One task graph for every published artifact: tokens:check, test, typecheck and build gate
+      # the npm packages (bun publish rewrites "workspace:*") and the Android AAR (Gradle to Maven).
+      # Swift and Flutter release as this git tag, so they have no release task.
+      - run: bunx turbo run release
