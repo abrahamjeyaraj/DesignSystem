@@ -43,8 +43,8 @@ status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutte
 - `ed-*` classes became roles; brand font variables became `font-heading` / `font-body` / `label-text`.
 - `rounded-[2px]` became `rounded-control` / `rounded-button`; Card uses `rounded-card shadow-card`.
 - Menu items used tracking 1px and now use the theme tracking (Bible 1.5px), a small visual change.
-- Bible-only `ed-*` colours remain as bible `extra`, plus the stock palette aliases
-  (gray/slate/blue to stone, amber to sienna), so Bible web can migrate without renaming.
+- Bible-only colours (body, border-subtle, brand-brown, ...) live in bible `extra`, with the
+  same names Bible web uses. Only the content-badge palettes (indigo, sky, emerald, rose) remain.
 - `animate-in`/`zoom-in` classes are kept but inert, as in Bible today (no animation plugin);
   add `tw-animate-css` in a consumer to enable them.
 

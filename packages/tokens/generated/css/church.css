@@ -51,8 +51,8 @@
   --color-secondary-foreground: #1d1b16;
   --color-muted: #efece4;
   --color-muted-foreground: #6f6c63;
-  --color-accent: #1a6b54;
-  --color-accent-foreground: #ffffff;
+  --color-accent: #efece4;
+  --color-accent-foreground: #1d1b16;
   --color-destructive: #e11d48;
   --color-destructive-foreground: #ffffff;
   --color-border: #e6e3dc;
@@ -159,7 +159,8 @@
   --color-secondary-foreground: #f1ede3;
   --color-muted: #38352e;
   --color-muted-foreground: #b3ada0;
-  --color-accent: #3a9b7a;
+  --color-accent: #38352e;
+  --color-accent-foreground: #f1ede3;
   --color-border: #3f3b33;
   --color-input: #3f3b33;
   --color-ring: #57b394;

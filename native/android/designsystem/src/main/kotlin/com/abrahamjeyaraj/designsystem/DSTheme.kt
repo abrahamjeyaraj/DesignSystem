@@ -106,8 +106,8 @@ fun DSTheme(
         darkColorScheme(
             primary = Color(c.primary),
             onPrimary = Color(c.primaryForeground),
-            secondary = Color(c.accent),
-            onSecondary = Color(c.accentForeground),
+            secondary = Color(c.accent2),
+            onSecondary = Color(c.background),
             background = Color(c.background),
             onBackground = Color(c.foreground),
             surface = Color(c.card),
@@ -122,8 +122,8 @@ fun DSTheme(
         lightColorScheme(
             primary = Color(c.primary),
             onPrimary = Color(c.primaryForeground),
-            secondary = Color(c.accent),
-            onSecondary = Color(c.accentForeground),
+            secondary = Color(c.accent2),
+            onSecondary = Color(c.background),
             background = Color(c.background),
             onBackground = Color(c.foreground),
             surface = Color(c.card),

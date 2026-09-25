@@ -1014,7 +1014,7 @@ class DSToggle extends StatelessWidget {
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: Color(
-                  value ? c.accent : c.border,
+                  value ? c.accent2 : c.border,
                 ).withValues(alpha: disabled ? .5 : 1),
                 borderRadius: BorderRadius.circular(999),
               ),
@@ -1089,7 +1089,7 @@ class DSProgress extends StatelessWidget {
               minHeight: 6,
               backgroundColor: Color(c.surfaceSand),
               color: Color(
-                tone == DSProgressTone.accent ? c.accent : c.accent2,
+                tone == DSProgressTone.accent ? c.primary : c.accent2,
               ),
             ),
           ),

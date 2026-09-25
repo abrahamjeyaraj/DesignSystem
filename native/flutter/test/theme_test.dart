@@ -18,7 +18,7 @@ void main() {
         church.extension<DSTheme>()!.extra('verified-blue'),
         const Color(0xFF1D9BF0),
       );
-      expect(bible.scaffoldBackgroundColor, const Color(0xFF1A1A12));
+      expect(bible.scaffoldBackgroundColor, const Color(0xFF121210));
       expect(
         church.textTheme.bodyMedium!.fontSize,
         DSTokens.church.mobileType.body.size,

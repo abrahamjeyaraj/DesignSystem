@@ -61,15 +61,18 @@ describe("theme contract", () => {
 describe("themes keep their own look", () => {
   test("bible matches TheBibleProject globals.css and ui components", () => {
     const t = byName("bible");
-    expect(t.light.background).toBe("#f8f8f6");
-    expect(t.light.accent).toBe("#c97a54");
-    expect(t.light.action).toBe("#c8b496"); // ed-gold CTA
+    expect(t.light.background).toBe("#f4f2ef"); // cream
+    expect(t.light.primary).toBe("#c8b496"); // gold
+    expect(t.light.action).toBe("#c8b496");
+    expect(t.dark.background).toBe("#121210"); // iPhone dark
     expect(t.dark.action).toBe("#d9c9a8");
-    expect(t.dark.success).toBe("#3d6b4d"); // inherited
+    expect(t.dark.warning).toBe("#b8851f"); // inherited
     expect(t.fontSize.base).toBe(15);
     expect(t.radius.button).toBe(2);
     expect(t.label).toEqual({ case: "uppercase", tracking: 1.5, size: 13, weight: 500 });
-    expect(t.extraLight["ed-gold"]).toBe("#c8b496");
+    expect(t.extraLight["brand-brown-strong"]).toBe("#8a5a2e");
+    expect(t.extraDark["brand-brown-strong"]).toBe("#d9a86a");
+    expect(Object.keys(t.scales)).toEqual([]); // no numbered primary/accent scales
   });
 
   test("church matches ChurchHQ tokens.css", () => {
@@ -122,14 +125,14 @@ describe("css", () => {
 
   test("emits Tailwind v4 namespaces and class dark mode", () => {
     expect(bible).toContain("@custom-variant dark (&:where(.dark, .dark *));");
-    expect(bible).toContain("--color-accent-500: #c97a54;");
-    expect(bible).toContain("--color-gray-500: #6d6d59;"); // bible-only palette alias
+    expect(bible).toContain("--color-sky-700: #2f6b8c;"); // bible-only palette alias
+    expect(bible).not.toMatch(/--color-(primary|accent|gray)-\d{2,3}:/);
     expect(bible).toContain("--text-base: 0.9375rem;");
     expect(bible).toContain("--radius-button: 0.125rem;");
     expect(bible).toContain('--font-label: var(--font-ibm-plex-mono), "IBM Plex Mono", monospace;');
     expect(bible).toContain("--label-case: uppercase;");
-    expect(bible).toMatch(/\.dark \{[^}]*--color-background: #1a1a12;/);
-    expect(bible).not.toMatch(/\.dark \{[^}]*--color-success:/); // unchanged roles not repeated
+    expect(bible).toMatch(/\.dark \{[^}]*--color-background: #121210;/);
+    expect(bible).not.toMatch(/\.dark \{[^}]*--color-warning:/); // unchanged roles not repeated
     expect(bible).toContain("@utility label-text {");
   });
 
