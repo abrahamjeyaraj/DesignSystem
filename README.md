@@ -115,6 +115,18 @@ The theme JSON has the same shape as `tokens/themes/*.json` and is checked again
 of `@abrahamjeyaraj/tokens/css/<app>.css`, and commit it. If the theme JSON sits where Tailwind
 scans for sources, its keys become stray utilities; exclude it, e.g. `@source not "../../theme";`.
 
+Native apps generate from the same theme JSON and commit the output:
+
+```sh
+bunx ds-tokens swift theme/app.json Sources/Theme/AppTheme.swift         # .dsTheme(.app)
+bunx ds-tokens kotlin theme/app.json src/main/java/.../AppTheme.kt --package com.example.ui.theme
+                                                                          # DSTheme(AppTheme) { ... }
+```
+
+Both accept `--check`. The Swift file extends `DSThemeTokens` with a static theme; the Kotlin file
+declares `<Name>Theme` in the given package. Set `mobile` and native `fontFamily` names in the
+theme JSON to fonts the app bundles.
+
 ## Checks
 
 ```

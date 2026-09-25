@@ -3,7 +3,7 @@
   "private": true,
   "description": "Turbo tasks for the SwiftPM adapter. The manifest is the repo-root Package.swift; releases ship as git tags.",
   "scripts": {
-    "build": "cd ../.. && swift build",
+    "build": "cd ../.. && swift build && for p in iOS tvOS; do xcodebuild build -quiet -scheme DesignSystem -destination \"generic/platform=$p\" -derivedDataPath native/swift/.build/xcode || exit 1; done",
     "test": "cd ../.. && swift test"
   },
   "devDependencies": {

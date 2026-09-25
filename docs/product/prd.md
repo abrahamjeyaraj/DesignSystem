@@ -73,8 +73,9 @@ Defects go to Taskwarrior, not this queue.
   CSS. Shipped in 0.4.2; reviewed by the Bible web session (lint 0 errors, `--check` passes).
 - **DS-ARCH-3 Neutral default theme** [blocked] : a product-neutral theme for the DesignSystem
   gallery and tests, replacing `bible` as `DEFAULT_THEME`. Blocked on DS-THEME-1..3.
-- **DS-ARCH-4 Native codegen for app-owned themes** [planned] : `ds-tokens` emits Swift, Kotlin and
-  Dart theme values against types owned by the SDKs, so native apps can own their theme too.
+- **DS-ARCH-4 Native codegen for app-owned themes** [proto] : `ds-tokens swift` and `ds-tokens
+  kotlin --package` emit a theme value against SDK-owned types (Swift types now have public
+  inits). Each SDK's tests compile a generated app theme from public API. Unreleased; Dart later.
 
 ## 2. Releases and CI
 
@@ -112,8 +113,13 @@ Defects go to Taskwarrior, not this queue.
 ## 5. Native
 
 - **DS-NATIVE-1 SDKs** [done] : SwiftUI, Compose, Flutter and React Native SDKs with galleries.
-- **DS-NATIVE-2 Bible iOS and Android adoption** [planned] : replace hand-written tokens with the
-  `DesignSystem` / `:designsystem` packages.
+- **DS-NATIVE-2 Bible iOS, tvOS and Android adoption** [pending] : TBP iOS (17), tvOS (17) and
+  Android (single `:app`) use the SDKs with a repo-level `theme/bible.json` shared with web.
+  DesignSystem side: tvOS builds (TextEditor fallback) and iOS/tvOS builds run in CI; Android
+  library lowered to minSdk 24 and Kotlin language/API 2.0 for TBP. TBP side: GitHub credentials
+  for SwiftPM and Maven, `mobile` and font values, replacing its own Theme files.
+- **DS-NATIVE-4 watchOS** [planned] : dropped from `Package.swift` (it never compiled:
+  TextEditor, UIAccessibility). Add back with fallbacks when an app needs it.
 - **DS-NATIVE-3 Component set convergence** [planned] : web and native component sets differ;
   converge when a second app needs a missing component.
 

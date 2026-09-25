@@ -10,10 +10,15 @@ val dsVersion: String = (findProperty("dsVersion") as String?) ?: "0.0.0-SNAPSHO
 android {
     namespace = "com.abrahamjeyaraj.designsystem"
     compileSdk = 35
-    defaultConfig { minSdk = 26 }
+    defaultConfig { minSdk = 24 }
     buildFeatures { compose = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions {
+        jvmTarget = "17"
+        // Apps on Kotlin 2.0 can consume this library.
+        languageVersion = "2.0"
+        apiVersion = "2.0"
+    }
     publishing {
         singleVariant("release") {
             withSourcesJar()

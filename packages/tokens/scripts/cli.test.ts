@@ -42,6 +42,22 @@ describe("ds-tokens css", () => {
     expect(result.stderr.toString()).toContain("missing roles [action]");
   });
 
+  test("swift and kotlin targets write an app-owned native theme", () => {
+    const dir = workspace(theme);
+    expect(run(dir, "swift", "app.json", "Theme.swift").exitCode).toBe(0);
+    const swift = readFileSync(join(dir, "Theme.swift"), "utf8");
+    expect(swift).toContain("import DesignSystem");
+    expect(swift).toContain("public static let app = DSThemeTokens(");
+    expect(run(dir, "swift", "app.json", "Theme.swift", "--check").exitCode).toBe(0);
+
+    expect(run(dir, "kotlin", "app.json", "Theme.kt").exitCode).toBe(1);
+    expect(run(dir, "kotlin", "app.json", "Theme.kt", "--package", "com.example.ui").exitCode).toBe(0);
+    const kotlin = readFileSync(join(dir, "Theme.kt"), "utf8");
+    expect(kotlin).toContain("package com.example.ui");
+    expect(kotlin).toContain("val AppTheme = DSThemeTokens(");
+    expect(run(dir, "kotlin", "app.json", "Theme.kt", "--check", "--package", "com.example.ui").exitCode).toBe(0);
+  });
+
   test("bad arguments print usage", () => {
     expect(run(tmpdir(), "css").exitCode).toBe(2);
   });

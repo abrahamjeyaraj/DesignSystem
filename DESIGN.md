@@ -30,6 +30,10 @@ status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutte
   contract, the components and, once the apps have moved, a neutral default theme for its gallery
   and tests. A theme generated inside the app is also what `@shadcn/lint` needs: it ignores token
   declarations imported from `node_modules`.
+- **Native apps own their theme too** (2026-09-25). `ds-tokens swift|kotlin` writes the app's
+  theme value; the SDKs keep components and types. SwiftPM targets iOS 16, macOS 13 and tvOS 16
+  (built in CI); Android library minSdk 24, Kotlin language/API 2.0, so TBP (minSdk 24, Kotlin
+  2.0.21) can consume it.
 - **Native type names are `DS`-prefixed** so they don't collide with SwiftUI/Material3
   `ColorScheme`.
 
