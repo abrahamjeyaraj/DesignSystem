@@ -100,6 +100,21 @@ theme keeps working with every component. Colours only one app needs go in that 
 
 Add an app: copy a theme file, rename `name`, and adjust the values.
 
+### Own the theme in the app
+
+Apps are moving their theme into their own repo (see DESIGN.md). With `@abrahamjeyaraj/tokens`
+installed (needs Bun):
+
+```sh
+bunx ds-tokens css theme/app.json src/app/theme.css           # write
+bunx ds-tokens css theme/app.json src/app/theme.css --check   # CI: fail if stale
+```
+
+The theme JSON has the same shape as `tokens/themes/*.json` and is checked against the shipped
+`base.json` (`@abrahamjeyaraj/tokens/base.json`). Import the generated file after Tailwind in place
+of `@abrahamjeyaraj/tokens/css/<app>.css`, and commit it. If the theme JSON sits where Tailwind
+scans for sources, its keys become stray utilities; exclude it, e.g. `@source not "../../theme";`.
+
 ## Checks
 
 ```

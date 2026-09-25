@@ -1,8 +1,11 @@
 {
   "name": "@abrahamjeyaraj/tokens",
   "version": "0.2.1",
-  "description": "Design tokens and per-app themes (Tailwind v4 CSS, TypeScript). Generated from tokens/*.json.",
+  "description": "Design tokens, role contract and the ds-tokens theme generator (Tailwind v4 CSS, TypeScript).",
   "type": "module",
+  "bin": {
+    "ds-tokens": "./scripts/cli.ts"
+  },
   "exports": {
     ".": {
       "source": "./generated/index.ts",
@@ -11,13 +14,17 @@
     },
     "./tokens.json": "./generated/tokens.json",
     "./css/*.css": "./generated/css/*.css",
-    "./base.css": "./css/base.css"
+    "./base.css": "./css/base.css",
+    "./base.json": "./generated/base.json"
   },
   "files": [
     "dist",
     "generated/tokens.json",
+    "generated/base.json",
     "generated/css",
-    "css"
+    "css",
+    "scripts/build.ts",
+    "scripts/cli.ts"
   ],
   "scripts": {
     "tokens:check": "bun scripts/build.ts --check",
