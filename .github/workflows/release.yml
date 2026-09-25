@@ -40,5 +40,5 @@ jobs:
         run: printf '@abrahamjeyaraj:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$GITHUB_TOKEN" > ~/.npmrc
       # One task graph for every published artifact: tokens:check, test, typecheck and build gate
       # the npm packages (bun publish rewrites "workspace:*") and the Android AAR (Gradle to Maven).
-      # Swift and Flutter release as this git tag, so they have no release task.
-      - run: bunx turbo run release
+      # Swift and Flutter release as this git tag; the root script filters them out of the graph.
+      - run: bun run release
