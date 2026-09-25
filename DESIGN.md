@@ -57,7 +57,8 @@ status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutte
 
 ## Open items
 
-1. Wire consumers: ChurchHQ web, TuitionManager web and native, then Bible web. None use this yet.
+1. Wire consumers: Bible web is adopting 0.4.x (TheBibleProject `web/shadcn-colors`, not merged);
+   ChurchHQ web and TuitionManager web and native still to do. Status: docs/product/prd.md.
 2. Accessibility: tuition `muted-foreground` #8b7c6d on #fbf7f0 is about 3.9:1 (below AA for
    body text). It is kept as-is from the app. Tuition accent-on-cream is also low.
 3. Move themes out (see Decisions): bible to TheBibleProject web first, then church and tuition
