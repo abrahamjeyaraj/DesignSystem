@@ -33,6 +33,20 @@ status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutte
 - **Native type names are `DS`-prefixed** so they don't collide with SwiftUI/Material3
   `ColorScheme`.
 
+- **Design standard v1** (2026-09-30, docs/STANDARD-v1.md). Each app owns a `design/` folder
+  (DTCG theme, icon set, scenes, brand, fonts, sources); DesignSystem ships the contract, the
+  generators (`ds-tokens`, `ds-extract`, `ds-icons`, `ds-art`, `ds-lint`, `ds-init`) and the SDKs.
+  Claude Design is the source for Bible and ChurchHQ, the Pen file for Tuition; exports are
+  evidence and are frozen into `design/` through `ds-extract` and review.
+- **DTCG themes with semantic names.** `ds-tokens` reads DTCG or legacy themes; legacy roles map
+  one to one (`ROLE_MAP`), so nothing changes visually. Duplicate roles merge after each app's
+  colour audit, behind deprecated aliases.
+- **Icons are copied, never drawn.** One pinned set per app; every platform output comes from the
+  same geometry and is pixel-checked against the source. Components use fixed semantic names
+  (`COMPONENT_ICONS`). Bible: custom set, stroke 1.6. ChurchHQ and Tuition: Lucide 0.469.0.
+- **Modular packages.** ui-web has module subpaths; apps generate only their own theme, used
+  icons and declared scenes. Native module splits follow on a machine that can compile them.
+
 ## Provenance
 
 - bible: `TheBibleProject/apps/web/src/app/globals.css` (what renders) and `components/ui/*.tsx`.
@@ -56,6 +70,13 @@ status: v0.2.0 2026-09-23: platform SDKs (SwiftUI, Compose, React Native, Flutte
   add `tw-animate-css` in a consumer to enable them.
 
 ## Open items
+
+0. Standard v1 follow-ups that need a Mac (Swift/Kotlin/Flutter toolchains): run `check:native` for
+   the new public Swift inits; native players for scenes (SwiftUI trim, Compose PathMeasure, Flutter
+   PathMetric) and native `DSIcon` wrappers; split SwiftPM products / Gradle modules; RN `DSIcon`
+   (needs react-native-svg); a neutral default theme replacing the product themes as SDK defaults
+   and previews (the brand-free test lists those files). Contrast today: tuition muted text 3.78:1,
+   church dark buttons 3.41:1.
 
 1. Wire consumers: ChurchHQ web, TuitionManager web and native, then Bible web. None use this yet.
 2. Accessibility: tuition `muted-foreground` #8b7c6d on #fbf7f0 is about 3.9:1 (below AA for

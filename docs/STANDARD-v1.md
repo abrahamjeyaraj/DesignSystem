@@ -292,6 +292,23 @@ live in the app and compose SDK components.
 | 6 | Adapters: `/design-sync` publish, Pen export, Figma, Penpot | 1–3 |
 | 7 | Roll out per app with CI checks and AGENTS.md rules: Bible, ChurchHQ, Tuition, then others | 3–6 |
 
+### 10.1 Status (2026-09-30)
+
+Built test-first in this repo (each step committed red, then green); `bun run verify` passes.
+
+| Standard section | Done here | Still open |
+|---|---|---|
+| 3 Tokens | DTCG themes, `ROLE_MAP`, `ds-tokens validate / migrate`, `contrast` | merge duplicate roles after each app's audit; `icon.size` and type-role tokens in base |
+| 2 design/ folder | `ds-init` (SKILL.md, readme, starter theme, icons, art, lint, sources, LFS, agent rules) | commit the exports into each app (phase 0) |
+| 7 Design tools | `ds-extract` for Claude Design exports and `.pen`, drift vs a theme | Pen / Figma / Penpot export adapters; `/design-sync` publish |
+| 4 Icons | `ds-icons build` (web/RN, iOS, Android XML, Compose, Flutter, sprite), used-only, `verify` pixel check | freeze Bible's custom set; native `DSIcon` wrappers; RN `DSIcon` |
+| 5 Illustrations | scene format, `ds-art extract / build`, `DSStrokeScene` (web) | SwiftUI / Compose / Flutter players (need a Mac to compile) |
+| 6.1 Packaging | ui-web module subpaths with isolation tests; per-app Swift/Kotlin/Dart themes; public Swift inits | SwiftPM products and Gradle modules; neutral default theme as SDK default |
+| 8 Checks | `ds-lint` with baseline, brand-free test for DesignSystem | wire into each app's CI |
+
+First `ds-lint` run on the apps (for baselines): Bible about 1,130 findings, ChurchHQ 212,
+Tuition 161, mostly colour literals and platform icons.
+
 ---
 
 ## Appendix: review evidence (2026-09-30)

@@ -20,4 +20,9 @@ Shared design system for TheBibleProject, ChurchManagement (ChurchHQ) and Tuitio
   in every theme.
 - Use Bun. Before handing off: `bun run verify`; if native adapters or the generator changed, also
   `bun run check:native`.
+- Design tooling follows docs/STANDARD-v1.md. Test fixtures under `packages/design-tools/test/fixtures`
+  use neutral content. The brand-free test lists the files still allowed to name a product; that
+  list may only shrink.
+- ui-web modules (`src/modules/*.ts`) must together export exactly the root API; a new component
+  goes into one module.
 - Consumer repos are separate. Do not edit them from here unless asked.

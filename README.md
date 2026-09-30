@@ -13,6 +13,7 @@ tokens/themes/<app>.json    bible | church | tuition: palette, role colours, fon
 packages/tokens     @abrahamjeyaraj/tokens     Tailwind v4 CSS per theme + typed TS object
 packages/ui-web     @abrahamjeyaraj/ui-web     React + Radix + Tailwind components (web and mobile web)
 packages/ui-native  @abrahamjeyaraj/ui-native  React Native / Expo / react-native-web primitives
+packages/design-tools @abrahamjeyaraj/design-tools  ds-extract, ds-icons, ds-art, ds-lint, ds-init (apps' design/ folder)
 native/swift        DesignSystem       SwiftPM: tokens + SwiftUI environment, Color(dsHex:), button style
 native/android      :designsystem     Android library: tokens + Compose DSTheme (Material3 bridge)
 native/flutter      design_system      Dart package: tokens + ThemeData + DSTheme extension
@@ -115,11 +116,54 @@ The theme JSON has the same shape as `tokens/themes/*.json` and is checked again
 of `@abrahamjeyaraj/tokens/css/<app>.css`, and commit it. If the theme JSON sits where Tailwind
 scans for sources, its keys become stray utilities; exclude it, e.g. `@source not "../../theme";`.
 
+## The app's design/ folder
+
+The standard (docs/STANDARD-v1.md): DesignSystem is infrastructure; each app owns its brand in a
+`design/` folder, laid out like a Claude Design design-system project so it can be synced there.
+
+```sh
+bunx ds-init . --name my-app --agents                  # scaffold design/ + agent rules in AGENTS.md
+bunx ds-tokens validate design/theme.json              # DTCG theme against the role contract
+bunx ds-tokens contrast design/theme.json --strict     # WCAG AA for every text/surface pair
+bunx ds-tokens css    design/theme.json src/theme.css                        # web
+bunx ds-tokens swift  design/theme.json ios/App/AppTheme.swift               # DSTokens.myApp
+bunx ds-tokens kotlin design/theme.json android/.../AppTheme.kt --package x  # MyAppTheme
+bunx ds-tokens dart   design/theme.json lib/app_theme.g.dart                 # myAppTheme
+bunx ds-tokens migrate old-theme.json design/theme.json                      # legacy -> DTCG
+```
+
+Themes are DTCG (`$type`, `$value`, `{palette.x.y}` aliases, dark mode in `$extensions.ds.dark`) with
+semantic names (`color.surface.page`, `color.text.muted`, `color.action.primary`, ...). The legacy
+role names map one to one (`ROLE_MAP` in `packages/tokens/scripts/dtcg.ts`), so outputs are identical.
+
+```sh
+bunx ds-extract design/source/<export> --out report.json --candidates icons/ --theme design/theme.json
+bunx ds-icons build  design/icons/icons.json [--check]   # only icons the code uses, every platform
+bunx ds-icons verify design/icons/icons.json --sheet sheet.html   # pixel check in Chromium
+bunx ds-art extract scene.svg --id welcome --out design/art/scenes/welcome.json
+bunx ds-art build design/art/art.json [--check]
+bunx ds-lint . --baseline design/lint-baseline.json      # no literals, stock palettes, platform icons, inline SVG
+```
+
+- `ds-extract` lists what a Claude Design export or `.pen` file contains: colours by name and value,
+  names whose value differs between files, fonts, inline icons grouped by geometry with their
+  stroke widths, and library icons. `--theme` lists colours the frozen theme lacks (drift).
+- `icons.json` pins one set (custom SVGs, or `lucide` at an exact version), one grid, stroke, cap
+  and join. `ds-icons` writes web/RN data, an iOS asset catalog + Swift names, Android
+  VectorDrawables, Compose ImageVectors and Flutter assets from the same geometry; `verify` renders
+  each output beside its source and fails on any visible difference.
+- Scenes (`ds-art`) are paths with a draw window each; `DSStrokeScene` plays them on the web.
+
+**Web modules.** Import only what you use; each subpath bundles nothing from the others:
+`@abrahamjeyaraj/ui-web/core`, `/controls`, `/content`, `/navigation`, `/icons` (DSIcon +
+DSIconProvider with the app's generated icons), `/art` (DSStrokeScene). The root still exports all.
+
 ## Checks
 
 ```
 bun run verify          generated files fresh + tests (tokens contract, Tailwind compile per theme) + typecheck
 bun run check:native    swift test, flutter analyze/test, gradle unit test + AAR
+                        (design-tools icon verify needs Chromium; its tests skip without one)
 bun run ci              every platform: tokens:check, test, typecheck, build
 bun run release         publish npm packages + Android AAR (needs DS_VERSION, GITHUB_ACTOR, GITHUB_TOKEN)
 ```
