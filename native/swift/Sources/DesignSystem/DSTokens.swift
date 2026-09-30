@@ -3,6 +3,14 @@
 
 public struct DSShadowLayer: Sendable, Equatable {
     public let x: Double, y: Double, blur: Double, spread: Double, alpha: Double
+
+    public init(x: Double, y: Double, blur: Double, spread: Double, alpha: Double) {
+        self.x = x
+        self.y = y
+        self.blur = blur
+        self.spread = spread
+        self.alpha = alpha
+    }
 }
 
 /// Colours are 0xRRGGBB.
@@ -11,6 +19,13 @@ public struct DSTextRole: Sendable, Equatable {
     public let size: Double
     public let lineHeight: Double
     public let weight: Int
+
+    public init(family: String, size: Double, lineHeight: Double, weight: Int) {
+        self.family = family
+        self.size = size
+        self.lineHeight = lineHeight
+        self.weight = weight
+    }
 }
 
 public struct DSColorScheme: Sendable, Equatable {
@@ -58,6 +73,53 @@ public struct DSColorScheme: Sendable, Equatable {
     public let onInkAccent: UInt32
     public let warnBg: UInt32
     public let alertBg: UInt32
+
+    public init(background: UInt32, foreground: UInt32, card: UInt32, cardForeground: UInt32, popover: UInt32, popoverForeground: UInt32, primary: UInt32, primaryForeground: UInt32, secondary: UInt32, secondaryForeground: UInt32, muted: UInt32, mutedForeground: UInt32, accent: UInt32, accentForeground: UInt32, destructive: UInt32, destructiveForeground: UInt32, border: UInt32, input: UInt32, ring: UInt32, success: UInt32, successLight: UInt32, warning: UInt32, warningLight: UInt32, error: UInt32, errorLight: UInt32, info: UInt32, infoLight: UInt32, ink: UInt32, inkBody: UInt32, inkMuted: UInt32, subtle: UInt32, line: UInt32, lineHover: UInt32, action: UInt32, actionForeground: UInt32, surfaceCard: UInt32, surfaceSand: UInt32, accent2: UInt32, ink900: UInt32, onInk: UInt32, onInkMuted: UInt32, onInkAccent: UInt32, warnBg: UInt32, alertBg: UInt32) {
+        self.background = background
+        self.foreground = foreground
+        self.card = card
+        self.cardForeground = cardForeground
+        self.popover = popover
+        self.popoverForeground = popoverForeground
+        self.primary = primary
+        self.primaryForeground = primaryForeground
+        self.secondary = secondary
+        self.secondaryForeground = secondaryForeground
+        self.muted = muted
+        self.mutedForeground = mutedForeground
+        self.accent = accent
+        self.accentForeground = accentForeground
+        self.destructive = destructive
+        self.destructiveForeground = destructiveForeground
+        self.border = border
+        self.input = input
+        self.ring = ring
+        self.success = success
+        self.successLight = successLight
+        self.warning = warning
+        self.warningLight = warningLight
+        self.error = error
+        self.errorLight = errorLight
+        self.info = info
+        self.infoLight = infoLight
+        self.ink = ink
+        self.inkBody = inkBody
+        self.inkMuted = inkMuted
+        self.subtle = subtle
+        self.line = line
+        self.lineHover = lineHover
+        self.action = action
+        self.actionForeground = actionForeground
+        self.surfaceCard = surfaceCard
+        self.surfaceSand = surfaceSand
+        self.accent2 = accent2
+        self.ink900 = ink900
+        self.onInk = onInk
+        self.onInkMuted = onInkMuted
+        self.onInkAccent = onInkAccent
+        self.warnBg = warnBg
+        self.alertBg = alertBg
+    }
 }
 
 public struct DSFontFamilies: Sendable, Equatable {
@@ -66,6 +128,14 @@ public struct DSFontFamilies: Sendable, Equatable {
     public let body: String
     public let mono: String
     public let label: String
+
+    public init(sans: String, heading: String, body: String, mono: String, label: String) {
+        self.sans = sans
+        self.heading = heading
+        self.body = body
+        self.mono = mono
+        self.label = label
+    }
 }
 
 public struct DSFontSizes: Sendable, Equatable {
@@ -78,6 +148,18 @@ public struct DSFontSizes: Sendable, Equatable {
     public let xl3: Double
     public let xl4: Double
     public let xl5: Double
+
+    public init(xs: Double, sm: Double, base: Double, lg: Double, xl: Double, xl2: Double, xl3: Double, xl4: Double, xl5: Double) {
+        self.xs = xs
+        self.sm = sm
+        self.base = base
+        self.lg = lg
+        self.xl = xl
+        self.xl2 = xl2
+        self.xl3 = xl3
+        self.xl4 = xl4
+        self.xl5 = xl5
+    }
 }
 
 public struct DSFontWeights: Sendable, Equatable {
@@ -87,12 +169,27 @@ public struct DSFontWeights: Sendable, Equatable {
     public let bold: Int
     public let extrabold: Int
     public let black: Int
+
+    public init(normal: Int, medium: Int, semibold: Int, bold: Int, extrabold: Int, black: Int) {
+        self.normal = normal
+        self.medium = medium
+        self.semibold = semibold
+        self.bold = bold
+        self.extrabold = extrabold
+        self.black = black
+    }
 }
 
 public struct DSLineHeights: Sendable, Equatable {
     public let tight: Double
     public let normal: Double
     public let relaxed: Double
+
+    public init(tight: Double, normal: Double, relaxed: Double) {
+        self.tight = tight
+        self.normal = normal
+        self.relaxed = relaxed
+    }
 }
 
 public struct DSRadii: Sendable, Equatable {
@@ -104,6 +201,17 @@ public struct DSRadii: Sendable, Equatable {
     public let button: Double
     public let card: Double
     public let full: Double
+
+    public init(sm: Double, md: Double, lg: Double, xl: Double, control: Double, button: Double, card: Double, full: Double) {
+        self.sm = sm
+        self.md = md
+        self.lg = lg
+        self.xl = xl
+        self.control = control
+        self.button = button
+        self.card = card
+        self.full = full
+    }
 }
 
 public struct DSShadows: Sendable, Equatable {
@@ -114,6 +222,16 @@ public struct DSShadows: Sendable, Equatable {
     public let xl: [DSShadowLayer]
     public let card: [DSShadowLayer]
     public let pop: [DSShadowLayer]
+
+    public init(sm: [DSShadowLayer], base: [DSShadowLayer], md: [DSShadowLayer], lg: [DSShadowLayer], xl: [DSShadowLayer], card: [DSShadowLayer], pop: [DSShadowLayer]) {
+        self.sm = sm
+        self.base = base
+        self.md = md
+        self.lg = lg
+        self.xl = xl
+        self.card = card
+        self.pop = pop
+    }
 }
 
 public struct DSLabelStyle: Sendable, Equatable {
@@ -121,6 +239,13 @@ public struct DSLabelStyle: Sendable, Equatable {
     public let tracking: Double
     public let size: Double
     public let weight: Int
+
+    public init(uppercase: Bool, tracking: Double, size: Double, weight: Int) {
+        self.uppercase = uppercase
+        self.tracking = tracking
+        self.size = size
+        self.weight = weight
+    }
 }
 
 public struct DSMobileType: Sendable, Equatable {
@@ -129,6 +254,14 @@ public struct DSMobileType: Sendable, Equatable {
     public let body: DSTextRole
     public let label: DSTextRole
     public let caption: DSTextRole
+
+    public init(title: DSTextRole, headline: DSTextRole, body: DSTextRole, label: DSTextRole, caption: DSTextRole) {
+        self.title = title
+        self.headline = headline
+        self.body = body
+        self.label = label
+        self.caption = caption
+    }
 }
 
 public struct DSMobileLayout: Sendable, Equatable {
@@ -140,6 +273,17 @@ public struct DSMobileLayout: Sendable, Equatable {
     public let fieldHeight: Double
     public let cardRadius: Double
     public let sheetRadius: Double
+
+    public init(gutter: Double, sectionGap: Double, itemGap: Double, touchTarget: Double, controlHeight: Double, fieldHeight: Double, cardRadius: Double, sheetRadius: Double) {
+        self.gutter = gutter
+        self.sectionGap = sectionGap
+        self.itemGap = itemGap
+        self.touchTarget = touchTarget
+        self.controlHeight = controlHeight
+        self.fieldHeight = fieldHeight
+        self.cardRadius = cardRadius
+        self.sheetRadius = sheetRadius
+    }
 }
 
 public struct DSThemeTokens: Sendable, Equatable {
@@ -160,6 +304,24 @@ public struct DSThemeTokens: Sendable, Equatable {
     public let mobileLayout: DSMobileLayout
     /// False when the app is light-only by design; adapters then ignore the system dark setting.
     public let supportsDark: Bool
+
+    public init(name: String, light: DSColorScheme, dark: DSColorScheme, extraLight: [String: UInt32], extraDark: [String: UInt32], fontFamily: DSFontFamilies, fontSize: DSFontSizes, fontWeight: DSFontWeights, lineHeight: DSLineHeights, radius: DSRadii, shadow: DSShadows, label: DSLabelStyle, mobileType: DSMobileType, mobileLayout: DSMobileLayout, supportsDark: Bool) {
+        self.name = name
+        self.light = light
+        self.dark = dark
+        self.extraLight = extraLight
+        self.extraDark = extraDark
+        self.fontFamily = fontFamily
+        self.fontSize = fontSize
+        self.fontWeight = fontWeight
+        self.lineHeight = lineHeight
+        self.radius = radius
+        self.shadow = shadow
+        self.label = label
+        self.mobileType = mobileType
+        self.mobileLayout = mobileLayout
+        self.supportsDark = supportsDark
+    }
 
     public func colors(dark isDark: Bool) -> DSColorScheme { isDark ? dark : light }
 }

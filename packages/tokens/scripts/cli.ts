@@ -7,6 +7,9 @@
  *   ds-tokens validate <theme.json>               list contract errors, exit 1 if any
  *   ds-tokens migrate <legacy.json> <theme.json>  convert a legacy theme to DTCG
  *   ds-tokens contrast <theme.json> [--strict]    WCAG AA text/surface report; --strict exits 1 on failure
+ *   ds-tokens swift <theme.json> <Out.swift> [--check]                  app theme for SwiftUI (DSTokens.<name>)
+ *   ds-tokens kotlin <theme.json> <Out.kt> --package <pkg> [--check]    app theme for Compose (<Name>Theme)
+ *   ds-tokens dart <theme.json> <out.g.dart> [--check]                  app theme for Flutter (<name>Theme)
  *
  * The theme is either DTCG (the standard's design/theme.json) or the legacy shape of
  * DesignSystem's tokens/themes/*.json. Either way it is validated against the base.json shipped
@@ -14,7 +17,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { type Base, resolveTheme, type ThemeSource, themeCss } from "./build";
+import { type Base, dartTheme, kotlinTheme, resolveTheme, swiftTheme, type ThemeSource, themeCss } from "./build";
 import { type ContrastResult, checkContrast, formatContrast } from "./contrast";
 import { fromDtcg, isDtcg, toDtcg, validateDtcg } from "./dtcg";
 
@@ -24,6 +27,8 @@ const USAGE = [
   "       ds-tokens validate <theme.json>",
   "       ds-tokens migrate <legacy.json> <theme.json>",
   "       ds-tokens contrast <theme.json> [--strict]",
+  "       ds-tokens swift|dart <theme.json> <out> [--check]",
+  "       ds-tokens kotlin <theme.json> <out.kt> --package <pkg> [--check]",
 ].join("\n");
 
 const loadBase = () => JSON.parse(readFileSync(BASE, "utf8")) as Base;
@@ -62,7 +67,7 @@ function writeIfChanged(outPath: string, content: string, check: boolean, hint: 
 if (import.meta.main) {
   const args = process.argv.slice(2);
   const check = args.includes("--check");
-  const [command, input, output] = args.filter((a) => !a.startsWith("--"));
+  const [command, input, output] = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--package");
   const fail = (err: unknown): never => {
     console.error(`ds-tokens: ${(err as Error).message}`);
     process.exit(1);
@@ -92,6 +97,23 @@ if (import.meta.main) {
       process.exit(1);
     }
     console.log(`${input} is valid`);
+  } else if ((command === "swift" || command === "kotlin" || command === "dart") && input && output) {
+    const i = args.indexOf("--package");
+    const pkg = i >= 0 ? args[i + 1] : undefined;
+    if (command === "kotlin" && !pkg) {
+      console.error(USAGE);
+      process.exit(2);
+    }
+    const base = loadBase();
+    let text = "";
+    try {
+      const theme = resolveTheme(readTheme(input, base), base);
+      const source = relative(dirname(resolve(output)), resolve(input)) || input;
+      text = command === "swift" ? swiftTheme(theme, source) : command === "dart" ? dartTheme(theme, source) : kotlinTheme(theme, pkg as string, source);
+    } catch (err) {
+      fail(err);
+    }
+    writeIfChanged(output, text, check, `ds-tokens ${command} ${input} ${output}${pkg ? ` --package ${pkg}` : ""}`);
   } else if (command === "contrast" && input) {
     const base = loadBase();
     let results: ContrastResult[] = [];
