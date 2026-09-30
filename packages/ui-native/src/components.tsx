@@ -978,7 +978,7 @@ export interface DSGalleryProps {
 }
 
 export function DSGallery({ theme: selectedTheme, mode: selectedMode, style }: DSGalleryProps = {}) {
-  const themesToRender: readonly ThemeName[] = selectedTheme ? [selectedTheme] : (['tuition', 'church', 'bible'] as const);
+  const themesToRender = selectedTheme ? [selectedTheme] : (Object.keys(tokens.themes) as ThemeName[]);
 
   return (
     <View style={style}>

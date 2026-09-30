@@ -6,7 +6,8 @@
   "bin": {
     "ds-extract": "./src/extract-cli.ts",
     "ds-icons": "./src/icons-cli.ts",
-    "ds-art": "./src/art-cli.ts"
+    "ds-art": "./src/art-cli.ts",
+    "ds-lint": "./src/lint-cli.ts"
   },
   "exports": {
     ".": "./src/index.ts"
