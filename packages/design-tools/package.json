@@ -26,5 +26,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
+  },
+  "devDependencies": {
+    "lucide-static": "0.469.0"
   }
 }
