@@ -242,7 +242,7 @@ export function extractDesign(dir: string): Extraction {
       for (const e of m[2].matchAll(/(\w+)\s*:\s*(['"])(.*?)\2/g)) {
         const color = normalizeColor(e[3]);
         if (color) addVar(`${m[1]}.${e[1]}`, color, file);
-        else if (/^f[A-Z]|font/i.test(e[1]) || FONT_STACK.test(e[3])) {
+        else if ((/^f[A-Z]|^font(Family)?$|Font$/.test(e[1]) && /,|^['"]/.test(e[3])) || FONT_STACK.test(e[3])) {
           const f = primaryFont(e[3]);
           if (f) fonts.add(f);
         }
