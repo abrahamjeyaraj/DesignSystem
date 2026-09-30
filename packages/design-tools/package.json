@@ -11,7 +11,8 @@
     "ds-init": "./src/init-cli.ts"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./verify": "./src/verify.ts"
   },
   "files": [
     "src"
@@ -34,5 +35,13 @@
   "devDependencies": {
     "lucide-static": "0.469.0",
     "playwright-core": "^1.63.0"
+  },
+  "peerDependencies": {
+    "playwright-core": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright-core": {
+      "optional": true
+    }
   }
 }

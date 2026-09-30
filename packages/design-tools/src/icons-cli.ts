@@ -9,7 +9,6 @@
  *                                        render every output next to its source in Chromium; exit 1 on a mismatch
  */
 import { buildIcons } from "./icons";
-import { verifyIcons } from "./verify";
 
 const USAGE = "usage: ds-icons build <icons.json> [--check] [--all]\n       ds-icons verify <icons.json> [--sheet out.html]";
 
@@ -24,6 +23,7 @@ if (import.meta.main) {
   if (command === "verify" && manifest) {
     try {
       const sheet = option(args, "--sheet");
+      const { verifyIcons } = await import("./verify");
       const r = await verifyIcons(manifest, { sheet });
       for (const f of r.failures) console.error(`ds-icons: mismatch: ${f.platform} ${f.icon} ${f.size}px ${(f.diff * 100).toFixed(1)}% of inked pixels differ`);
       if (sheet) console.log(`contact sheet: ${sheet}`);
