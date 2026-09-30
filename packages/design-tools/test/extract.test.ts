@@ -23,9 +23,15 @@ describe("canonicalSvg", () => {
   });
 
   test("reads JSX attribute syntax", () => {
-    const jsx = canonicalSvg('<svg viewBox="0 0 24 24" style={s}><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" fill={color}/></svg>');
+    const jsx = canonicalSvg('<svg viewBox="0 0 24 24" style={s}><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" strokeWidth={1.6}/></svg>');
     expect(jsx).toBe(canonicalSvg(SEARCH));
   });
+});
+
+test("canonicalSvg keeps a filled shape inside a stroke icon filled", () => {
+  const svg = canonicalSvg('<svg viewBox="0 0 24 24" style={s}><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill={color}/></svg>');
+  expect(svg).toContain('stroke="currentColor"');
+  expect(svg).toContain('<path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor"/>');
 });
 
 describe("extractDesign (Claude Design export folder)", () => {
@@ -76,6 +82,22 @@ describe("extractDesign (Claude Design export folder)", () => {
 
   test("records icons that come from a library or icon font", () => {
     expect(x.libraryIcons).toEqual({ "icon-font": ["calendar"], ionicons: ["star-outline"] });
+  });
+});
+
+describe("extractDesign modes and noise", () => {
+  const x = extractDesign(join(FIX, "modes"));
+
+  test("dark-mode definitions are their own names, not conflicts", () => {
+    expect(x.conflicts).toEqual([]);
+    expect(x.variables["--bg"]).toEqual(["#f8f6f1"]);
+    expect(x.variables["--bg (dark)"]).toEqual(["#26241e"]);
+    expect(x.variables["--fg (dark)"]).toEqual(["#f1ede3"]);
+    expect(x.variables["--line (dark)"]).toEqual(["rgba(236,232,223,0.12)"]);
+  });
+
+  test("font names are real family names, not code", () => {
+    expect(x.fonts).toEqual(["DM Sans", "Inter", "Noto Sans Tamil"]);
   });
 });
 
