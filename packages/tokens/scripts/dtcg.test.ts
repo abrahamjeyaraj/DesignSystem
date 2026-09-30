@@ -25,7 +25,7 @@ describe("role rename map", () => {
     for (const name of Object.values(ROLE_MAP)) {
       const [group, category, role, ...rest] = name.split(".");
       expect(group).toBe("color");
-      expect(SEMANTIC_CATEGORIES).toContain(category);
+      expect(SEMANTIC_CATEGORIES as readonly string[]).toContain(category);
       expect(role).toMatch(/^[a-z]+(-[a-z]+)*$/);
       expect(rest).toEqual([]);
       expect(name).not.toMatch(/sand|pine|cream|gold|brown|blue|red|green|oxblood|cocoa|ink-900/);
@@ -103,7 +103,7 @@ describe("validateDtcg", () => {
 
   test("reports a token without $type", () => {
     const doc = good();
-    delete (doc.color.surface.page as Record<string, unknown>).$type;
+    delete (doc.color.surface.page as { $type?: string }).$type;
     expect(validateDtcg(doc, base)).toContain("color.surface.page: missing $type");
   });
 
