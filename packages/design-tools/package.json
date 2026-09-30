@@ -5,7 +5,8 @@
   "type": "module",
   "bin": {
     "ds-extract": "./src/extract-cli.ts",
-    "ds-icons": "./src/icons-cli.ts"
+    "ds-icons": "./src/icons-cli.ts",
+    "ds-art": "./src/art-cli.ts"
   },
   "exports": {
     ".": "./src/index.ts"

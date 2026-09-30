@@ -53,16 +53,17 @@ describe('DSStrokeScene', () => {
 
   test('each stroke is trimmed to its own progress', () => {
     const paths = [...html.matchAll(/<path d="([^"]+)"[^>]*stroke-dashoffset="([\d.]+)"/g)].map((m) => [m[1], Number(m[2])]);
+    // Paint order matches the design's own player: strokes bucketed by group, first-seen order.
     expect(paths).toEqual([
       ['M0 0L10 10', 0],
-      ['M10 10L20 20', 0.5],
       ['M20 20L30 30', 1],
+      ['M10 10L20 20', 0.5],
     ]);
     expect(html).toContain('pathLength="1"');
   });
 
   test('faint strokes and groups get opacity and transforms', () => {
-    expect(html).toMatch(/<g transform="rotate\(9 10 10\)" opacity="0.8">/);
+    expect(html).toMatch(/<g transform="rotate\(18 10 10\)" opacity="0.8">/);
     expect(html).toMatch(/stroke-opacity="0.5"/);
   });
 

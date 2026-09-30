@@ -20,3 +20,4 @@ export * from './tooltip';
 
 export * from './pen-components';
 export * from './pattern-components';
+export * from './stroke-scene';
