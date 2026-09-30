@@ -411,13 +411,29 @@ export interface BuildResult {
   written: string[];
 }
 
-export function buildIcons(manifestPath: string, opts: { check?: boolean; all?: boolean } = {}): BuildResult {
-  const { manifest, icons, dir } = loadIcons(manifestPath);
+/** The icons an app ships: those its code uses plus the component icons, or all with `all`. */
+export function selectIcons(manifestPath: string, opts: { all?: boolean } = {}) {
+  const loaded = loadIcons(manifestPath);
+  const { manifest, icons, dir } = loaded;
   const names = icons.map((i) => i.name);
   const { used, missing } = scanUsage((manifest.scan ?? []).map((d) => join(dir, d)), names);
   if (missing.length) throw new Error(`used but not in icons.json: ${missing.join(", ")}`);
   const everything = opts.all || manifest.all;
   const selected = icons.filter((i) => everything || used.includes(i.name) || COMPONENT_ICONS.includes(i.name));
+  return { ...loaded, names, selected };
+}
+
+/** Where a library or custom set keeps the source SVG for an icon. */
+export function sourcePath(manifest: Manifest, dir: string, file: string): string {
+  const src = manifest.source;
+  const root = src.library ? libraryRoot(src.library, src.version, dir) : join(dir, src.dir as string);
+  return join(root, `${file}.svg`);
+}
+
+export const iconFileNames = { asset: assetName, res: resName, kotlin: ktName };
+
+export function buildIcons(manifestPath: string, opts: { check?: boolean; all?: boolean } = {}): BuildResult {
+  const { manifest, dir, names, selected } = selectIcons(manifestPath, opts);
   const warnings: string[] = [];
   const unused = names.filter((n) => !selected.some((i) => i.name === n));
   if (unused.length) warnings.push(`unused: ${unused.join(", ")}`);

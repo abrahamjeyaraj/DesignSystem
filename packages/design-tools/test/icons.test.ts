@@ -207,6 +207,19 @@ describe("emitters", () => {
     expect(f.dart).toContain("static const String chevronRight = 'assets/ds_icons/chevron-right.svg';");
   });
 
+  test("line caps and joins come from the set's style (default round)", () => {
+    const dir = workspace((m) => {
+      m.style.linecap = "butt";
+      m.style.linejoin = "miter";
+    });
+    const loaded = loadIcons(join(dir, "icons.json")).icons.filter((i) => i.name === "close");
+    expect(loaded[0].linecap).toBe("butt");
+    expect(emitAndroid(loaded)["ds_ic_close.xml"]).toContain('android:strokeLineCap="butt"');
+    expect(emitIos(loaded)["ds-icon-close.imageset/ds-icon-close.svg"]).toContain('stroke-linejoin="miter"');
+    expect(emitCompose(loaded, "x")).toContain("StrokeCap.Butt");
+    expect(byName(icons, "close").linecap).toBe("round");
+  });
+
   test("sprite for design tools", () => {
     const sprite = emitSprite(used);
     expect(sprite).toContain('<symbol id="search" viewBox="0 0 24 24"');
