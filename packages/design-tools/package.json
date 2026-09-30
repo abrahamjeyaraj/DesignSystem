@@ -29,6 +29,7 @@
     "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
   },
   "devDependencies": {
-    "lucide-static": "0.469.0"
+    "lucide-static": "0.469.0",
+    "playwright-core": "^1.63.0"
   }
 }
