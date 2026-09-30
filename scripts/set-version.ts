@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
-const packages = ["tokens", "ui-web", "ui-native"];
+const packages = ["tokens", "ui-web", "ui-native", "design-tools"];
 const version = process.argv[2]?.replace(/^v/, "");
 if (!version || !/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(version)) throw new Error(`usage: set-version.ts <semver>, got ${process.argv[2]}`);
 
