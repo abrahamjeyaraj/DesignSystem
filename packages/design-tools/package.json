@@ -7,7 +7,8 @@
     "ds-extract": "./src/extract-cli.ts",
     "ds-icons": "./src/icons-cli.ts",
     "ds-art": "./src/art-cli.ts",
-    "ds-lint": "./src/lint-cli.ts"
+    "ds-lint": "./src/lint-cli.ts",
+    "ds-init": "./src/init-cli.ts"
   },
   "exports": {
     ".": "./src/index.ts"

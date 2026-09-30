@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { toDtcg, validateDtcg } from "@abrahamjeyaraj/tokens/dtcg";
+import { resolveTheme } from "@abrahamjeyaraj/tokens/build";
+import { checkContrast } from "@abrahamjeyaraj/tokens/contrast";
+import { fromDtcg, toDtcg, validateDtcg } from "@abrahamjeyaraj/tokens/dtcg";
 import { buildArt } from "../src/art";
 import { loadIcons, validateManifest } from "../src/icons";
 import { AGENTS_MARKER, initDesign } from "../src/init";
@@ -41,6 +43,14 @@ describe("initDesign", () => {
     const theme = JSON.parse(readFileSync(join(dir, "design/theme.json"), "utf8"));
     expect(theme.$extensions.ds.name).toBe("sample");
     expect(validateDtcg(theme, loadBase())).toEqual([]);
+  });
+
+  test("the starter theme meets WCAG AA in both modes", () => {
+    const dir = app();
+    initDesign(dir, { name: "sample" });
+    const theme = JSON.parse(readFileSync(join(dir, "design/theme.json"), "utf8"));
+    const failing = checkContrast(resolveTheme(fromDtcg(theme), loadBase())).filter((r) => !r.pass);
+    expect(failing).toEqual([]);
   });
 
   test("the starter icon set pins Lucide and maps every component icon", () => {
