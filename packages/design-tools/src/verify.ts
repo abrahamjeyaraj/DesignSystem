@@ -33,14 +33,14 @@ const read = (p: string) => (existsSync(p) ? readFileSync(p, "utf8") : null);
 const xmlAttrs = (s: string) => Object.fromEntries([...s.matchAll(/([\w:]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
 
 /** Source SVG as the designer drew it, with only the set's stroke width applied. */
-function referenceSvg(raw: string, stroke: number): string {
+function referenceSvg(raw: string, icon: { stroke: number; linecap: string; linejoin: string }): string {
   const svg = raw.replace(/<!--[\s\S]*?-->/g, "").trim();
   return svg.replace(/<svg\b([^>]*)>/, (_, a: string) => {
     const kept = a
-      .replace(/\s(width|height|class|stroke-width)="[^"]*"/g, "")
+      .replace(/\s(width|height|class|stroke-width|stroke-linecap|stroke-linejoin)="[^"]*"/g, "")
       .replace(/\s+/g, " ")
       .trim();
-    return `<svg ${kept} stroke-width="${stroke}">`;
+    return `<svg ${kept} stroke-width="${icon.stroke}" stroke-linecap="${icon.linecap}" stroke-linejoin="${icon.linejoin}">`;
   });
 }
 
@@ -66,11 +66,13 @@ function composeToSvg(kt: string, name: string): string | null {
   const line = kt.split("\n").find((l) => l.includes(`icon("${name}", `));
   if (!line) return null;
   const stroked = line.includes(`icon("${name}", true,`);
+  const cap = (kt.match(/StrokeCap\.(\w+)/)?.[1] ?? "Round").toLowerCase();
+  const join = (kt.match(/StrokeJoin\.(\w+)/)?.[1] ?? "Round").toLowerCase();
   const shapes = [...line.matchAll(/S\("((?:[^"\\]|\\.)*)"((?:, \w+ = [^,)]+)*)\)/g)].map((m) => {
     const filled = /filled = true/.test(m[2]);
     const alpha = m[2].match(/alpha = ([\d.]+)f/)?.[1];
     const parts = [`d="${m[1].replace(/\\\$/g, "$")}"`, `fill="${filled ? "#000000" : "none"}"`];
-    if (stroked) parts.push(`stroke="#000000" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"`);
+    if (stroked) parts.push(`stroke="#000000" stroke-width="${stroke}" stroke-linecap="${cap}" stroke-linejoin="${join}"`);
     if (alpha) parts.push(`opacity="${alpha}"`);
     return `<path ${parts.join(" ")}/>`;
   });
@@ -83,18 +85,19 @@ function spriteToSvg(sprite: string, name: string): string | null {
 }
 
 type WebIcon = { viewBox: string; stroke: number; filled: boolean; shapes: [string, Record<string, string>, boolean][] };
-async function loadWeb(path: string): Promise<Record<string, WebIcon> | null> {
+type WebStyle = { linecap: string; linejoin: string };
+async function loadWeb(path: string): Promise<{ icons: Record<string, WebIcon>; iconStyle: WebStyle } | null> {
   const text = read(path);
   if (!text) return null;
   const js = new Bun.Transpiler({ loader: "ts" }).transformSync(text);
   const tmp = join(mkdtempSync(join(tmpdir(), "ds-verify-web-")), "icons.mjs");
   writeFileSync(tmp, js);
-  return (await import(tmp)).icons;
+  return await import(tmp);
 }
-function webToSvg(i: WebIcon): string {
+function webToSvg(i: WebIcon, style: WebStyle): string {
   const root = i.filled
     ? 'fill="currentColor"'
-    : `fill="none" stroke="currentColor" stroke-width="${i.stroke}" stroke-linecap="round" stroke-linejoin="round"`;
+    : `fill="none" stroke="currentColor" stroke-width="${i.stroke}" stroke-linecap="${style.linecap}" stroke-linejoin="${style.linejoin}"`;
   const body = i.shapes
     .map(([tag, a, filled]) => `<${tag} ${Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(" ")}${filled && !i.filled ? ' fill="currentColor"' : ""}/>`)
     .join("");
@@ -172,7 +175,7 @@ export async function verifyIcons(
 
   const pairs: Pair[] = [];
   for (const icon of selected) {
-    const source = referenceSvg(readFileSync(sourcePath(manifest, dir, manifest.icons[icon.name]), "utf8"), icon.stroke);
+    const source = referenceSvg(readFileSync(sourcePath(manifest, dir, manifest.icons[icon.name]), "utf8"), icon);
     const outputs: Record<string, string | null> = {};
     if (o.ios) outputs.ios = read(join(dir, o.ios, `${iconFileNames.asset(icon.name)}.imageset`, `${iconFileNames.asset(icon.name)}.svg`));
     if (o.flutter) outputs.flutter = read(join(dir, o.flutter.dir, `${icon.name}.svg`));
@@ -182,7 +185,7 @@ export async function verifyIcons(
     }
     if (kt !== null) outputs.compose = composeToSvg(kt, icon.name);
     if (sprite !== null) outputs.sprite = spriteToSvg(sprite, icon.name);
-    if (web) outputs.web = web[icon.name] ? webToSvg(web[icon.name]) : null;
+    if (web) outputs.web = web.icons[icon.name] ? webToSvg(web.icons[icon.name], web.iconStyle) : null;
     for (const [platform, output] of Object.entries(outputs)) {
       for (const size of sizes) pairs.push({ icon: icon.name, platform, size, source, output: output ?? "<svg/>" });
     }
