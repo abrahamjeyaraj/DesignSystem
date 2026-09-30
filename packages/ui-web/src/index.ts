@@ -1,23 +1,8 @@
-export * from './cn';
-export * from './alert-dialog';
-export * from './badge';
-export * from './button';
-export * from './card';
-export * from './coming-soon-badge';
-export * from './dialog';
-export * from './dropdown-menu';
-export * from './filter-pill-menu';
-export * from './input';
-export * from './label';
-export * from './progress-ring';
-export * from './progress';
-export * from './separator';
-export * from './skeleton';
-export * from './slider';
-export * from './tab-bar';
-export * from './tabs';
-export * from './tooltip';
-
-export * from './pen-components';
-export * from './pattern-components';
-export * from './stroke-scene';
+// Everything, for apps that do not mind the size. Prefer the module subpaths
+// (@abrahamjeyaraj/ui-web/controls, /content, /navigation, /icons, /art, /core).
+export * from './modules/core';
+export * from './modules/controls';
+export * from './modules/content';
+export * from './modules/navigation';
+export * from './modules/icons';
+export * from './modules/art';

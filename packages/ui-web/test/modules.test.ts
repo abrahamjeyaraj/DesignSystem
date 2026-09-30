@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
@@ -34,13 +34,17 @@ describe('ui-web modules', () => {
     const dir = mkdtempSync(join(pkg, '.tmp-bundle-'));
     const entry = join(dir, 'entry.ts');
     writeFileSync(entry, `${importLine}\nconsole.log(x);\n`);
-    const out = await Bun.build({
-      entrypoints: [entry],
-      external: ['react', 'react-dom', 'react/jsx-runtime', '@radix-ui/*', 'class-variance-authority', 'clsx', 'tailwind-merge', 'lucide-react'],
-      minify: false,
-    });
-    if (!out.success) throw new Error(out.logs.join('\n'));
-    return out.outputs[0].text();
+    try {
+      const out = await Bun.build({
+        entrypoints: [entry],
+        external: ['react', 'react-dom', 'react/jsx-runtime', '@radix-ui/*', 'class-variance-authority', 'clsx', 'tailwind-merge', 'lucide-react'],
+        minify: false,
+      });
+      if (!out.success) throw new Error(out.logs.join('\n'));
+      return await out.outputs[0].text();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   }
 
   test('an app that only plays scenes ships no controls, menus or Radix', async () => {

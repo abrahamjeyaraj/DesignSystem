@@ -12,6 +12,36 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./core": {
+      "source": "./src/modules/core.ts",
+      "types": "./dist/modules/core.d.ts",
+      "default": "./dist/modules/core.js"
+    },
+    "./controls": {
+      "source": "./src/modules/controls.ts",
+      "types": "./dist/modules/controls.d.ts",
+      "default": "./dist/modules/controls.js"
+    },
+    "./content": {
+      "source": "./src/modules/content.ts",
+      "types": "./dist/modules/content.d.ts",
+      "default": "./dist/modules/content.js"
+    },
+    "./navigation": {
+      "source": "./src/modules/navigation.ts",
+      "types": "./dist/modules/navigation.d.ts",
+      "default": "./dist/modules/navigation.js"
+    },
+    "./icons": {
+      "source": "./src/modules/icons.ts",
+      "types": "./dist/modules/icons.d.ts",
+      "default": "./dist/modules/icons.js"
+    },
+    "./art": {
+      "source": "./src/modules/art.ts",
+      "types": "./dist/modules/art.d.ts",
+      "default": "./dist/modules/art.js"
+    },
     "./styles.css": "./styles.css",
     "./*": {
       "source": "./src/*.tsx",
@@ -21,7 +51,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p .",
-    "build": "bun build ./src/index.ts ./src/*.tsx ./src/*.ts --root ./src --outdir ./dist --external react --external react-dom --external react/jsx-runtime --external '@radix-ui/*' --external '@abrahamjeyaraj/*' --external lucide-react --external clsx --external tailwind-merge --external class-variance-authority && bunx tsc src/index.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir ./dist --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --skipLibCheck",
+    "build": "bun build ./src/index.ts ./src/*.tsx ./src/*.ts ./src/modules/*.ts --root ./src --outdir ./dist --external react --external react-dom --external react/jsx-runtime --external '@radix-ui/*' --external '@abrahamjeyaraj/*' --external lucide-react --external clsx --external tailwind-merge --external class-variance-authority && bunx tsc src/index.ts src/modules/*.ts --ignoreConfig --noEmit false --declaration --emitDeclarationOnly --outDir ./dist --jsx react-jsx --moduleResolution bundler --module esnext --target es2022 --skipLibCheck",
     "test": "bun test --conditions source test",
     "release": "bun publish --registry https://npm.pkg.github.com"
   },
