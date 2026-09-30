@@ -4,7 +4,8 @@
   "description": "Design pipeline CLIs for app-owned design/ folders: extract from design tools, freeze and generate icons and illustrations, lint.",
   "type": "module",
   "bin": {
-    "ds-extract": "./src/extract-cli.ts"
+    "ds-extract": "./src/extract-cli.ts",
+    "ds-icons": "./src/icons-cli.ts"
   },
   "exports": {
     ".": "./src/index.ts"

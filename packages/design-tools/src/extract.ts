@@ -95,7 +95,7 @@ const ATTR = /([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([^}]*)\})/g;
 const SHAPES = /<(path|circle|rect|line|polyline|polygon|ellipse)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{[^}]*\})*?)\/?>/g;
 const GEOMETRY = ["d", "cx", "cy", "r", "rx", "ry", "x", "y", "width", "height", "x1", "y1", "x2", "y2", "points", "opacity", "transform"];
 
-function attrs(src: string): Record<string, { value: string; expr: boolean }> {
+export function svgAttrs(src: string): Record<string, { value: string; expr: boolean }> {
   const out: Record<string, { value: string; expr: boolean }> = {};
   for (const m of src.matchAll(ATTR)) {
     const expr = m[4] !== undefined;
@@ -112,10 +112,10 @@ const rootTag = (svg: string) => svg.match(/^<svg\b((?:[^>"'{]|"[^"]*"|'[^']*'|\
  * every shape is filled stay filled.
  */
 export function canonicalSvg(svg: string): string {
-  const root = attrs(rootTag(svg));
+  const root = svgAttrs(rootTag(svg));
   const viewBox = root.viewBox?.value ?? "0 0 24 24";
   const shapes = [...svg.matchAll(SHAPES)].map((m) => {
-    const a = attrs(m[2]);
+    const a = svgAttrs(m[2]);
     const parts = [m[1]];
     for (const k of GEOMETRY) if (a[k] && !a[k].expr) parts.push(`${k}="${a[k].value.replace(/\s+/g, " ")}"`);
     const fill = a.fill;
@@ -132,7 +132,7 @@ export function canonicalSvg(svg: string): string {
 
 function strokeWidthOf(svg: string, file: string): number | null {
   const tag = rootTag(svg);
-  const a = attrs(tag);
+  const a = svgAttrs(tag);
   const direct = a["stroke-width"] ?? a.strokeWidth;
   if (direct && !Number.isNaN(Number(direct.value))) return Number(direct.value);
   const style = a.style;
@@ -204,7 +204,7 @@ export function extractDesign(dir: string): Extraction {
       if (!canonical.includes("<path") && !/<(circle|rect|line|poly|ellipse)/.test(canonical)) continue;
       const entry = icons.get(canonical) ?? {
         svg: canonical,
-        viewBox: attrs(rootTag(svg)).viewBox?.value ?? "0 0 24 24",
+        viewBox: svgAttrs(rootTag(svg)).viewBox?.value ?? "0 0 24 24",
         widths: new Set<number>(),
         count: 0,
         files: new Set<string>(),

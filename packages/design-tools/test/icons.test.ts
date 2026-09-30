@@ -51,7 +51,7 @@ describe("validateManifest", () => {
 
   test("exactly one source", () => {
     const m = manifest();
-    m.source = { dir: "svg", library: "lucide", version: "0.469.0" } as Manifest["source"];
+    m.source = { dir: "svg", library: "lucide", version: "0.469.0" } as unknown as Manifest["source"];
     expect(validateManifest(m).join("\n")).toContain("exactly one of source.dir or source.library");
   });
 
@@ -146,7 +146,7 @@ describe("scanUsage", () => {
   test("reports a used icon the manifest does not have", () => {
     const dir = workspace();
     writeFileSync(join(dir, "src/web/Extra.tsx"), 'export const X = () => <DSIcon name="sparkle" />;');
-    const u = scanUsage([join(dir, "src")], ["home"]);
+    const u = scanUsage([join(dir, "src")], Object.keys(manifest().icons));
     expect(u.missing).toEqual(["sparkle"]);
   });
 });
