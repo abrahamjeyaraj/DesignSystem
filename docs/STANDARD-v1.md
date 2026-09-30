@@ -149,6 +149,45 @@ is the source; `ds-art extract` pulls it verbatim; no platform re-types paths.
   tokens only. Apps do not fork SDK components; a needed change goes to DesignSystem or is an app
   pattern that composes SDK components.
 
+### 6.1 Packaging: an app ships only what it uses
+
+Today each native SDK is one module and compiles every brand's theme into every app
+(`DSTokens.swift`/`.kt`/`.g.dart` hold all three). The standard replaces that with layers an app
+opts into, plus per-app generation so unused material never reaches the binary.
+
+**Layers** (same names on every platform):
+
+| Module | Contains | Depends on |
+|---|---|---|
+| `core` | theme types, runtime theme injection, type styles, spacing/radius/motion helpers | nothing |
+| `icons` | `DSIcon` API and the icon provider interface; **no icon files** | core |
+| `art` | `DSStrokeScene` renderer; **no illustrations** | core |
+| `controls` | button, field, chip, toggle, segmented control | core, icons |
+| `content` | card, list row, avatar, empty state, stat tile | core, icons |
+| `navigation` | tab bar, nav bar, sheet, dialog | core, icons |
+
+Per platform: SwiftPM **products** per module (`DesignSystemCore`, `DesignSystemControls`, …);
+Gradle **modules** (`:ds-core`, `:ds-controls`, …) under one Maven group; npm **subpath exports**
+(`@abrahamjeyaraj/ui-web/controls`) with `sideEffects: false` for tree shaking; Flutter one
+package with separate libraries (`design_system/controls.dart`), unused code dropped by the
+compiler.
+
+**Generated into the app, never shipped by DesignSystem:**
+- **Theme**: `ds-tokens` writes only that app's theme (one brand, the modes it supports).
+- **Icons**: `ds-icons` emits only the icons the app references (the approach Bible's
+  `sync-lucide-icons.sh` already uses for iOS); an icon in `icons.json` that no code uses is a CI
+  warning, a used icon missing from `icons.json` is a CI error.
+- **Art**: only the scenes the app declares; each scene is a small JSON, loaded when its screen opens.
+- **Fonts**: only the families, weights and scripts the theme names, subset where the licence
+  allows (ChurchHQ mobile already ships 51-glyph subsets).
+
+**Dependencies:** no third-party runtime dependency in `core`; each extra one (Radix, react-native-svg)
+lives only in the module that needs it and is listed in that module's README.
+
+**Budgets (CI, per app):** the size each module adds is measured on every DesignSystem release
+(web: gzip JS/CSS per subpath; iOS/Android: size delta of a sample app). A release that grows a
+module past its budget fails until the growth is accepted in the changelog.
+
 ## 7. Design tools
 
 Round trip for every tool:
@@ -249,7 +288,7 @@ live in the app and compose SDK components.
 | 2 | `ds-extract` (Claude Design + Pen) and the freeze/diff review; freeze Bible, ChurchHQ, Tuition | 1 |
 | 3 | `ds-icons` + `DSIcon` API on every platform, pixel-diff CI; Bible first | 2 |
 | 4 | `ds-art` + `DSStrokeScene`; Bible onboarding moves from hand-typed Kotlin to data | 2 |
-| 5 | Runtime native themes (SDKs accept an app theme), product themes leave DesignSystem | 1 |
+| 5 | Runtime native themes (SDKs accept an app theme), split SDKs into modules (6.1), product themes leave DesignSystem | 1 |
 | 6 | Adapters: `/design-sync` publish, Pen export, Figma, Penpot | 1–3 |
 | 7 | Roll out per app with CI checks and AGENTS.md rules: Bible, ChurchHQ, Tuition, then others | 3–6 |
 
