@@ -1,7 +1,8 @@
 # Design standard v1 (draft for review)
 
-status: draft 2026-09-30. Planning only; nothing here is implemented yet. Decisions still open are
-listed in section 9. Evidence from the review of the three current apps is in the appendix.
+status: draft v1.1 2026-09-30. Planning only; nothing here is implemented yet. Decisions taken and
+still open are in section 9. Evidence from the review of the three current apps is in the appendix.
+Scope: TheBibleProject, ChurchHQ, TuitionManager first; other apps adopt it afterwards.
 
 ## 1. Goal
 
@@ -105,6 +106,24 @@ Components use DesignSystem's fixed semantic names (`chevron-right`, `close`, `s
 iOS `.xcassets` (vector, template rendering for monochrome), Android VectorDrawable, Flutter
 `vector_graphics`, and an SVG sprite for design tools. No path simplification or rounding.
 
+### 4.1 Delivery per platform (custom stroke sets, e.g. Bible)
+
+The frozen SVG is the master. Each platform gets the form that renders it best, generated, never
+hand-made:
+
+| Platform | Output | Why |
+|---|---|---|
+| iOS / iPadOS | Asset catalog SVG, *Preserve Vector Data*, template rendering; phase 2 option: custom SF Symbol templates (strokes outlined) for Dynamic Type weight/scale and baseline alignment | exact geometry, tintable; symbol templates integrate with `Label`, tab bars, text |
+| tvOS | Same geometry with a heavier TV stroke (value set by the TV guideline) | tvOS HIG: thin strokes shimmer at distance (`TV_DESIGN_SYSTEM.md`) |
+| Android | Compose `ImageVector` generated as Kotlin (VectorDrawable XML for Views, widgets, notifications) | stroke width, caps and joins supported natively; no raster |
+| Web | React components, `stroke="currentColor"`, plus an SVG sprite | exact, themeable, tree-shaken |
+| React Native | `react-native-svg` components | same geometry as web |
+| Flutter | `vector_graphics` compiled assets | precompiled, fast |
+| Design tools | SVG set for Claude Design (`/design-sync`), Pen, Figma | designers use the frozen icons |
+
+Sizes come from `icon.size` tokens (phone 20, tablet 24, TV per guideline). The stroke is part of
+the geometry: 1.6 on the 24 grid, scaling with the icon, so every size keeps the same proportions.
+
 **Banned** outside `generated/`: SF Symbols, Material Icons/Symbols, icon fonts from a CDN, inline
 `<svg>`/`<path>` in app code, any icon library not named in `icons.json`. (An app may choose
 Material Symbols or SF Symbols as its library, but then every platform uses it via the generator.)
@@ -175,31 +194,57 @@ one minor of `$deprecated`. Changelog per release; upgrade PRs into each app.
 - Never edit `design/generated/`; run the generators.
 - A design export is evidence; changes to the frozen set go through the drift check.
 
-## 9. Decisions open
+## 9. Decisions
 
-1. **Bible colours.** Newer Claude Design screens use brown `#8B5D2E` and several blues
-   (`#5A7BBF`, `#3E5C9A`, `#3f5f95`); older screens and the live app use `#B07C4B` / `#384F84`.
-   Which set is canonical?
-2. **Bible icons.** Freeze one variant per icon from the 154 distinct drawings, and one stroke
-   width (1.6 at 20px appears in the newest screens). Confirm 1.6.
-3. **ChurchHQ icons.** The Claude Design system says Lucide (web already uses it); the mobile app
-   switched to Material Symbols Rounded to match the old Church.pen. Which one for all platforms?
-   Also pin the Lucide version (the project mixes `0.469.0` and `@latest`).
-4. **ChurchHQ values.** Light page `#faf8f3` (Claude Design) vs `#f8f6f1` (app); dark page
-   `#14130f` (Claude Design) vs `#26241e` (app). Which wins?
-5. **Tuition source.** The updated `tuition-manager.pen` (24 boards) is assumed current and the
-   Claude Design "Redesign v2" (navy/yellow, Ionicons) abandoned. Confirm. Dark mode stays off
-   until Pen has a dark theme.
-6. **Scope.** Which other repos adopt this after the three apps.
-7. **Other design tools.** Which tool is meant by "plot design" / "open design" (Penpot?).
-8. **Native depth.** Full SDK components on iOS/Android, or tokens + icons + art only with apps
-   keeping their own views.
+### Taken (2026-09-30)
+
+1. **Bible colours: the latest design is the reference.** The live iOS app (screenshots) measures
+   brown `#8B5D2E`, blue `#5A7BBF`, gold `#C8B496`, page `#F4F2EF`, the values in the newest
+   Claude Design screens (Scan a Verse, Home Refresh). Older values (`#B07C4B`, `#384F84`) are
+   superseded. Web still uses the old values; iOS/Android are mixed. A full colour audit follows
+   in the freeze step (phase 2) before `theme.json` is final.
+2. **Bible icons: a custom set, stroke 1.6 on a 24 grid, round caps and joins.** No SF Symbols and
+   no Material Icons on any platform. One variant per icon is frozen from the Claude Design
+   drawings (the live tab bar set, `primitives.jsx`, is the starting point). Delivery per platform
+   is in section 4.1.
+3. **ChurchHQ icons: Lucide on every platform**, one pinned version. The mobile app moves off
+   Material Symbols Rounded. An icon Lucide lacks is drawn as a custom icon in Lucide's style
+   (24 grid, same stroke, round caps) and added to the app's set, reviewed like any other.
+4. **ChurchHQ colours: to be standardised.** The design is early; values will be streamlined in
+   the freeze/audit step rather than picked now.
+5. **Tuition: the updated `tuition-manager.pen` is the source.** The Claude Design "Redesign v2"
+   (navy/yellow, Ionicons) is dropped. Icons: Lucide. Dark mode off until the Pen file has one.
+6. **Scope:** these three apps first; any other app follows the same standard later.
+
+### Still open
+
+7. **Native depth** (explained in section 9.1): full SDK components, or foundations only.
+8. **Other design tools:** which tool "plot design" / "open design" refers to (Penpot?).
+9. **ChurchHQ light/dark values** and **Bible's remaining colour set**, resolved by the audit.
+
+### 9.1 Native depth, explained
+
+Every app gets the *foundations* from DesignSystem either way: tokens, fonts, icons,
+illustrations. The open question is whether it also gets the *building blocks*:
+
+- **Option A, foundations and components.** The SDK ships ready-made `DSButton`, `DSCard`,
+  `DSListRow`, `DSTabBar`, `DSChip`, `DSSheet`… for SwiftUI, Compose, RN and web. An app screen is
+  assembled from them, so a button looks and behaves the same in every app, only the theme
+  differs. A change (for example the focus ring) is made once. Cost: the SDK must cover what each
+  app needs, and an app that wants something different has to add a variant to DesignSystem.
+- **Option B, foundations only.** The SDK ships tokens, icons, art and type styles. Each app builds
+  its own buttons and cards from them. More freedom per app, but each app, and each agent,
+  re-implements the same components, which is the drift seen today.
+
+Recommendation: **A for common controls** (button, field, chip, list row, card, tab bar, sheet,
+dialog, empty state), **B for app-specific patterns** (verse card, receipt, leaderboard), which
+live in the app and compose SDK components.
 
 ## 10. Roadmap
 
 | Phase | Deliverable | Depends on |
 |---|---|---|
-| 0 | This standard agreed; `design/` template; exports committed to each app's `design/source/` | decisions 1–5 |
+| 0 | This standard agreed; `design/` template; exports committed to each app's `design/source/` | decision 7 |
 | 1 | DTCG schema + naming grammar + rename map with deprecated aliases; generator reads DTCG | 0 |
 | 2 | `ds-extract` (Claude Design + Pen) and the freeze/diff review; freeze Bible, ChurchHQ, Tuition | 1 |
 | 3 | `ds-icons` + `DSIcon` API on every platform, pixel-diff CI; Bible first | 2 |
