@@ -62,7 +62,7 @@ const primaryFont = (stack: string) => {
   for (const part of stack.split(",")) {
     const name = part.trim().replace(/^['"]|['"]$/g, "").trim();
     if (!name) continue;
-    return GENERIC_FONTS.test(name) || !/^[A-Za-z][A-Za-z0-9 ]*$/.test(name) ? null : name;
+    return GENERIC_FONTS.test(name) || !/^[A-Z][A-Za-z0-9 ]*$/.test(name) ? null : name;
   }
   return null;
 };
