@@ -6,6 +6,7 @@
  *   ds-tokens css <theme.json> <out.css> --check  exit 1 if out.css is stale
  *   ds-tokens validate <theme.json>               list contract errors, exit 1 if any
  *   ds-tokens migrate <legacy.json> <theme.json>  convert a legacy theme to DTCG
+ *   ds-tokens contrast <theme.json> [--strict]    WCAG AA text/surface report; --strict exits 1 on failure
  *
  * The theme is either DTCG (the standard's design/theme.json) or the legacy shape of
  * DesignSystem's tokens/themes/*.json. Either way it is validated against the base.json shipped
@@ -14,6 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { type Base, resolveTheme, type ThemeSource, themeCss } from "./build";
+import { type ContrastResult, checkContrast, formatContrast } from "./contrast";
 import { fromDtcg, isDtcg, toDtcg, validateDtcg } from "./dtcg";
 
 const BASE = join(import.meta.dir, "../generated/base.json");
@@ -21,6 +23,7 @@ const USAGE = [
   "usage: ds-tokens css <theme.json> <out.css> [--check]",
   "       ds-tokens validate <theme.json>",
   "       ds-tokens migrate <legacy.json> <theme.json>",
+  "       ds-tokens contrast <theme.json> [--strict]",
 ].join("\n");
 
 const loadBase = () => JSON.parse(readFileSync(BASE, "utf8")) as Base;
@@ -59,7 +62,7 @@ function writeIfChanged(outPath: string, content: string, check: boolean, hint: 
 if (import.meta.main) {
   const args = process.argv.slice(2);
   const check = args.includes("--check");
-  const [command, input, output] = args.filter((a) => a !== "--check");
+  const [command, input, output] = args.filter((a) => !a.startsWith("--"));
   const fail = (err: unknown): never => {
     console.error(`ds-tokens: ${(err as Error).message}`);
     process.exit(1);
@@ -89,6 +92,18 @@ if (import.meta.main) {
       process.exit(1);
     }
     console.log(`${input} is valid`);
+  } else if (command === "contrast" && input) {
+    const base = loadBase();
+    let results: ContrastResult[] = [];
+    try {
+      results = checkContrast(resolveTheme(readTheme(input, base), base));
+    } catch (err) {
+      fail(err);
+    }
+    console.log(formatContrast(results));
+    const failed = results.filter((r) => !r.pass).length;
+    console.log(failed ? `${failed} pair(s) below WCAG AA` : "all pairs meet WCAG AA");
+    if (failed && args.includes("--strict")) process.exit(1);
   } else if (command === "migrate" && input && output) {
     const base = loadBase();
     const src = JSON.parse(readFileSync(input, "utf8")) as ThemeSource;

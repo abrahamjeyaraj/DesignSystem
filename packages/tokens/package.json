@@ -25,7 +25,8 @@
     "css",
     "scripts/build.ts",
     "scripts/cli.ts",
-    "scripts/dtcg.ts"
+    "scripts/dtcg.ts",
+    "scripts/contrast.ts"
   ],
   "scripts": {
     "tokens:check": "bun scripts/build.ts --check",
