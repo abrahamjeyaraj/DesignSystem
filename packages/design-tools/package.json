@@ -1,0 +1,30 @@
+{
+  "name": "@abrahamjeyaraj/design-tools",
+  "version": "0.2.1",
+  "description": "Design pipeline CLIs for app-owned design/ folders: extract from design tools, freeze and generate icons and illustrations, lint.",
+  "type": "module",
+  "bin": {
+    "ds-extract": "./src/extract-cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "bun test test",
+    "release": "bun publish --registry https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@abrahamjeyaraj/tokens": "workspace:*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
+  }
+}
