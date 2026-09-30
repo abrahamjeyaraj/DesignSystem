@@ -15,7 +15,10 @@
     "./tokens.json": "./generated/tokens.json",
     "./css/*.css": "./generated/css/*.css",
     "./base.css": "./css/base.css",
-    "./base.json": "./generated/base.json"
+    "./base.json": "./generated/base.json",
+    "./build": "./scripts/build.ts",
+    "./dtcg": "./scripts/dtcg.ts",
+    "./contrast": "./scripts/contrast.ts"
   },
   "files": [
     "dist",
