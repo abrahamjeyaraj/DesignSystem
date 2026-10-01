@@ -92,9 +92,9 @@ const SHAPE_OPACITY = ["opacity", "stroke-opacity", "fill-opacity"];
 /**
  * Scene from an SVG the designer annotated: `data-window="start end"` on every shape, optional
  * `data-faint`, `data-group` on a parent <g>. Stroke width and fill are read the way SVG inherits
- * them: the shape's own, else the nearest <g>'s, else the root's. Transforms, clips, masks,
- * references, text, bitmaps, opacity and even-odd fills would be lost, so they are errors that
- * say how to fix the source.
+ * them: the shape's own (inline style first), else the nearest <g>'s, else the root's.
+ * Transforms, clips, masks, references, text, bitmaps, opacity, even-odd fills and unstroked
+ * shapes would be lost, so they are errors that say how to fix the source.
  */
 export function extractScene(svg: string, id: string): Scene {
   let parsed: ReturnType<typeof readSvg>;
@@ -114,6 +114,9 @@ export function extractScene(svg: string, id: string): Scene {
     const a = Object.fromEntries(Object.entries(shape.attrs).map(([k, v]) => [k, v.value]));
     for (const k of SHAPE_OPACITY) {
       if (attr(shape.attrs, k)) throw new Error(`scene ${id}: ${where}: ${k} is not carried into the scene; use data-faint="0..1" for a faint stroke`);
+    }
+    if (inherited(shape, "stroke")?.value === "none") {
+      throw new Error(`scene ${id}: ${where}: stroke="none" cannot be drawn on; every scene shape is drawn as a stroke, so give it a stroke or leave it out of the scene`);
     }
     if (!a["data-window"]) throw new Error(`${where} has no data-window="start end"`);
     const window = a["data-window"].split(/[\s,]+/).map(Number) as Window;

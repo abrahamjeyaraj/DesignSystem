@@ -135,6 +135,15 @@ describe("loadIcons", () => {
     expect(compass.shapes.map((s) => s.filled)).toEqual([false, true]);
   });
 
+  test("a shape left unstroked in a line icon is refused, naming the icon", () => {
+    const dir = workspace();
+    writeFileSync(
+      join(dir, "svg/compass.svg"),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor" stroke="none"/></svg>',
+    );
+    expect(() => loadIcons(join(dir, "icons.json"))).toThrow('icons.compass: <path> #2 has stroke="none" in a line icon');
+  });
+
   test("a fill on the root makes a filled icon, not a stroked one", () => {
     const dir = workspace();
     writeFileSync(join(dir, "svg/card.svg"), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>');

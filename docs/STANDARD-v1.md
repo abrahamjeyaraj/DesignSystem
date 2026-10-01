@@ -130,7 +130,12 @@ Material Symbols or SF Symbols as its library, but then every platform uses it v
 
 **Source SVG rules (icons and scenes):** shapes (`path`, `circle`, `ellipse`, `rect`, `line`,
 `polyline`, `polygon`) inside `<g>`. Fill, stroke and (for scenes) stroke width are read the way
-SVG inherits them: the shape's own, else the nearest group's, else the root's. Anything the
+SVG inherits them: the shape's own (an inline `style` wins over the attribute), else the nearest
+group's, else the root's. In a line icon every shape is stroked on every platform, so a shape with
+`stroke="none"`, or without a stroke while others have one, is refused (stroke it, or outline the
+strokes so the icon is fill-only); scenes refuse `stroke="none"` likewise. `ds-extract` refuses
+inline SVGs whose inner shapes are styled by page CSS classes or a style object defined elsewhere,
+since that look is not read; a class on the `<svg>` itself is the usual line-icon styling. Anything the
 outputs cannot carry is refused with the fix rather than dropped: transforms, `clip-path`,
 `mask`, filters, `fill-rule="evenodd"`, opacity on a group or the root, `<use>`, `<defs>`,
 `<symbol>`, `<text>`, `<image>`, gradients, patterns and `<style>`. Flatten them in the design tool

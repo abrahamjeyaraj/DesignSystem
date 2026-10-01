@@ -150,6 +150,26 @@ const GROUP_LOSSY = ["opacity", "fill-opacity", "stroke-opacity"];
 const STYLE_LOSSY = /(?:^|[;{,\s])(transform|clip-?path|mask|filter)\s*:/i;
 
 const kebab = (k: string) => k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+/** Presentation an inline style can set that the tools read (or must refuse). */
+const STYLED = ["fill", "stroke", "stroke-width", "opacity", "fill-opacity", "stroke-opacity", "fill-rule"];
+
+/**
+ * Declarations of an inline style (`style="fill: none"` or JSX `style={{ fill: 'none' }}`), in
+ * attribute spelling. A JSX value that is not a literal is an expression, like `fill={color}`.
+ */
+function styleDecls(style: { value: string; expr: boolean } | undefined): SvgAttrs {
+  const out: SvgAttrs = {};
+  if (!style) return out;
+  const decl = style.expr ? /([A-Za-z-]+)\s*:\s*('[^']*'|"[^"]*"|[^,}]+)/g : /([A-Za-z-]+)\s*:\s*([^;]+)/g;
+  for (const m of style.value.matchAll(decl)) {
+    const name = kebab(m[1]).toLowerCase();
+    if (!STYLED.includes(name)) continue;
+    const raw = m[2].replace(/!important/i, "").trim();
+    const quoted = /^(['"]).*\1$/.test(raw);
+    out[name] = { value: quoted ? raw.slice(1, -1) : raw, expr: style.expr && !quoted && !/^-?[\d.]+$/.test(raw) };
+  }
+  return out;
+}
 /** An attribute in SVG (`stroke-width`) or JSX (`strokeWidth`) spelling. */
 export function attr(a: SvgAttrs, name: string): { value: string; expr: boolean } | undefined {
   return a[name] ?? a[name.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())];
@@ -186,15 +206,30 @@ function rejectLossy(a: SvgAttrs, where: string, groupLevel: boolean) {
   }
 }
 
+function rejectPageStyled(a: SvgAttrs, where: string) {
+  const cls = attr(a, "class") ?? a.className;
+  if (cls) {
+    throw new UnsupportedSvgError(
+      `${where}: class "${cls.value}" takes its look from page CSS, which is not read; set fill and stroke as attributes in the design, or export the icon as a standalone SVG`,
+    );
+  }
+  const style = a.style;
+  if (style?.expr && !style.value.includes(":")) {
+    throw new UnsupportedSvgError(`${where}: style={${style.value}} is defined elsewhere and is not read; set fill and stroke as attributes, or export the icon as a standalone SVG`);
+  }
+}
+
 /**
- * Shapes of an SVG with their ancestors, for reading presentation the way SVG inherits it.
+ * Shapes of an SVG with their ancestors, for reading presentation the way SVG inherits it, with
+ * inline style declarations taking precedence over attributes.
  * Anything that would change the drawing if dropped (transforms, clips, masks, filters,
  * references, text, bitmaps, group opacity, even-odd fills, and the same effects set through an
  * inline style) is an UnsupportedSvgError that says
  * how to fix the source. Comments, <title>, <desc>, <metadata> and editor-namespaced tags are
- * ignored.
+ * ignored. With `pageCss` (an inline SVG inside a page), shapes and groups styled by classes or by
+ * a style object defined elsewhere are refused: their look comes from code the tools do not read.
  */
-export function readSvg(svg: string): { root: SvgAttrs; shapes: SvgShape[] } {
+export function readSvg(svg: string, opts: { pageCss?: boolean } = {}): { root: SvgAttrs; shapes: SvgShape[] } {
   const text = svg.replace(IGNORED, "");
   const shapes: SvgShape[] = [];
   let root: SvgAttrs | null = null;
@@ -207,7 +242,10 @@ export function readSvg(svg: string): { root: SvgAttrs; shapes: SvgShape[] } {
       if (name === "g") stack.pop();
       continue;
     }
-    const a = svgAttrs(attrText);
+    const written = svgAttrs(attrText);
+    // An inline style wins over presentation attributes, as in CSS.
+    const a = { ...written, ...styleDecls(attr(written, "style")) };
+    if (root && opts.pageCss) rejectPageStyled(written, `<${rawName}>`);
     if (!root) {
       if (name !== "svg") throw new UnsupportedSvgError(`<${rawName}> before <svg>; the file must be one <svg> element`);
       rejectLossy(a, "<svg>", false);
@@ -237,10 +275,10 @@ export function readSvg(svg: string): { root: SvgAttrs; shapes: SvgShape[] } {
  * drawing matches wherever it appears. Fill and stroke are read the way SVG inherits them (shape,
  * then enclosing groups, then the root). Stroke icons get the line-icon presentation; icons whose
  * every shape is filled and none stroked stay filled. Throws UnsupportedSvgError for input whose
- * drawing would change (see readSvg).
+ * drawing would change (see readSvg), including a line icon where some shapes are not stroked.
  */
-export function canonicalSvg(svg: string): string {
-  const { root, shapes: found } = readSvg(svg.trim());
+export function canonicalSvg(svg: string, opts: { pageCss?: boolean } = {}): string {
+  const { root, shapes: found } = readSvg(svg.trim(), opts);
   const viewBox = root.viewBox?.value ?? "0 0 24 24";
   const shapes = found.map((s) => {
     const parts = [s.tag];
@@ -253,9 +291,27 @@ export function canonicalSvg(svg: string): string {
     // An explicit fill is kept as written; an inherited one only when it fills (absent means none).
     if (attr(s.attrs, "fill") || filled) parts.push(`fill="${filled ? "currentColor" : "none"}"`);
     const stroke = inherited(s, "stroke");
-    return { markup: `<${parts.join(" ")}/>`, filled, stroked: Boolean(stroke && stroke.value !== "none") };
+    const strokeState = !stroke ? "unset" : stroke.value === "none" ? "none" : "set";
+    return { markup: `<${parts.join(" ")}/>`, filled, strokeState };
   });
-  const filledOnly = shapes.length > 0 && shapes.every((s) => s.filled && !s.stroked);
+  const filledOnly = shapes.length > 0 && shapes.every((s) => s.filled && s.strokeState !== "set");
+  if (!filledOnly) {
+    // Every output strokes each shape of a line icon. A stroke set nowhere is the line-icon
+    // convention (presentation from the page); a shape left unstroked next to stroked ones is not.
+    const where = (i: number) => `<${found[i].tag}> #${i + 1}`;
+    const none = shapes.findIndex((s) => s.strokeState === "none");
+    if (none >= 0) {
+      throw new UnsupportedSvgError(
+        `${where(none)} has stroke="none" in a line icon, but every output strokes each shape of a line icon; give it the icon's stroke, or outline the strokes in the design tool so the icon is fill-only`,
+      );
+    }
+    const unset = shapes.findIndex((s) => s.strokeState === "unset");
+    if (unset >= 0 && shapes.some((s) => s.strokeState === "set")) {
+      throw new UnsupportedSvgError(
+        `${where(unset)} has no stroke while other shapes are stroked; set the stroke on the <svg> so every shape has it, or outline the strokes in the design tool so the icon is fill-only`,
+      );
+    }
+  }
   const presentation = filledOnly
     ? 'fill="currentColor"'
     : 'fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
@@ -335,7 +391,7 @@ export function extractDesign(dir: string): Extraction {
       if (svg.length > 8000 || svg.includes("${")) continue;
       let canonical: string;
       try {
-        canonical = canonicalSvg(svg);
+        canonical = canonicalSvg(svg, { pageCss: true });
       } catch (err) {
         if (!(err instanceof UnsupportedSvgError)) throw err;
         rejected.push({ file, reason: err.message });

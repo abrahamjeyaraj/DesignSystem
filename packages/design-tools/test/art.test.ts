@@ -76,6 +76,15 @@ describe("extractScene (annotated SVG from a design tool)", () => {
     expect(s.strokes.map((k) => k.group)).toEqual([undefined, "a", "a"]);
   });
 
+  test("stroke width and fill set in an inline style are read, and win over attributes", () => {
+    const s = extractScene(
+      '<svg viewBox="0 0 10 10" style="stroke-width: 2"><path d="M0 0L1 1" data-window="0 0.5"/><circle cx="5" cy="5" r="1" stroke-width="1" style="stroke-width: 3; fill: currentColor" data-window="0.5 1"/></svg>',
+      "styled",
+    );
+    expect(s.strokes.map((k) => k.width)).toEqual([2, 3]);
+    expect(s.strokes.map((k) => k.fill ?? false)).toEqual([false, true]);
+  });
+
   test("a fill on the root reaches every shape", () => {
     const s = extractScene('<svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="2" data-window="0 1"/></svg>', "dot");
     expect(s.strokes[0].fill).toBe(true);
@@ -88,6 +97,8 @@ describe("extractScene (annotated SVG from a design tool)", () => {
     ['<svg viewBox="0 0 10 10"><g opacity="0.4"><path d="M0 0L1 1" data-window="0 1"/></g></svg>', "opacity on a group is not carried"],
     ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" stroke-opacity="0.5" data-window="0 1"/></svg>', 'use data-faint="0..1"'],
     ['<svg viewBox="0 0 10 10" opacity="0.5"><path d="M0 0L1 1" data-window="0 1"/></svg>', "<svg>: opacity is not carried into the scene"],
+    ['<svg viewBox="0 0 10 10" stroke="currentColor"><circle cx="5" cy="5" r="1" fill="currentColor" stroke="none" data-window="0 1"/></svg>', 'stroke="none" cannot be drawn on'],
+    ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" style="opacity: 0.3" data-window="0 1"/></svg>', 'use data-faint="0..1"'],
     ['<svg viewBox="0 0 10 10"><clipPath id="c"><rect width="5" height="5"/></clipPath><path d="M0 0L1 1" data-window="0 1"/></svg>', "<clipPath> is not supported"],
     ['<svg viewBox="0 0 10 10"><defs><path id="p" d="M0 0L1 1" data-window="0 1"/></defs></svg>', "<defs> is not supported"],
   ];

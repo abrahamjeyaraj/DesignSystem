@@ -79,6 +79,10 @@ describe("canonicalSvg keeps what the drawing inherits and rejects what it would
     ['<svg viewBox="0 0 24 24"><path d="M0 0h9v9H0zM2 2h5v5H2z" fillRule="evenodd"/></svg>', /evenodd/],
     ['<svg viewBox="0 0 24 24" style="transform: rotate(90deg)"><path d="M9 6l6 6-6 6"/></svg>', /<svg>: transform in style is not supported/],
     ["<svg viewBox=\"0 0 24 24\" style={{ transform: 'rotate(90deg)' }}><path d=\"M9 6l6 6-6 6\"/></svg>", /<svg>: transform in style is not supported/],
+    ['<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>', /<circle> #2 has stroke="none" in a line icon/],
+    ['<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h4"/><circle cx="12" cy="12" r="2" fill="currentColor" style="stroke: none"/></svg>', /<circle> #2 has stroke="none" in a line icon/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4" stroke="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>', /<circle> #2 has no stroke while other shapes are stroked/],
+    ['<svg viewBox="0 0 24 24"><g style="opacity: 0.5"><path d="M1 1h2"/></g></svg>', /opacity on a group is not carried/],
   ];
   for (const [svg, message] of rejected) {
     test(`rejects ${svg.replace(/^<svg viewBox="0 0 24 24"/, "<svg")}`, () => {
@@ -86,6 +90,23 @@ describe("canonicalSvg keeps what the drawing inherits and rejects what it would
       expect(() => canonicalSvg(svg)).toThrow(message);
     });
   }
+
+  test("fill and stroke set in an inline style are read, and win over attributes", () => {
+    const styled = '<svg viewBox="0 0 24 24" style="stroke: currentColor"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" style="fill: currentColor"/></svg>';
+    expect(canonicalSvg(styled)).toBe(canonicalSvg(COMPASS));
+    const jsx = canonicalSvg("<svg viewBox=\"0 0 24 24\" style={s}><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m15.5 8.5-2 5-5 2 2-5z\" style={{ fill: color }}/></svg>");
+    expect(jsx).toBe(canonicalSvg(COMPASS));
+    const wins = canonicalSvg('<svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="9" fill="currentColor" style="fill:none"/></svg>');
+    expect(wins).toContain('<circle cx="12" cy="12" r="9" fill="none"/>');
+    expect(canonicalSvg('<svg viewBox="0 0 24 24" style="fill: currentColor"><path d="M4 4h16v16H4z"/></svg>')).toBe(
+      canonicalSvg('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg>'),
+    );
+  });
+
+  test("stroke none in a fill-only icon is fine, and no stroke anywhere is the line-icon convention", () => {
+    expect(canonicalSvg('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z" stroke="none"/></svg>')).toContain('viewBox="0 0 24 24" fill="currentColor">');
+    expect(canonicalSvg('<svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>')).toBe(canonicalSvg(SEARCH));
+  });
 
   test("opacity on the root is presentation, like colour", () => {
     expect(canonicalSvg('<svg viewBox="0 0 24 24" opacity="0.5"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>')).toBe(canonicalSvg(SEARCH));
@@ -104,6 +125,21 @@ test("extractDesign lists inline SVGs it cannot take as icons instead of guessin
   expect(x.rejectedIcons).toHaveLength(1);
   expect(x.rejectedIcons[0].file).toBe("screen.html");
   expect(x.rejectedIcons[0].reason).toContain("transforms are not supported");
+});
+
+test("extractDesign refuses shapes styled by page CSS but keeps the root class convention", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ds-extract-"));
+  const dot = '<svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><circle class="dot" cx="11" cy="11" r="2"/></svg>';
+  const ref = '<svg viewBox="0 0 24 24" style={s}><circle cx="11" cy="11" r="7" style={ring}/></svg>';
+  writeFileSync(join(dir, "screen.html"), `${dot}\n<svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>\n`);
+  writeFileSync(join(dir, "parts.jsx"), `export const R = () => ${ref};\n`);
+  const x = extractDesign(dir);
+  expect(x.icons.map((i) => i.svg)).toEqual([canonicalSvg(SEARCH)]);
+  expect(x.rejectedIcons.map((r) => r.file).sort()).toEqual(["parts.jsx", "screen.html"]);
+  expect(x.rejectedIcons.find((r) => r.file === "screen.html")?.reason).toContain('<circle>: class "dot" takes its look from page CSS');
+  expect(x.rejectedIcons.find((r) => r.file === "parts.jsx")?.reason).toContain("<circle>: style={ring} is defined elsewhere");
+  // A standalone SVG has no page CSS: an inner class changes nothing there.
+  expect(() => canonicalSvg(dot)).not.toThrow();
 });
 
 describe("extractDesign (Claude Design export folder)", () => {
