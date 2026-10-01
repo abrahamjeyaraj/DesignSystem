@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { canonicalSvg, diffExtraction, extractDesign, extractPen } from "../src/extract";
+import { canonicalSvg, diffExtraction, extractDesign, extractPen, UnsupportedSvgError } from "../src/extract";
 
 const FIX = join(import.meta.dir, "fixtures");
 const DESIGN = join(FIX, "claude-design");
@@ -32,6 +32,78 @@ test("canonicalSvg keeps a filled shape inside a stroke icon filled", () => {
   const svg = canonicalSvg('<svg viewBox="0 0 24 24" style={s}><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill={color}/></svg>');
   expect(svg).toContain('stroke="currentColor"');
   expect(svg).toContain('<path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor"/>');
+});
+
+describe("canonicalSvg keeps what the drawing inherits and rejects what it would lose", () => {
+  const COMPASS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor"/></svg>';
+
+  test("a fill on the root reaches every shape, so a filled icon stays filled", () => {
+    const svg = canonicalSvg('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg>');
+    expect(svg).toBe(canonicalSvg('<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="#111111"/></svg>'));
+    expect(svg).toContain('viewBox="0 0 24 24" fill="currentColor">');
+    expect(svg).not.toContain("stroke");
+  });
+
+  test("a fill on a group reaches its shapes", () => {
+    const grouped = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><g fill="currentColor"><path d="m15.5 8.5-2 5-5 2 2-5z"/></g></svg>';
+    expect(canonicalSvg(grouped)).toBe(canonicalSvg(COMPASS));
+  });
+
+  test("a shape's own fill wins over its group's", () => {
+    const svg = canonicalSvg('<svg viewBox="0 0 24 24" stroke="currentColor"><g fill="currentColor"><circle cx="12" cy="12" r="9" fill="none"/></g></svg>');
+    expect(svg).toContain('<circle cx="12" cy="12" r="9" fill="none"/>');
+    expect(svg).toContain('stroke="currentColor"');
+  });
+
+  test("filled shapes that are also stroked keep their stroke", () => {
+    const svg = canonicalSvg('<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h16v16H4z" fill="currentColor"/></svg>');
+    expect(svg).toContain('stroke="currentColor"');
+    expect(svg).toContain('<path d="M4 4h16v16H4z" fill="currentColor"/>');
+  });
+
+  test("comments, title and desc are not part of the drawing", () => {
+    const noisy = '<svg viewBox="0 0 24 24"><!-- exported --><title>Search</title><desc>A magnifier</desc><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+    expect(canonicalSvg(noisy)).toBe(canonicalSvg(SEARCH));
+  });
+
+  const rejected: [string, RegExp][] = [
+    ['<svg viewBox="0 0 24 24" transform="scale(2)"><path d="M1 1h2"/></svg>', /<svg>: transforms are not supported; flatten it in the design tool/],
+    ['<svg viewBox="0 0 24 24"><g transform="translate(2 2)"><path d="M1 1h2"/></g></svg>', /<g>: transforms are not supported; flatten it in the design tool/],
+    ['<svg viewBox="0 0 24 24"><path d="M1 1h2" transform="rotate(45)"/></svg>', /<path>: transforms are not supported/],
+    ['<svg viewBox="0 0 24 24"><g opacity="0.5"><path d="M1 1h2"/></g></svg>', /opacity on a group is not carried/],
+    ['<svg viewBox="0 0 24 24"><path d="M1 1h2" clip-path="url(#c)"/></svg>', /clip-path is not supported/],
+    ['<svg viewBox="0 0 24 24"><defs><path id="a" d="M1 1h2"/></defs></svg>', /<defs> is not supported; move visible shapes out of <defs>/],
+    ['<svg viewBox="0 0 24 24"><use href="#a"/></svg>', /<use> is not supported; replace the <use>/],
+    ['<svg viewBox="0 0 24 24"><text x="1" y="1">A</text></svg>', /<text> is not supported; convert the text to outlines/],
+    ['<svg viewBox="0 0 24 24"><path d="M0 0h9v9H0zM2 2h5v5H2z" fill="currentColor" fill-rule="evenodd"/></svg>', /evenodd/],
+    ['<svg viewBox="0 0 24 24"><path d="M0 0h9v9H0zM2 2h5v5H2z" fillRule="evenodd"/></svg>', /evenodd/],
+    ['<svg viewBox="0 0 24 24" style="transform: rotate(90deg)"><path d="M9 6l6 6-6 6"/></svg>', /<svg>: transform in style is not supported/],
+    ["<svg viewBox=\"0 0 24 24\" style={{ transform: 'rotate(90deg)' }}><path d=\"M9 6l6 6-6 6\"/></svg>", /<svg>: transform in style is not supported/],
+  ];
+  for (const [svg, message] of rejected) {
+    test(`rejects ${svg.replace(/^<svg viewBox="0 0 24 24"/, "<svg")}`, () => {
+      expect(() => canonicalSvg(svg)).toThrow(UnsupportedSvgError);
+      expect(() => canonicalSvg(svg)).toThrow(message);
+    });
+  }
+
+  test("opacity on the root is presentation, like colour", () => {
+    expect(canonicalSvg('<svg viewBox="0 0 24 24" opacity="0.5"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>')).toBe(canonicalSvg(SEARCH));
+  });
+
+  test("the default nonzero fill rule is fine", () => {
+    expect(() => canonicalSvg('<svg viewBox="0 0 24 24"><path d="M1 1h2" fill-rule="nonzero"/></svg>')).not.toThrow();
+  });
+});
+
+test("extractDesign lists inline SVGs it cannot take as icons instead of guessing", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ds-extract-"));
+  writeFileSync(join(dir, "screen.html"), `<svg viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4" y="4" width="16" height="16"/></g></svg>\n${SEARCH}\n`);
+  const x = extractDesign(dir);
+  expect(x.icons.map((i) => i.svg)).toEqual([canonicalSvg(SEARCH)]);
+  expect(x.rejectedIcons).toHaveLength(1);
+  expect(x.rejectedIcons[0].file).toBe("screen.html");
+  expect(x.rejectedIcons[0].reason).toContain("transforms are not supported");
 });
 
 describe("extractDesign (Claude Design export folder)", () => {
@@ -82,6 +154,10 @@ describe("extractDesign (Claude Design export folder)", () => {
 
   test("records icons that come from a library or icon font", () => {
     expect(x.libraryIcons).toEqual({ "icon-font": ["calendar"], ionicons: ["star-outline"] });
+  });
+
+  test("every inline icon in the export is supported", () => {
+    expect(x.rejectedIcons).toEqual([]);
   });
 });
 

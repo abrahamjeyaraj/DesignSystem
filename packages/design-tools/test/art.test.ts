@@ -59,6 +59,44 @@ describe("extractScene (annotated SVG from a design tool)", () => {
   test("an element without a window is an error, not a guess", () => {
     expect(() => extractScene('<svg viewBox="0 0 10 10"><path d="M0 0L1 1"/></svg>', "x")).toThrow("has no data-window");
   });
+
+  test("stroke width and fill are inherited from groups and the root, nearest first", () => {
+    const s = extractScene(
+      `<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M0 0L1 1" data-window="0 0.2"/>
+        <g stroke-width="2" fill="currentColor" data-group="a">
+          <circle cx="5" cy="5" r="1" data-window="0.2 0.4"/>
+          <g stroke-width="3"><path d="M2 2L3 3" fill="none" data-window="0.4 0.6"/></g>
+        </g>
+      </svg>`,
+      "inherit",
+    );
+    expect(s.strokes.map((k) => k.width)).toEqual([1, 2, 3]);
+    expect(s.strokes.map((k) => k.fill ?? false)).toEqual([false, true, false]);
+    expect(s.strokes.map((k) => k.group)).toEqual([undefined, "a", "a"]);
+  });
+
+  test("a fill on the root reaches every shape", () => {
+    const s = extractScene('<svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="2" data-window="0 1"/></svg>', "dot");
+    expect(s.strokes[0].fill).toBe(true);
+  });
+
+  const rejected: [string, string][] = [
+    ['<svg viewBox="0 0 10 10" transform="scale(2)"><path d="M0 0L1 1" data-window="0 1"/></svg>', "<svg>: transforms are not supported; flatten it in the design tool"],
+    ['<svg viewBox="0 0 10 10"><g data-group="a" transform="rotate(10)"><path d="M0 0L1 1" data-window="0 1"/></g></svg>', "<g>: transforms are not supported"],
+    ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" transform="translate(1 1)" data-window="0 1"/></svg>', "<path>: transforms are not supported"],
+    ['<svg viewBox="0 0 10 10"><g opacity="0.4"><path d="M0 0L1 1" data-window="0 1"/></g></svg>', "opacity on a group is not carried"],
+    ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" stroke-opacity="0.5" data-window="0 1"/></svg>', 'use data-faint="0..1"'],
+    ['<svg viewBox="0 0 10 10" opacity="0.5"><path d="M0 0L1 1" data-window="0 1"/></svg>', "<svg>: opacity is not carried into the scene"],
+    ['<svg viewBox="0 0 10 10"><clipPath id="c"><rect width="5" height="5"/></clipPath><path d="M0 0L1 1" data-window="0 1"/></svg>', "<clipPath> is not supported"],
+    ['<svg viewBox="0 0 10 10"><defs><path id="p" d="M0 0L1 1" data-window="0 1"/></defs></svg>', "<defs> is not supported"],
+  ];
+  for (const [svg, message] of rejected) {
+    test(`rejects ${message}`, () => {
+      expect(() => extractScene(svg, "x")).toThrow(`scene x: `);
+      expect(() => extractScene(svg, "x")).toThrow(message);
+    });
+  }
 });
 
 describe("buildArt", () => {

@@ -115,6 +115,34 @@ describe("loadIcons", () => {
     expect(() => loadIcons(join(grid, "icons.json"))).toThrow('viewBox "0 0 24 24" is not the 20 grid');
   });
 
+  test("an icon whose drawing would change is refused with the fix, naming the icon", () => {
+    const dir = workspace();
+    writeFileSync(
+      join(dir, "svg/compass.svg"),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><g transform="rotate(45 12 12)"><circle cx="12" cy="12" r="9"/></g></svg>',
+    );
+    expect(() => loadIcons(join(dir, "icons.json"))).toThrow("icons.compass: <g>: transforms are not supported; flatten it in the design tool");
+  });
+
+  test("a fill inherited from a group stays on the shape", () => {
+    const dir = workspace();
+    writeFileSync(
+      join(dir, "svg/compass.svg"),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><g fill="currentColor"><path d="m15.5 8.5-2 5-5 2 2-5z"/></g></svg>',
+    );
+    const compass = byName(loadIcons(join(dir, "icons.json")).icons, "compass");
+    expect(compass.filled).toBe(false);
+    expect(compass.shapes.map((s) => s.filled)).toEqual([false, true]);
+  });
+
+  test("a fill on the root makes a filled icon, not a stroked one", () => {
+    const dir = workspace();
+    writeFileSync(join(dir, "svg/card.svg"), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>');
+    const card = byName(loadIcons(join(dir, "icons.json")).icons, "card");
+    expect(card.filled).toBe(true);
+    expect(card.shapes.map((s) => s.filled)).toEqual([true]);
+  });
+
   test("library set: reads the pinned Lucide release", () => {
     const dir = workspace((m) => {
       m.source = { library: "lucide", version: "0.469.0" };
