@@ -6,7 +6,7 @@
  * mode as `$extensions.ds.dark`. `fromDtcg` turns it into the legacy ThemeSource the generator
  * already understands, so every platform output is unchanged; `toDtcg` migrates a legacy file.
  */
-import type { Base, ThemeSource } from "./build";
+import { PLATFORMS, resolveTheme, sourceFor, type Base, type ThemeSource } from "./build";
 
 export const SCHEMA_VERSION = 1;
 
@@ -101,6 +101,7 @@ export const isDtcg = (doc: unknown): doc is DtcgTheme =>
 export function toDtcg(src: ThemeSource): DtcgTheme {
   const ds: Record<string, Json> = { schema: SCHEMA_VERSION, name: src.name };
   if (src.supportsDark !== undefined) ds.supportsDark = src.supportsDark;
+  if (src.platforms) ds.platforms = structuredClone(src.platforms);
   if (src.scales) ds.scales = src.scales;
   if (src.darkScales) ds.darkScales = src.darkScales;
   if (src.tailwindAliases) ds.tailwindAliases = src.tailwindAliases;
@@ -223,6 +224,7 @@ export function fromDtcg(doc: DtcgTheme): ThemeSource {
   if (ds.darkScales) src.darkScales = ds.darkScales;
   if (ds.tailwindAliases) src.tailwindAliases = ds.tailwindAliases;
   if (ds.supportsDark !== undefined) src.supportsDark = ds.supportsDark;
+  if (ds.platforms !== undefined) src.platforms = structuredClone(ds.platforms);
 
   const byName = Object.fromEntries(Object.entries(ROLE_MAP).map(([role, name]) => [name, role]));
   for (const [category, tokens] of Object.entries(doc.color)) {
@@ -349,6 +351,15 @@ export function validateDtcg(doc: DtcgTheme, base: Base): string[] {
     for (const key of Object.keys(tokens)) {
       const name = `color.${category}.${key}`;
       if (!contract.has(name)) errors.push(`${name}: not in the contract (brand-only colours go in extra)`);
+    }
+  }
+  if (ds.platforms !== undefined) {
+    try {
+      const src = fromDtcg(doc);
+      sourceFor(src, null);
+      for (const platform of PLATFORMS) resolveTheme(sourceFor(src, platform), base);
+    } catch (error) {
+      errors.push(`$extensions.ds.platforms: ${(error as Error).message}`);
     }
   }
   return errors;

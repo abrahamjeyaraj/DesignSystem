@@ -14,7 +14,6 @@ const GENERATED = /DSTokens\.(swift|kt)$|ds_tokens\.g\.dart$/;
 const PRODUCT = /\b(bible|church(hq)?|tuition(manager)?|sermons?|students?|attendance|donations?|members?hip)\b/i;
 const KNOWN_EXCEPTIONS = [
   "native/android/designsystem/src/main/kotlin/com/abrahamjeyaraj/designsystem/DSGallery.kt",
-  "native/android/designsystem/src/main/kotlin/com/abrahamjeyaraj/designsystem/DSTheme.kt",
   "native/flutter/lib/design_system.dart",
   "native/swift/Sources/DesignSystem/DSGallery.swift",
   "native/swift/Sources/DesignSystem/DSTheme.swift",

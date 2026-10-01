@@ -681,7 +681,7 @@ export function swiftTheme(t: Theme, source: string, tv?: Theme): string {
   const name = ident(t.name);
   const decl = (x: Theme) => `    public static let ${name} = ${SWIFT.construct("DSThemeTokens", themeArgs(SWIFT, x, "    ", "DS"), "    ")}`;
   const body = tv && JSON.stringify(tv) !== JSON.stringify(t) ? `    #if os(tvOS)\n${decl(tv)}\n    #else\n${decl(t)}\n    #endif` : decl(t);
-  const reserved = load().themes.some((theme) => ident(theme.name) === name) || ["defaultTheme", "minTouchTarget", "themes", "Spacing", "Duration", "Breakpoint"].includes(name);
+  const reserved = Object.keys(JSON.parse(readFileSync(join(import.meta.dir, "../generated/tokens.json"), "utf8")).themes).some((theme) => ident(theme) === name) || ["defaultTheme", "minTouchTarget", "themes", "Spacing", "Duration", "Breakpoint", "ZIndex"].includes(name);
   const bridge = reserved ? "" : `\npublic extension DSTokens {\n    static let ${name} = DSThemeTokens.${name}\n}\n`;
   return `${appHeader(source)}
 // swiftlint:disable all

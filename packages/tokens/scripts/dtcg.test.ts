@@ -3,7 +3,7 @@ import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { type Base, resolveTheme, ROOT, type ThemeSource, themeCss } from "./build";
-import { generateCss } from "./cli";
+import { generate, generateCss } from "./cli";
 import { fromDtcg, isDtcg, ROLE_MAP, SCHEMA_VERSION, SEMANTIC_CATEGORIES, toDtcg, validateDtcg } from "./dtcg";
 
 const base = JSON.parse(readFileSync(join(ROOT, "tokens/base.json"), "utf8")) as Base;
@@ -150,4 +150,21 @@ describe("ds-tokens CLI with DTCG", () => {
     expect(result.exitCode).toBe(1);
     expect(result.stderr.toString()).toContain("color.text.muted: missing");
   });
+});
+
+
+test("migration preserves native platform overrides and generated values", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ds-platform-migrate-"));
+  const src = { ...bible, name: "app", platforms: { ios: { radius: { card: 7 } }, tvos: { radius: { card: 9 } }, android: { radius: { card: 11 } } } };
+  writeFileSync(join(dir, "legacy.json"), JSON.stringify(src));
+  expect(run(dir, "migrate", "legacy.json", "dtcg.json").exitCode).toBe(0);
+  const doc = JSON.parse(readFileSync(join(dir, "dtcg.json"), "utf8"));
+  expect(fromDtcg(doc).platforms).toEqual(src.platforms);
+  expect(validateDtcg(doc, base)).toEqual([]);
+  for (const target of ["swift", "kotlin", "dart", "css"] as const) {
+    expect(generate(target, "dtcg.json", "out", { cwd: dir, pkg: "com.example" }))
+      .toBe(generate(target, "legacy.json", "out", { cwd: dir, pkg: "com.example" }).replace("legacy.json", "dtcg.json"));
+  }
+  doc.$extensions.ds.platforms.tvos.light = {};
+  expect(validateDtcg(doc, base).join("\n")).toContain("can be overridden");
 });

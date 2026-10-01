@@ -372,3 +372,10 @@ Tuition 161, mostly colour literals and platform icons.
   (success green `#3F6B3A`/`#E3ECDF` lacks a variable). DesignSystem's tuition theme matches it.
 - Live apps: iOS SF Symbols, Android Material Icons, web none.
 - A Claude Design "Redesign v2" export in the repo uses navy/yellow and Ionicons (conflicts).
+
+
+Native platform values can override type, shape and mobile groups through
+`$extensions.ds.platforms.{ios,tvos,android}` in DTCG themes (or `platforms` in legacy themes).
+Migration preserves those values. Swift output supports `.dsTheme(.app)` through
+`DSThemeTokens.app` and keeps `DSTokens.app` as an alias when the SDK has no member with that name.
+For names already owned by the SDK, use the generated `DSThemeTokens.<name>` value explicitly.

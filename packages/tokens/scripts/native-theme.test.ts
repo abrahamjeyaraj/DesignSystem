@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { dart, dartTheme, kotlin, kotlinTheme, load, ROOT, swift, swiftTheme, type Theme } from "./build";
@@ -81,4 +81,18 @@ describe("app-owned native themes", () => {
     const noPackage = run(dir, "kotlin", "theme.json", "AppTheme.kt");
     expect(noPackage.exitCode).toBe(2);
   });
+});
+
+
+test("packaged Swift generator works without repository token sources", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ds-packaged-swift-"));
+  mkdirSync(join(dir, "scripts"));
+  mkdirSync(join(dir, "generated"));
+  for (const name of ["build.ts", "cli.ts", "dtcg.ts", "contrast.ts"]) cpSync(join(import.meta.dir, name), join(dir, "scripts", name));
+  for (const name of ["base.json", "tokens.json"]) cpSync(join(ROOT, "packages/tokens/generated", name), join(dir, "generated", name));
+  const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/church.json"), "utf8"));
+  writeFileSync(join(dir, "theme.json"), JSON.stringify({ ...src, name: "app" }));
+  const result = Bun.spawnSync(["bun", join(dir, "scripts/cli.ts"), "swift", "theme.json", "App.swift"], { cwd: dir });
+  expect(result.exitCode).toBe(0);
+  expect(readFileSync(join(dir, "App.swift"), "utf8")).toContain("static let app = DSThemeTokens.app");
 });
