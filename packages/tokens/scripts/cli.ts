@@ -7,7 +7,7 @@
  *   ds-tokens validate <theme.json>               list contract errors, exit 1 if any
  *   ds-tokens migrate <legacy.json> <theme.json>  convert a legacy theme to DTCG
  *   ds-tokens contrast <theme.json> [--strict]    WCAG AA text/surface report; --strict exits 1 on failure
- *   ds-tokens swift <theme.json> <Out.swift> [--check]                  app theme for SwiftUI (DSTokens.<name>)
+ *   ds-tokens swift <theme.json> <Out.swift> [--check]                  app theme for SwiftUI (.dsTheme(.<name>) or DSTokens.<name>)
  *   ds-tokens kotlin <theme.json> <Out.kt> --package <pkg> [--check]    app theme for Compose (<Name>Theme)
  *   ds-tokens dart <theme.json> <out.g.dart> [--check]                  app theme for Flutter (<name>Theme)
  *
@@ -17,7 +17,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { type Base, dartTheme, kotlinTheme, resolveTheme, swiftTheme, type ThemeSource, themeCss } from "./build";
+import { type Base, dartTheme, kotlinTheme, resolveTheme, sourceFor, swiftTheme, type ThemeSource, themeCss } from "./build";
 import { type ContrastResult, checkContrast, formatContrast } from "./contrast";
 import { fromDtcg, isDtcg, toDtcg, validateDtcg } from "./dtcg";
 
@@ -42,12 +42,32 @@ export function readTheme(themePath: string, base: Base, cwd = process.cwd()): T
   return fromDtcg(doc);
 }
 
-export function generateCss(themePath: string, outPath: string, cwd = process.cwd()): string {
+export type Target = "css" | "swift" | "kotlin" | "dart";
+
+/** Headers identify the input relative to its repository, regardless of output depth. */
+function sourceLabel(themeFile: string, cwd: string): string {
+  for (let dir = dirname(themeFile); dirname(dir) !== dir; dir = dirname(dir)) {
+    if (existsSync(join(dir, ".git"))) return relative(dir, themeFile);
+  }
+  return relative(cwd, themeFile);
+}
+
+export function generate(target: Target, themePath: string, _outPath: string, opts: { cwd?: string; pkg?: string } = {}): string {
+  const cwd = opts.cwd ?? process.cwd();
   const base = loadBase();
   const src = readTheme(themePath, base, cwd);
-  const source = relative(dirname(resolve(cwd, outPath)), resolve(cwd, themePath)) || themePath;
-  return themeCss(base, resolveTheme(src, base), source);
+  const source = sourceLabel(resolve(cwd, themePath), cwd);
+  const theme = resolveTheme(sourceFor(src, null), base);
+  if (target === "swift") return swiftTheme(resolveTheme(sourceFor(src, "ios"), base), source, resolveTheme(sourceFor(src, "tvos"), base));
+  if (target === "kotlin") {
+    if (!opts.pkg) throw new Error("kotlin needs --package <pkg>");
+    return kotlinTheme(resolveTheme(sourceFor(src, "android"), base), opts.pkg, source);
+  }
+  if (target === "dart") return dartTheme(theme, source);
+  return themeCss(base, theme, source);
 }
+
+export const generateCss = (themePath: string, outPath: string, cwd = process.cwd()) => generate("css", themePath, outPath, { cwd });
 
 function writeIfChanged(outPath: string, content: string, check: boolean, hint: string) {
   const current = existsSync(outPath) ? readFileSync(outPath, "utf8") : null;
@@ -101,15 +121,13 @@ if (import.meta.main) {
     const i = args.indexOf("--package");
     const pkg = i >= 0 ? args[i + 1] : undefined;
     if (command === "kotlin" && !pkg) {
-      console.error(USAGE);
+      console.error("ds-tokens: kotlin needs --package <pkg>");
       process.exit(2);
     }
     const base = loadBase();
     let text = "";
     try {
-      const theme = resolveTheme(readTheme(input, base), base);
-      const source = relative(dirname(resolve(output)), resolve(input)) || input;
-      text = command === "swift" ? swiftTheme(theme, source) : command === "dart" ? dartTheme(theme, source) : kotlinTheme(theme, pkg as string, source);
+      text = generate(command, input, output, { pkg });
     } catch (err) {
       fail(err);
     }

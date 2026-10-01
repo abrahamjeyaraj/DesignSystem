@@ -158,6 +158,26 @@ bunx ds-lint . --baseline design/lint-baseline.json      # no literals, stock pa
 `@abrahamjeyaraj/ui-web/core`, `/controls`, `/content`, `/navigation`, `/icons` (DSIcon +
 DSIconProvider with the app's generated icons), `/art` (DSStrokeScene). The root still exports all.
 
+Native apps generate from the same theme JSON and commit the output:
+
+```sh
+bunx ds-tokens swift theme/app.json Sources/Theme/AppTheme.swift         # .dsTheme(.app)
+bunx ds-tokens kotlin theme/app.json src/main/java/.../AppTheme.kt --package com.example.ui.theme
+                                                                          # DSTheme(AppTheme) { ... }
+```
+
+Both accept `--check`. The Swift file extends `DSThemeTokens` with a static theme and provides `DSTokens.<name>` as a compatibility alias unless that name already belongs to the SDK; the Kotlin file
+declares `<Name>Theme` in the given package. Set `mobile` and native `fontFamily` names in the
+theme JSON to fonts the app bundles. Headers name the theme path relative to its git repo root.
+
+A theme can override type, shape and `mobile` values per platform, for example fonts a TV target
+bundles: `"platforms": { "tvos": { "fontFamily": { "heading": { ... } } } }`. Keys are `ios`,
+`tvos` and `android`; the Swift file then carries an `#if os(tvOS)` value.
+
+Compose: the library bundles no fonts, so pass `fonts = { name -> ... }` to `DSTheme` or every role
+falls back to serif (headings) or the system sans. `DSTheme(..., applyMaterial = false)` provides
+only the DS tokens under the app's own `MaterialTheme`.
+
 ## Checks
 
 ```

@@ -609,7 +609,7 @@ public struct DSMultilineField: View {
         let c = theme.colors(for: scheme)
         VStack(alignment: .leading, spacing: theme.mobileLayout.itemGap / 2) {
             Text(label).dsFont(.label).foregroundStyle(Color(dsHex: c.inkBody))
-            TextEditor(text: Binding(
+            editor(Binding(
                 get: { text },
                 set: { text = String($0.prefix(maxLength)) }
             ))
@@ -625,6 +625,15 @@ public struct DSMultilineField: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .accessibilityLabel("\(text.count) of \(maxLength) characters")
         }
+    }
+
+    /// tvOS has no TextEditor; a vertical TextField is its multi-line input.
+    @ViewBuilder private func editor(_ binding: Binding<String>) -> some View {
+        #if os(tvOS)
+        TextField(label, text: binding, axis: .vertical)
+        #else
+        TextEditor(text: binding)
+        #endif
     }
 }
 #endif
