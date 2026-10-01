@@ -137,7 +137,9 @@ strokes so the icon is fill-only); scenes refuse `stroke="none"` likewise. `ds-e
 inline SVGs whose inner shapes are styled by page CSS classes or a style object defined elsewhere,
 since that look is not read; a class on the `<svg>` itself is the usual line-icon styling. Anything the
 outputs cannot carry is refused with the fix rather than dropped: transforms, `clip-path`,
-`mask`, filters, `fill-rule="evenodd"`, opacity on a group or the root, `<use>`, `<defs>`,
+`mask`, filters, `fill-rule="evenodd"`, hidden elements (`display="none"`,
+`visibility="hidden"`/`collapse`, as attributes or inline styles: every output draws every shape),
+opacity on a group or the root, `<use>`, `<defs>`,
 `<symbol>`, `<text>`, `<image>`, gradients, patterns and `<style>`. Flatten them in the design tool
 (apply transforms and clips to the coordinates, outline text, union/subtract shapes) and export
 again. `ds-extract` lists refused inline SVGs with the reason instead of guessing.

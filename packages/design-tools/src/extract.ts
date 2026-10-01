@@ -151,7 +151,9 @@ const STYLE_LOSSY = /(?:^|[;{,\s])(transform|clip-?path|mask|filter)\s*:/i;
 
 const kebab = (k: string) => k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 /** Presentation an inline style can set that the tools read (or must refuse). */
-const STYLED = ["fill", "stroke", "stroke-width", "opacity", "fill-opacity", "stroke-opacity", "fill-rule"];
+const STYLED = ["fill", "stroke", "stroke-width", "opacity", "fill-opacity", "stroke-opacity", "fill-rule", "display", "visibility"];
+/** Values that hide an element (and, for display or an inherited visibility, everything inside it). */
+const HIDDEN: Record<string, string[]> = { display: ["none"], visibility: ["hidden", "collapse"] };
 
 /**
  * Declarations of an inline style (`style="fill: none"` or JSX `style={{ fill: 'none' }}`), in
@@ -196,6 +198,12 @@ export function inherited(shape: SvgShape, name: string): { value: string; expr:
 function rejectLossy(a: SvgAttrs, where: string, groupLevel: boolean) {
   for (const [k, v] of Object.entries(a)) {
     const name = kebab(k);
+    // Every output draws every shape, so a hidden one would appear.
+    if (HIDDEN[name]?.includes(v.value.toLowerCase())) {
+      throw new UnsupportedSvgError(
+        `${where}: ${name}="${v.value}" hides it, but every output draws all shapes; delete the hidden shapes (or show them) in the design tool and export again`,
+      );
+    }
     if (name === "fill-rule" && v.value !== "evenodd") continue;
     if (LOSSY[name]) throw new UnsupportedSvgError(`${where}: ${LOSSY[name]}`);
     const styled = name === "style" ? v.value.match(STYLE_LOSSY)?.[1] : undefined;
@@ -223,8 +231,8 @@ function rejectPageStyled(a: SvgAttrs, where: string) {
  * Shapes of an SVG with their ancestors, for reading presentation the way SVG inherits it, with
  * inline style declarations taking precedence over attributes.
  * Anything that would change the drawing if dropped (transforms, clips, masks, filters,
- * references, text, bitmaps, group opacity, even-odd fills, and the same effects set through an
- * inline style) is an UnsupportedSvgError that says
+ * references, text, bitmaps, group opacity, even-odd fills, hidden elements, and the same effects
+ * set through an inline style) is an UnsupportedSvgError that says
  * how to fix the source. Comments, <title>, <desc>, <metadata> and editor-namespaced tags are
  * ignored. With `pageCss` (an inline SVG inside a page), shapes and groups styled by classes or by
  * a style object defined elsewhere are refused: their look comes from code the tools do not read.

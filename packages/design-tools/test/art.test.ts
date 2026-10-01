@@ -99,6 +99,8 @@ describe("extractScene (annotated SVG from a design tool)", () => {
     ['<svg viewBox="0 0 10 10" opacity="0.5"><path d="M0 0L1 1" data-window="0 1"/></svg>', "<svg>: opacity is not carried into the scene"],
     ['<svg viewBox="0 0 10 10" stroke="currentColor"><circle cx="5" cy="5" r="1" fill="currentColor" stroke="none" data-window="0 1"/></svg>', 'stroke="none" cannot be drawn on'],
     ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" style="opacity: 0.3" data-window="0 1"/></svg>', 'use data-faint="0..1"'],
+    ['<svg viewBox="0 0 10 10"><path d="M0 0L1 1" data-window="0 1"/><path d="M2 2L3 3" display="none" data-window="0 1"/></svg>', '<path>: display="none" hides it'],
+    ['<svg viewBox="0 0 10 10"><g data-group="a" style="visibility: hidden"><path d="M0 0L1 1" data-window="0 1"/></g></svg>', '<g>: visibility="hidden" hides it'],
     ['<svg viewBox="0 0 10 10"><clipPath id="c"><rect width="5" height="5"/></clipPath><path d="M0 0L1 1" data-window="0 1"/></svg>', "<clipPath> is not supported"],
     ['<svg viewBox="0 0 10 10"><defs><path id="p" d="M0 0L1 1" data-window="0 1"/></defs></svg>', "<defs> is not supported"],
   ];

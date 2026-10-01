@@ -83,6 +83,14 @@ describe("canonicalSvg keeps what the drawing inherits and rejects what it would
     ['<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 4h4"/><circle cx="12" cy="12" r="2" fill="currentColor" style="stroke: none"/></svg>', /<circle> #2 has stroke="none" in a line icon/],
     ['<svg viewBox="0 0 24 24"><path d="M4 4h4" stroke="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>', /<circle> #2 has no stroke while other shapes are stroked/],
     ['<svg viewBox="0 0 24 24"><g style="opacity: 0.5"><path d="M1 1h2"/></g></svg>', /opacity on a group is not carried/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4"/><path d="M9 9h4" display="none"/></svg>', /<path>: display="none" hides it, but every output draws all shapes/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4"/><path d="M9 9h4" style="display: none !important"/></svg>', /<path>: display="none" hides it/],
+    ["<svg viewBox=\"0 0 24 24\"><path d=\"M4 4h4\"/><path d=\"M9 9h4\" style={{ display: 'none' }}/></svg>", /<path>: display="none" hides it/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4"/><path d="M9 9h4" visibility="hidden"/></svg>', /<path>: visibility="hidden" hides it/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4"/><path d="M9 9h4" style="visibility:collapse"/></svg>', /<path>: visibility="collapse" hides it/],
+    ['<svg viewBox="0 0 24 24"><path d="M4 4h4"/><g style="visibility: hidden"><path d="M9 9h4"/></g></svg>', /<g>: visibility="hidden" hides it/],
+    ['<svg viewBox="0 0 24 24"><g display="none"><path d="M9 9h4"/></g></svg>', /<g>: display="none" hides it/],
+    ['<svg viewBox="0 0 24 24" style="display:none"><path d="M9 9h4"/></svg>', /<svg>: display="none" hides it/],
   ];
   for (const [svg, message] of rejected) {
     test(`rejects ${svg.replace(/^<svg viewBox="0 0 24 24"/, "<svg")}`, () => {
@@ -110,6 +118,11 @@ describe("canonicalSvg keeps what the drawing inherits and rejects what it would
 
   test("opacity on the root is presentation, like colour", () => {
     expect(canonicalSvg('<svg viewBox="0 0 24 24" opacity="0.5"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>')).toBe(canonicalSvg(SEARCH));
+  });
+
+  test("visible display and visibility values are fine", () => {
+    const shown = '<svg viewBox="0 0 24 24" visibility="visible"><circle cx="11" cy="11" r="7" display="inline"/><path d="M20 20l-3.5-3.5" style="visibility: visible"/></svg>';
+    expect(canonicalSvg(shown)).toBe(canonicalSvg(SEARCH));
   });
 
   test("the default nonzero fill rule is fine", () => {
@@ -140,6 +153,15 @@ test("extractDesign refuses shapes styled by page CSS but keeps the root class c
   expect(x.rejectedIcons.find((r) => r.file === "parts.jsx")?.reason).toContain("<circle>: style={ring} is defined elsewhere");
   // A standalone SVG has no page CSS: an inner class changes nothing there.
   expect(() => canonicalSvg(dot)).not.toThrow();
+});
+
+test("extractDesign refuses an inline SVG with a hidden shape instead of showing it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ds-extract-"));
+  writeFileSync(join(dir, "screen.html"), `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M2 2h4" style="display:none"/></svg>\n`);
+  const x = extractDesign(dir);
+  expect(x.icons).toEqual([]);
+  expect(x.rejectedIcons).toHaveLength(1);
+  expect(x.rejectedIcons[0].reason).toContain('display="none" hides it');
 });
 
 describe("extractDesign (Claude Design export folder)", () => {

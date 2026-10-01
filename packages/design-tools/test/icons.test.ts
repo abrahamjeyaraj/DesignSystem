@@ -144,6 +144,17 @@ describe("loadIcons", () => {
     expect(() => loadIcons(join(dir, "icons.json"))).toThrow('icons.compass: <path> #2 has stroke="none" in a line icon');
   });
 
+  test("a hidden shape in an icon is refused, naming the icon, not drawn on every platform", () => {
+    for (const hidden of ['display="none"', 'style="visibility: hidden"']) {
+      const dir = workspace();
+      writeFileSync(
+        join(dir, "svg/search.svg"),
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M2 2h4" ${hidden}/></svg>`,
+      );
+      expect(() => loadIcons(join(dir, "icons.json"))).toThrow(/icons\.search: <path>: (display="none"|visibility="hidden") hides it/);
+    }
+  });
+
   test("a fill on the root makes a filled icon, not a stroked one", () => {
     const dir = workspace();
     writeFileSync(join(dir, "svg/card.svg"), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>');
