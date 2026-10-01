@@ -6,8 +6,8 @@ import SwiftUI
 final class AppThemeTests: XCTestCase {
     func testBothAppThemeSpellingsShareValues() {
         XCTAssertEqual(DSThemeTokens.compatibilityFixture, DSTokens.compatibilityFixture)
-        let _: some View = Text("Preview").dsTheme(.compatibilityFixture)
-        let _: some View = Text("Preview").dsTheme(DSTokens.compatibilityFixture)
+        _ = Text("Preview").dsTheme(.compatibilityFixture)
+        _ = Text("Preview").dsTheme(DSTokens.compatibilityFixture)
     }
 
     func testAppOwnedThemeMatchesBuiltIn() {
