@@ -128,15 +128,29 @@ the geometry: 1.6 on the 24 grid, scaling with the icon, so every size keeps the
 `<svg>`/`<path>` in app code, any icon library not named in `icons.json`. (An app may choose
 Material Symbols or SF Symbols as its library, but then every platform uses it via the generator.)
 
+**Source SVG rules (icons and scenes):** shapes (`path`, `circle`, `ellipse`, `rect`, `line`,
+`polyline`, `polygon`) inside `<g>`. Fill, stroke and (for scenes) stroke width are read the way
+SVG inherits them: the shape's own, else the nearest group's, else the root's. Anything the
+outputs cannot carry is refused with the fix rather than dropped: transforms, `clip-path`,
+`mask`, filters, `fill-rule="evenodd"`, opacity on a group or the root, `<use>`, `<defs>`,
+`<symbol>`, `<text>`, `<image>`, gradients, patterns and `<style>`. Flatten them in the design tool
+(apply transforms and clips to the coordinates, outline text, union/subtract shapes) and export
+again. `ds-extract` lists refused inline SVGs with the reason instead of guessing.
+
 **Verification:** CI renders each source icon and each platform output at 16/24/48 px and pixel
-diffs them; it also publishes a contact sheet.
+diffs them; it also publishes a contact sheet. Each pixel is measured as coverage (rendered at 8x
+and averaged, software raster), so the check compares drawings rather than one renderer's
+antialiasing of `<circle>` against the equivalent arc path. Every output `icons.json` configures
+must exist and hold every shipped icon (asset catalog entries as tintable vectors, VectorDrawables
+on the grid with every shape); a missing file or entry fails, it is never skipped.
 
 ## 5. Illustrations and motion art
 
 Hand-drawn scenes (onboarding, feature intros, empty states) are data: an SVG plus a motion JSON
 (per stroke: path, width, draw window, fade). DesignSystem ships one renderer per platform
 (`DSStrokeScene` for SwiftUI, Compose, React/RN, Flutter) that plays that JSON. The design export
-is the source; `ds-art extract` pulls it verbatim; no platform re-types paths.
+is the source; `ds-art extract` pulls it verbatim; no platform re-types paths. Scenes follow the
+source SVG rules of section 4; a stroke's faintness is `data-faint`, not SVG opacity.
 
 ## 6. Components
 

@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, relative } from "node:path";
-import { canonicalSvg, svgAttrs } from "./extract";
+import { canonicalSvg, svgAttrs, UnsupportedSvgError } from "./extract";
 
 export const SCHEMA = 1;
 /** Icons the SDK components render (disclosure, dismiss, search field, checkmarks, menus). */
@@ -120,11 +120,16 @@ export function shapeToPath(tag: string, a: Record<string, string>): string {
 }
 
 function parseIcon(name: string, raw: string, m: Manifest): IconDef {
-  const canonical = canonicalSvg(raw);
+  let canonical: string;
+  try {
+    canonical = canonicalSvg(raw);
+  } catch (err) {
+    if (err instanceof UnsupportedSvgError) throw new Error(`icons.${name}: ${err.message}`);
+    throw err;
+  }
   const viewBox = svgAttrs(canonical.match(/^<svg\b([^>]*)>/)?.[1] ?? "").viewBox?.value ?? "";
   const grid = m.style.grid;
   if (viewBox !== `0 0 ${grid} ${grid}`) throw new Error(`icons.${name}: viewBox "${viewBox}" is not the ${grid} grid`);
-  if (/\btransform=/.test(canonical)) throw new Error(`icons.${name}: transforms are not supported; flatten the icon in the design tool`);
   const shapes = [...canonical.matchAll(/<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*)\/>/g)].map((s) => {
     const all = Object.fromEntries(Object.entries(svgAttrs(s[2])).map(([k, v]) => [k, v.value]));
     const { fill, ...attrs } = all;

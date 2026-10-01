@@ -25,7 +25,11 @@ if (import.meta.main) {
       const sheet = option(args, "--sheet");
       const { verifyIcons } = await import("./verify");
       const r = await verifyIcons(manifest, { sheet });
-      for (const f of r.failures) console.error(`ds-icons: mismatch: ${f.platform} ${f.icon} ${f.size}px ${(f.diff * 100).toFixed(1)}% of inked pixels differ`);
+      for (const f of r.failures) {
+        if (f.reason && !f.size) console.error(`ds-icons: ${f.platform} ${f.icon}: ${f.reason}`);
+        else if (f.reason) console.error(`ds-icons: mismatch: ${f.platform} ${f.icon} ${f.size}px: ${f.reason}`);
+        else console.error(`ds-icons: mismatch: ${f.platform} ${f.icon} ${f.size}px ${(f.diff * 100).toFixed(1)}% of inked pixels differ`);
+      }
       if (sheet) console.log(`contact sheet: ${sheet}`);
       if (r.failures.length) process.exit(1);
       console.log(`${r.results.length} renders match their source`);

@@ -30,6 +30,8 @@ export interface Extraction {
   colors: ColorUse[];
   fonts: string[];
   icons: IconCandidate[];
+  /** Inline SVGs that could not become candidates without changing the drawing, and why. */
+  rejectedIcons: { file: string; reason: string }[];
   libraryIcons: Record<string, string[]>;
 }
 
@@ -92,11 +94,12 @@ function darkRanges(text: string): [number, number][] {
 // ---------- SVG ----------
 
 const ATTR = /([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([^}]*)\})/g;
-const SHAPES = /<(path|circle|rect|line|polyline|polygon|ellipse)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{[^}]*\})*?)\/?>/g;
-const GEOMETRY = ["d", "cx", "cy", "r", "rx", "ry", "x", "y", "width", "height", "x1", "y1", "x2", "y2", "points", "opacity", "transform"];
+const GEOMETRY = ["d", "cx", "cy", "r", "rx", "ry", "x", "y", "width", "height", "x1", "y1", "x2", "y2", "points", "opacity"];
 
-export function svgAttrs(src: string): Record<string, { value: string; expr: boolean }> {
-  const out: Record<string, { value: string; expr: boolean }> = {};
+export type SvgAttrs = Record<string, { value: string; expr: boolean }>;
+
+export function svgAttrs(src: string): SvgAttrs {
+  const out: SvgAttrs = {};
   for (const m of src.matchAll(ATTR)) {
     const expr = m[4] !== undefined;
     out[m[1]] = { value: (m[2] ?? m[3] ?? m[4] ?? "").trim(), expr };
@@ -105,26 +108,155 @@ export function svgAttrs(src: string): Record<string, { value: string; expr: boo
 }
 const rootTag = (svg: string) => svg.match(/^<svg\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{[^}]*\})*)>/)?.[1] ?? "";
 
+/** SVG input the design tools cannot carry over without changing the drawing. */
+export class UnsupportedSvgError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UnsupportedSvgError";
+  }
+}
+
+export const SHAPE_TAGS = ["path", "circle", "rect", "line", "polyline", "polygon", "ellipse"];
+const TAG = /<(\/?)([a-zA-Z][\w:.-]*)((?:[^>"'{]|"[^"]*"|'[^']*'|\{[^}]*\})*?)(\/?)>/g;
+const IGNORED = /<!--[\s\S]*?-->|<\?[\s\S]*?\?>|<!DOCTYPE[^>]*>|<(title|desc|metadata)\b[^>]*\/>|<(title|desc|metadata)\b[\s\S]*?<\/\2>/gi;
+const FLATTEN = "flatten it in the design tool (apply the transform, clip or effect to the path coordinates) and export again";
+const ELEMENT_HELP: Record<string, string> = {
+  use: "replace the <use> with a copy of the shapes it references",
+  symbol: "replace the <symbol> with the shapes it holds",
+  defs: "move visible shapes out of <defs> and delete unused definitions",
+  clippath: `the clip is not carried to the outputs; ${FLATTEN}`,
+  mask: `the mask is not carried to the outputs; ${FLATTEN}`,
+  text: "convert the text to outlines (paths) in the design tool",
+  image: "redraw the bitmap as vector shapes; bitmaps cannot be tinted or scaled exactly",
+  lineargradient: "use one solid colour; the platforms tint the drawing",
+  radialgradient: "use one solid colour; the platforms tint the drawing",
+  pattern: "use one solid colour; the platforms tint the drawing",
+  filter: "remove the filter effect",
+  style: "export presentation as attributes instead of a <style> block",
+  svg: "flatten the nested <svg> into the outer drawing",
+};
+/** Attributes whose effect would be silently lost, wherever they appear. */
+const LOSSY: Record<string, string> = {
+  transform: `transforms are not supported; ${FLATTEN}`,
+  "clip-path": `clip-path is not supported; ${FLATTEN}`,
+  mask: `mask is not supported; ${FLATTEN}`,
+  filter: "filter effects are not supported; remove the effect",
+  "fill-rule": 'fill-rule="evenodd" is not carried to the outputs; flatten the shape (boolean union/subtract) so it fills correctly with the default nonzero rule',
+};
+/** Opacity on a group is not the same as opacity on each shape where shapes overlap. (On the
+ * root it is presentation, like colour: icons are tinted and faded by the platform.) */
+const GROUP_LOSSY = ["opacity", "fill-opacity", "stroke-opacity"];
+/** The same lossy effects set through an inline style (`style="transform: ..."` or JSX `style={{ transform }}`). */
+const STYLE_LOSSY = /(?:^|[;{,\s])(transform|clip-?path|mask|filter)\s*:/i;
+
+const kebab = (k: string) => k.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+/** An attribute in SVG (`stroke-width`) or JSX (`strokeWidth`) spelling. */
+export function attr(a: SvgAttrs, name: string): { value: string; expr: boolean } | undefined {
+  return a[name] ?? a[name.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())];
+}
+
+export interface SvgShape {
+  tag: string;
+  attrs: SvgAttrs;
+  /** The root, then each enclosing <g>, outermost first. */
+  ancestors: SvgAttrs[];
+}
+
+/** The nearest value of a presentation attribute: the shape's own, else its groups', else the root's. */
+export function inherited(shape: SvgShape, name: string): { value: string; expr: boolean } | undefined {
+  const own = attr(shape.attrs, name);
+  if (own) return own;
+  for (let i = shape.ancestors.length - 1; i >= 0; i--) {
+    const v = attr(shape.ancestors[i], name);
+    if (v) return v;
+  }
+  return undefined;
+}
+
+function rejectLossy(a: SvgAttrs, where: string, groupLevel: boolean) {
+  for (const [k, v] of Object.entries(a)) {
+    const name = kebab(k);
+    if (name === "fill-rule" && v.value !== "evenodd") continue;
+    if (LOSSY[name]) throw new UnsupportedSvgError(`${where}: ${LOSSY[name]}`);
+    const styled = name === "style" ? v.value.match(STYLE_LOSSY)?.[1] : undefined;
+    if (styled) throw new UnsupportedSvgError(`${where}: ${styled} in style is not supported; ${FLATTEN}`);
+    if (groupLevel && GROUP_LOSSY.includes(name)) {
+      throw new UnsupportedSvgError(`${where}: ${name} on a group is not carried to the outputs; set it on each shape or flatten the group in the design tool`);
+    }
+  }
+}
+
+/**
+ * Shapes of an SVG with their ancestors, for reading presentation the way SVG inherits it.
+ * Anything that would change the drawing if dropped (transforms, clips, masks, filters,
+ * references, text, bitmaps, group opacity, even-odd fills, and the same effects set through an
+ * inline style) is an UnsupportedSvgError that says
+ * how to fix the source. Comments, <title>, <desc>, <metadata> and editor-namespaced tags are
+ * ignored.
+ */
+export function readSvg(svg: string): { root: SvgAttrs; shapes: SvgShape[] } {
+  const text = svg.replace(IGNORED, "");
+  const shapes: SvgShape[] = [];
+  let root: SvgAttrs | null = null;
+  const stack: SvgAttrs[] = [];
+  for (const m of text.matchAll(TAG)) {
+    const [, closing, rawName, attrText, selfClosing] = m;
+    const name = rawName.toLowerCase();
+    if (name.includes(":")) continue;
+    if (closing) {
+      if (name === "g") stack.pop();
+      continue;
+    }
+    const a = svgAttrs(attrText);
+    if (!root) {
+      if (name !== "svg") throw new UnsupportedSvgError(`<${rawName}> before <svg>; the file must be one <svg> element`);
+      rejectLossy(a, "<svg>", false);
+      root = a;
+      continue;
+    }
+    if (name === "g") {
+      rejectLossy(a, "<g>", true);
+      if (!selfClosing) stack.push(a);
+      continue;
+    }
+    if (SHAPE_TAGS.includes(name)) {
+      rejectLossy(a, `<${name}>`, false);
+      shapes.push({ tag: name, attrs: a, ancestors: [root, ...stack] });
+      continue;
+    }
+    throw new UnsupportedSvgError(
+      `<${rawName}> is not supported; ${ELEMENT_HELP[name] ?? `use only ${SHAPE_TAGS.map((t) => `<${t}>`).join(", ")} inside <g>`}`,
+    );
+  }
+  return { root: root ?? {}, shapes };
+}
+
 /**
  * Geometry-only form of an icon: viewBox, shapes and their geometry in order, fills as
  * currentColor/none. Presentation (size, class, colour, stroke width) is dropped so the same
- * drawing matches wherever it appears. Stroke icons get the line-icon presentation; icons whose
- * every shape is filled stay filled.
+ * drawing matches wherever it appears. Fill and stroke are read the way SVG inherits them (shape,
+ * then enclosing groups, then the root). Stroke icons get the line-icon presentation; icons whose
+ * every shape is filled and none stroked stay filled. Throws UnsupportedSvgError for input whose
+ * drawing would change (see readSvg).
  */
 export function canonicalSvg(svg: string): string {
-  const root = svgAttrs(rootTag(svg));
+  const { root, shapes: found } = readSvg(svg.trim());
   const viewBox = root.viewBox?.value ?? "0 0 24 24";
-  const shapes = [...svg.matchAll(SHAPES)].map((m) => {
-    const a = svgAttrs(m[2]);
-    const parts = [m[1]];
-    for (const k of GEOMETRY) if (a[k] && !a[k].expr) parts.push(`${k}="${a[k].value.replace(/\s+/g, " ")}"`);
-    const fill = a.fill;
-    const filled = fill && fill.value !== "none";
-    if (fill) parts.push(`fill="${filled ? "currentColor" : "none"}"`);
-    return { markup: `<${parts.join(" ")}/>`, filled: Boolean(filled) };
+  const shapes = found.map((s) => {
+    const parts = [s.tag];
+    for (const k of GEOMETRY) {
+      const v = s.attrs[k];
+      if (v && !v.expr) parts.push(`${k}="${v.value.replace(/\s+/g, " ")}"`);
+    }
+    const fill = inherited(s, "fill");
+    const filled = Boolean(fill && fill.value !== "none");
+    // An explicit fill is kept as written; an inherited one only when it fills (absent means none).
+    if (attr(s.attrs, "fill") || filled) parts.push(`fill="${filled ? "currentColor" : "none"}"`);
+    const stroke = inherited(s, "stroke");
+    return { markup: `<${parts.join(" ")}/>`, filled, stroked: Boolean(stroke && stroke.value !== "none") };
   });
-  const allFilled = shapes.length > 0 && shapes.every((s) => s.filled);
-  const presentation = allFilled
+  const filledOnly = shapes.length > 0 && shapes.every((s) => s.filled && !s.stroked);
+  const presentation = filledOnly
     ? 'fill="currentColor"'
     : 'fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" ${presentation}>${shapes.map((s) => s.markup).join("")}</svg>`;
@@ -177,6 +309,7 @@ export function extractDesign(dir: string): Extraction {
   const fonts = new Set<string>();
   const icons = new Map<string, { svg: string; viewBox: string; widths: Set<number>; count: number; files: Set<string> }>();
   const library = new Map<string, Set<string>>();
+  const rejected: Extraction["rejectedIcons"] = [];
 
   const addColor = (value: string, name: string, file: string) => {
     const c = colors.get(value) ?? { names: new Set(), files: new Set(), count: 0 };
@@ -200,7 +333,14 @@ export function extractDesign(dir: string): Extraction {
 
     for (const svg of text.match(/<svg\b[\s\S]*?<\/svg>/g) ?? []) {
       if (svg.length > 8000 || svg.includes("${")) continue;
-      const canonical = canonicalSvg(svg);
+      let canonical: string;
+      try {
+        canonical = canonicalSvg(svg);
+      } catch (err) {
+        if (!(err instanceof UnsupportedSvgError)) throw err;
+        rejected.push({ file, reason: err.message });
+        continue;
+      }
       if (!canonical.includes("<path") && !/<(circle|rect|line|poly|ellipse)/.test(canonical)) continue;
       const entry = icons.get(canonical) ?? {
         svg: canonical,
@@ -293,6 +433,7 @@ export function extractDesign(dir: string): Extraction {
       count: i.count,
       files: [...i.files],
     })),
+    rejectedIcons: rejected,
     libraryIcons: Object.fromEntries([...library].map(([k, v]) => [k, [...v].sort()])),
   };
 }

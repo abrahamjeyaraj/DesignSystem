@@ -5,7 +5,7 @@
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { svgAttrs } from "./extract";
+import { attr, inherited, readSvg, UnsupportedSvgError } from "./extract";
 import { shapeToPath } from "./icons";
 
 export const SCENE_SCHEMA = 1;
@@ -86,42 +86,49 @@ export function validateScene(s: Scene): string[] {
   return errors;
 }
 
-const SHAPE = /<(path|circle|ellipse|line|rect|polyline|polygon)\b((?:[^>"']|"[^"]*"|'[^']*')*?)\/?>/;
+/** SVG opacity has no place in a scene; faintness is the scene's own, animatable, opacity. */
+const SHAPE_OPACITY = ["opacity", "stroke-opacity", "fill-opacity"];
 
 /**
  * Scene from an SVG the designer annotated: `data-window="start end"` on every shape, optional
- * `data-faint`, `data-group` on a parent <g>. Stroke width comes from the shape or the root.
+ * `data-faint`, `data-group` on a parent <g>. Stroke width and fill are read the way SVG inherits
+ * them: the shape's own, else the nearest <g>'s, else the root's. Transforms, clips, masks,
+ * references, text, bitmaps, opacity and even-odd fills would be lost, so they are errors that
+ * say how to fix the source.
  */
 export function extractScene(svg: string, id: string): Scene {
-  const root = svgAttrs(svg.match(/<svg\b([^>]*)>/)?.[1] ?? "");
-  const viewBox = (root.viewBox?.value ?? "").split(/[\s,]+/).map(Number) as Scene["viewBox"];
-  const rootWidth = Number(root["stroke-width"]?.value ?? 1);
-  const strokes: SceneStroke[] = [];
-  const groupStack: (string | undefined)[] = [];
-  const tokens = svg.match(/<\/g>|<g\b[^>]*>|<(?:path|circle|ellipse|line|rect|polyline|polygon)\b(?:[^>"']|"[^"]*"|'[^']*')*?\/?>/g) ?? [];
-  let n = 0;
-  for (const tok of tokens) {
-    if (tok === "</g>") {
-      groupStack.pop();
-      continue;
-    }
-    if (tok.startsWith("<g")) {
-      groupStack.push(svgAttrs(tok)["data-group"]?.value ?? groupStack[groupStack.length - 1]);
-      continue;
-    }
-    const m = tok.match(SHAPE);
-    if (!m) continue;
-    n++;
-    const a = Object.fromEntries(Object.entries(svgAttrs(m[2])).map(([k, v]) => [k, v.value]));
-    if (!a["data-window"]) throw new Error(`<${m[1]}> #${n} has no data-window="start end"`);
-    const window = a["data-window"].split(/[\s,]+/).map(Number) as Window;
-    const stroke: SceneStroke = { d: shapeToPath(m[1], a), width: Number(a["stroke-width"] ?? rootWidth), window };
-    if (a["data-faint"] !== undefined) stroke.faint = Number(a["data-faint"]);
-    const group = groupStack[groupStack.length - 1];
-    if (group) stroke.group = group;
-    if (a.fill && a.fill !== "none") stroke.fill = true;
-    strokes.push(stroke);
+  let parsed: ReturnType<typeof readSvg>;
+  try {
+    parsed = readSvg(svg.trim());
+  } catch (err) {
+    if (err instanceof UnsupportedSvgError) throw new Error(`scene ${id}: ${err.message}`);
+    throw err;
   }
+  const { root, shapes } = parsed;
+  for (const k of SHAPE_OPACITY) {
+    if (attr(root, k)) throw new Error(`scene ${id}: <svg>: ${k} is not carried into the scene; use data-faint="0..1" on the strokes`);
+  }
+  const viewBox = (root.viewBox?.value ?? "").split(/[\s,]+/).map(Number) as Scene["viewBox"];
+  const strokes = shapes.map((shape, i): SceneStroke => {
+    const where = `<${shape.tag}> #${i + 1}`;
+    const a = Object.fromEntries(Object.entries(shape.attrs).map(([k, v]) => [k, v.value]));
+    for (const k of SHAPE_OPACITY) {
+      if (attr(shape.attrs, k)) throw new Error(`scene ${id}: ${where}: ${k} is not carried into the scene; use data-faint="0..1" for a faint stroke`);
+    }
+    if (!a["data-window"]) throw new Error(`${where} has no data-window="start end"`);
+    const window = a["data-window"].split(/[\s,]+/).map(Number) as Window;
+    const stroke: SceneStroke = { d: shapeToPath(shape.tag, a), width: Number(inherited(shape, "stroke-width")?.value ?? 1), window };
+    if (a["data-faint"] !== undefined) stroke.faint = Number(a["data-faint"]);
+    const group = shape.ancestors
+      .slice(1)
+      .map((g) => g["data-group"]?.value)
+      .filter(Boolean)
+      .pop();
+    if (group) stroke.group = group;
+    const fill = inherited(shape, "fill")?.value;
+    if (fill && fill !== "none") stroke.fill = true;
+    return stroke;
+  });
   return { schema: SCENE_SCHEMA, id, viewBox, strokes };
 }
 

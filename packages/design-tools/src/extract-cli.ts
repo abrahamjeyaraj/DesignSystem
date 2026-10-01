@@ -36,6 +36,10 @@ function summary(x: Extraction): string {
     widths.set(key, (widths.get(key) ?? 0) + i.count);
   }
   lines.push(`${x.icons.length} distinct inline icons; stroke widths: ${[...widths].map(([w, n]) => `${w} x${n}`).join(", ") || "none"}`);
+  if (x.rejectedIcons.length) {
+    lines.push(`${x.rejectedIcons.length} inline SVG(s) not taken as icons (fix the source and extract again):`);
+    for (const r of x.rejectedIcons) lines.push(`  ${r.file}: ${r.reason}`);
+  }
   for (const [lib, names] of Object.entries(x.libraryIcons)) lines.push(`library ${lib}: ${names.join(", ")}`);
   return lines.join("\n");
 }
