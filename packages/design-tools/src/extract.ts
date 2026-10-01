@@ -555,7 +555,7 @@ export interface Frozen {
 /** What a new export contains that the frozen design/ set does not. */
 export function diffExtraction(x: Extraction, frozen: Frozen) {
   const colors = new Set(frozen.colors.map((c) => normalizeColor(c) ?? c));
-  const icons = new Set(frozen.icons.map(canonicalSvg));
+  const icons = new Set(frozen.icons.map((svg) => canonicalSvg(svg)));
   return {
     newColors: x.colors.map((c) => c.value).filter((v) => !colors.has(v)).sort(),
     newIcons: x.icons.filter((i) => !icons.has(i.svg)),
