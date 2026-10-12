@@ -1,0 +1,5 @@
+{
+  "schema": 1,
+  "scenes": ["scenes/sunrise.json"],
+  "outputs": { "web": "out/web/scenes.ts", "json": "out/native" }
+}

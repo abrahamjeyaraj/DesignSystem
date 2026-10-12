@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "sunrise",
+  "viewBox": [0, 0, 360, 300],
+  "strokes": [
+    { "d": "M20 240 C 120 180 240 180 340 240", "width": 1.8, "window": [0, 0.3] },
+    { "d": "M150 170a30 30 0 1 0 60 0a30 30 0 1 0 -60 0", "width": 1.5, "window": [0.3, 0.6] },
+    { "d": "M180 120 L180 90", "width": 1, "window": [0.6, 0.75], "faint": 0.5, "group": "rays" },
+    { "d": "M140 135 L120 115", "width": 1, "window": [0.65, 0.8], "faint": 0.4, "group": "rays" },
+    { "d": "M177 170a3 3 0 1 0 6 0a3 3 0 1 0 -6 0", "width": 1.2, "window": [0.8, 0.85], "fill": true }
+  ],
+  "flies": [
+    { "from": [320, 140], "ctrl": [250, 40], "to": [180, 120], "radius": 3, "window": [0.85, 1] }
+  ],
+  "groups": {
+    "rays": { "keyframes": [
+      { "t": 0.8, "rotate": 0, "origin": [180, 170], "opacity": 1 },
+      { "t": 1, "rotate": 10, "origin": [180, 170], "opacity": 0.6 }
+    ] }
+  }
+}

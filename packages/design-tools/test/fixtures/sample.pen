@@ -1,0 +1,18 @@
+{
+  "version": "2.19",
+  "variables": {
+    "surface": { "type": "color", "value": "#FBF7F0" },
+    "text-primary": { "type": "color", "value": "#1F1A17" },
+    "font-body": { "type": "string", "value": "Inter" },
+    "r-md": { "type": "number", "value": 6 }
+  },
+  "children": [
+    { "type": "frame", "name": "Screen", "fill": "$surface", "children": [
+      { "type": "icon", "name": "Icon", "icon": "search", "library": "lucide", "fill": "$text-primary" },
+      { "type": "icon", "name": "Icon", "icon": "chevron-right", "library": "lucide", "fill": "$text-primary" },
+      { "type": "frame", "name": "Chip", "fill": "#E3ECDF", "children": [
+        { "type": "icon", "name": "Icon", "icon": "search", "library": "lucide" }
+      ]}
+    ]}
+  ]
+}

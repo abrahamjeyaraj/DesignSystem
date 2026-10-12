@@ -5,7 +5,7 @@ import * as React from 'react';
 import { cn } from './cn';
 
 // Filled action CTA, outlined hairline secondary. Label font, case, tracking and weight come from the theme
-// (Bible: IBM Plex Mono uppercase; ChurchHQ: Geist; Tuition: Inter 800 in a pill).
+// (label-text), and the shape from radius.button: a theme can make this a mono uppercase label or a pill.
 const label = 'label-text text-[length:var(--label-size)]';
 
 const buttonVariants = cva(

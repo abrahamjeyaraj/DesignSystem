@@ -1,0 +1,47 @@
+{
+  "name": "@abrahamjeyaraj/design-tools",
+  "version": "0.2.1",
+  "description": "Design pipeline CLIs for app-owned design/ folders: extract from design tools, freeze and generate icons and illustrations, lint.",
+  "type": "module",
+  "bin": {
+    "ds-extract": "./src/extract-cli.ts",
+    "ds-icons": "./src/icons-cli.ts",
+    "ds-art": "./src/art-cli.ts",
+    "ds-lint": "./src/lint-cli.ts",
+    "ds-init": "./src/init-cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./verify": "./src/verify.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "bun test test",
+    "release": "bun publish --registry https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@abrahamjeyaraj/tokens": "workspace:*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrahamjeyaraj/DesignSystem.git"
+  },
+  "devDependencies": {
+    "lucide-static": "0.469.0",
+    "playwright-core": "^1.63.0"
+  },
+  "peerDependencies": {
+    "playwright-core": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright-core": {
+      "optional": true
+    }
+  }
+}

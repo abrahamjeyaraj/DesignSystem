@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source": { "dir": "svg" },
+  "style": { "grid": 24, "stroke": 1.6 },
+  "icons": {
+    "home": "home",
+    "search": "search",
+    "chevron-right": "chevron-right",
+    "close": "close",
+    "compass": "compass",
+    "card": "card"
+  },
+  "scan": ["src"],
+  "outputs": {
+    "web": "out/web/icons.ts",
+    "ios": "out/ios/DSIcons.xcassets",
+    "iosSwift": "out/ios/DSIconName.swift",
+    "android": "out/android/res/drawable",
+    "compose": { "file": "out/android/DSIcons.kt", "package": "com.example.app.design" },
+    "flutter": { "dir": "out/flutter/assets/ds_icons", "dart": "out/flutter/lib/ds_icons.g.dart" },
+    "sprite": "out/sprite.svg"
+  }
+}
