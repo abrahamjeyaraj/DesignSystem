@@ -84,17 +84,17 @@ public struct DSButtonStyle: ButtonStyle {
         let fill: Color = variant == .ghost ? .clear : Color(dsHex: variant == .destructive ? c.destructive : variant == .secondary ? c.card : c.action)
         let ink: UInt32 = variant == .destructive ? c.destructiveForeground : variant == .secondary || variant == .ghost ? c.foreground : c.actionForeground
         let label = configuration.label
-            .font(DSFontResolver.font(family: theme.mobileType.label.family, size: theme.mobileType.label.size * Double(scale), heading: false).weight(.semibold))
+            .font(DSFontResolver.font(family: theme.mobileType.label.family, size: DSComponentMetrics.buttonLabelSize * Double(scale), heading: false).weight(.semibold))
             .tracking(theme.label.tracking)
         return Group {
             if theme.label.uppercase { label.textCase(.uppercase) } else { label.textCase(nil) }
         }
         .foregroundStyle(Color(dsHex: ink))
-        .padding(.horizontal, DSTokens.Spacing.s5)
-        .frame(minHeight: theme.mobileLayout.touchTarget)
-        .background(fill, in: RoundedRectangle(cornerRadius: min(theme.radius.button, theme.mobileLayout.touchTarget / 2)))
+        .padding(.horizontal, DSComponentMetrics.buttonHPadding)
+        .frame(minHeight: DSComponentMetrics.buttonHeight)
+        .background(fill, in: RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius))
         .overlay {
-            if variant == .secondary { RoundedRectangle(cornerRadius: min(theme.radius.button, theme.mobileLayout.touchTarget / 2)).stroke(Color(dsHex: c.border), lineWidth: 1) }
+            if variant == .secondary { RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius).stroke(Color(dsHex: c.border), lineWidth: 1) }
         }
         .opacity(configuration.isPressed ? 0.85 : 1)
     }

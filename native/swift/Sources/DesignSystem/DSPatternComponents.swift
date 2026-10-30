@@ -135,12 +135,20 @@ public struct DSWeekStrip: View {
     public let days: [DSWeekStripDay]
     public let selectedDayID: String
     public let todayDayID: String?
+    public let isInteractive: Bool
+    /// Dot ink for days with load; defaults to the warning role.
+    public let eventDot: UInt32?
+    /// Weekday-symbol ink on a highlighted tile; defaults to actionForeground.
+    public let highlightedNameInk: UInt32?
     public let onSelect: (DSWeekStripDay) -> Void
 
-    public init(days: [DSWeekStripDay], selectedDayID: String, todayDayID: String? = nil, onSelect: @escaping (DSWeekStripDay) -> Void) {
+    public init(days: [DSWeekStripDay], selectedDayID: String = "", todayDayID: String? = nil, isInteractive: Bool = true, eventDot: UInt32? = nil, highlightedNameInk: UInt32? = nil, onSelect: @escaping (DSWeekStripDay) -> Void = { _ in }) {
         self.days = days
         self.selectedDayID = selectedDayID
         self.todayDayID = todayDayID
+        self.isInteractive = isInteractive
+        self.eventDot = eventDot
+        self.highlightedNameInk = highlightedNameInk
         self.onSelect = onSelect
     }
 
@@ -149,38 +157,40 @@ public struct DSWeekStrip: View {
         HStack(spacing: 6) {
             ForEach(days) { day in
                 let selected = day.id == selectedDayID
-                let isToday = day.id == todayDayID
-                Button { onSelect(day) } label: {
-                    VStack(spacing: 4) {
-                        Text(day.weekdaySymbol).dsFont(.caption).fontWeight(.medium)
-                            .foregroundStyle(Color(dsHex: selected ? c.actionForeground : c.inkMuted))
-                        Text("\(day.dayNumber)").dsFont(.body).fontWeight(.semibold)
-                            .foregroundStyle(Color(dsHex: selected ? c.actionForeground : c.foreground))
-                        HStack(spacing: 2) {
-                            ForEach(0..<min(day.loadCount, 4), id: \.self) { _ in
-                                Circle()
-                                    .fill(Color(dsHex: selected ? c.actionForeground : c.accent2))
-                                    .frame(width: DSComponentMetrics.loadDotSize, height: DSComponentMetrics.loadDotSize)
-                            }
-                        }
-                        .frame(height: DSComponentMetrics.loadDotSize)
-                    }
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(
-                        Color(dsHex: selected ? c.action : c.card),
-                        in: RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
-                    )
-                    .overlay {
-                        if isToday && !selected {
-                            RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
-                                .stroke(Color(dsHex: c.primary), lineWidth: 1)
-                        }
-                    }
+                let highlighted = isInteractive ? selected : day.id == todayDayID
+                let tile = VStack(spacing: 3) {
+                    Text(day.weekdaySymbol)
+                        .font(DSFontResolver.font(family: theme.mobileType.caption.family, size: DSComponentMetrics.weekDayNameSize, heading: false).weight(.semibold))
+                        .tracking(0.5)
+                        .foregroundStyle(Color(dsHex: highlighted ? (highlightedNameInk ?? c.actionForeground) : c.inkMuted))
+                    Text("\(day.dayNumber)")
+                        .font(DSFontResolver.font(family: theme.mobileType.body.family, size: DSComponentMetrics.weekDayNumberSize, heading: false).weight(.semibold))
+                        .foregroundStyle(Color(dsHex: highlighted ? c.actionForeground : c.foreground))
+                    Circle()
+                        .fill(day.loadCount > 0 ? Color(dsHex: eventDot ?? c.warning) : .clear)
+                        .frame(width: DSComponentMetrics.loadDotSize, height: DSComponentMetrics.loadDotSize)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(day.weekdaySymbol) \(day.dayNumber)")
-                .accessibilityAddTraits(selected ? .isSelected : [])
+                .padding(.top, DSComponentMetrics.weekCellTopPadding)
+                .padding(.bottom, DSComponentMetrics.weekCellBottomPadding)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Color(dsHex: highlighted ? c.action : c.card),
+                    in: RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: DSComponentMetrics.weekCellRadius)
+                        .stroke(Color(dsHex: highlighted ? c.primary : c.border), lineWidth: 1)
+                )
+                if isInteractive {
+                    Button { onSelect(day) } label: { tile }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(day.weekdaySymbol) \(day.dayNumber)")
+                        .accessibilityAddTraits(selected ? .isSelected : [])
+                } else {
+                    tile
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(day.weekdaySymbol) \(day.dayNumber)")
+                }
             }
         }
         .accessibilityElement(children: .contain)
@@ -618,8 +628,8 @@ public struct DSMultilineField: View {
             .frame(minHeight: theme.mobileLayout.fieldHeight * 2)
             .padding(.horizontal, DSTokens.Spacing.s3)
             .padding(.vertical, DSTokens.Spacing.s2)
-            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: theme.radius.control))
-            .overlay(RoundedRectangle(cornerRadius: theme.radius.control).stroke(Color(dsHex: c.border), lineWidth: 1))
+            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius))
+            .overlay(RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
             .accessibilityLabel(accessibilityLabel)
             Text("\(text.count)/\(maxLength)").dsFont(.caption).foregroundStyle(Color(dsHex: c.inkMuted))
                 .frame(maxWidth: .infinity, alignment: .trailing)

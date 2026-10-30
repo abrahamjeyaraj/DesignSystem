@@ -55,8 +55,8 @@
   --color-accent-foreground: #1d1b16;
   --color-destructive: #e11d48;
   --color-destructive-foreground: #ffffff;
-  --color-border: #e6e3dc;
-  --color-input: #e6e3dc;
+  --color-border: #e7e1d6;
+  --color-input: #e7e1d6;
   --color-ring: #1a6b54;
   --color-success: #047857;
   --color-success-light: #ecfdf5;
@@ -67,10 +67,10 @@
   --color-info: #0369a1;
   --color-info-light: #f0f9ff;
   --color-ink: #1d1b16;
-  --color-ink-body: #3d3a33;
-  --color-ink-muted: #6f6c63;
+  --color-ink-body: #625f57;
+  --color-ink-muted: #858179;
   --color-subtle: #faf9f5;
-  --color-line: #e6e3dc;
+  --color-line: #e7e1d6;
   --color-line-hover: #d6d2c8;
   --color-action: #1a6b54;
   --color-action-foreground: #ffffff;
@@ -88,6 +88,15 @@
   --color-shell-gutter: #efece4;
   --color-verified-blue: #1d9bf0;
   --color-gold-ink: #9a7a2e;
+  --color-gold: #f59e0b;
+  --color-gold-soft: #fdecc8;
+  --color-gold-deep: #b45309;
+  --color-gold-surface: #fff8eb;
+  --color-on-primary-muted: #dce9e2;
+  --color-primary-soft: #145745;
+  --color-primary-deep: #0c3a2e;
+  --color-accent-soft: #d9ebe3;
+  --color-pine-ink: #12352a;
 
   --font-sans: var(--font-geist-sans), "Geist", system-ui, "Arial", "Helvetica", sans-serif;
   --font-heading: var(--font-newsreader), "Newsreader", "Georgia", serif;
@@ -181,6 +190,10 @@
   --color-panel: #2b2924;
   --color-surface: #312e28;
   --color-shell-gutter: #0e0d0a;
+  --color-gold-soft: #3d2f14;
+  --color-gold-deep: #fbbf24;
+  --color-gold-surface: #2e2a20;
+  --color-accent-soft: #1e3a30;
   --color-accent-600: #3a9b7a;
   --color-accent-700: #57b394;
 }

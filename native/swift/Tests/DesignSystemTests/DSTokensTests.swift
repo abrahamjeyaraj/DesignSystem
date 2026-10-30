@@ -11,6 +11,10 @@ final class DSTokensTests: XCTestCase {
         XCTAssertEqual(DSTokens.tuition.light.background, 0xFBF7F0)
         XCTAssertTrue(DSTokens.bible.label.uppercase)
         XCTAssertEqual(DSTokens.church.radius.card, 15)
+        XCTAssertEqual(DSTokens.church.light.inkBody, 0x625F57)
+        XCTAssertEqual(DSTokens.church.light.inkMuted, 0x858179)
+        XCTAssertEqual(DSTokens.church.extraLight["gold"], 0xF59E0B)
+        XCTAssertEqual(DSTokens.church.extraLight["accent-soft"], 0xD9EBE3)
         XCTAssertEqual(DSTokens.themes.count, 3)
     }
 

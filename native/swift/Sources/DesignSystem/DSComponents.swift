@@ -15,7 +15,11 @@ public enum DSComponentMetrics {
     public static let chipVerticalPadding: CGFloat = 4
     public static let sheetHandleWidth: CGFloat = 40
     public static let sheetHandleHeight: CGFloat = 5
-    public static let weekCellRadius: CGFloat = 14
+    public static let weekCellRadius: CGFloat = 12
+    public static let weekCellTopPadding: CGFloat = 9
+    public static let weekCellBottomPadding: CGFloat = 7
+    public static let weekDayNameSize: CGFloat = 9
+    public static let weekDayNumberSize: CGFloat = 15
     public static let loadDotSize: CGFloat = 4
     public static let countPillHeight: CGFloat = 36
     public static let presetTileHeight: CGFloat = 64
@@ -24,6 +28,16 @@ public enum DSComponentMetrics {
     public static let markToggleSize: CGFloat = 48
     public static let markIconSize: CGFloat = 22
     public static let podiumHeights: [CGFloat] = [120, 150, 104]
+    public static let buttonHeight: CGFloat = 52
+    public static let buttonLabelSize: CGFloat = 15
+    public static let buttonHPadding: CGFloat = 16
+    public static let cardPadding: CGFloat = 18
+    public static let cardRadius: CGFloat = 16
+    public static let controlRadius: CGFloat = 14
+    public static let fieldHeight: CGFloat = 44
+    public static let fieldHPadding: CGFloat = 14
+    public static let fieldLabelSize: CGFloat = 13
+    public static let fieldInputSize: CGFloat = 15
 }
 
 /// A text button with primary, secondary, ghost, and destructive appearances.
@@ -205,11 +219,15 @@ public struct DSField<Content: View>: View {
     public var body: some View {
         let c = theme.colors(for: scheme)
         VStack(alignment: .leading, spacing: theme.mobileLayout.itemGap / 2) {
-            Text(label).dsFont(.label).foregroundStyle(Color(dsHex: c.inkBody))
-            content.dsFont(.body).foregroundStyle(Color(dsHex: c.foreground))
-                .padding(.horizontal, DSTokens.Spacing.s4).frame(maxWidth: .infinity, minHeight: theme.mobileLayout.fieldHeight, alignment: .leading)
-                .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: theme.radius.control))
-                .overlay(RoundedRectangle(cornerRadius: theme.radius.control).stroke(Color(dsHex: c.border), lineWidth: 1))
+            Text(label)
+                .font(DSFontResolver.font(family: theme.mobileType.label.family, size: DSComponentMetrics.fieldLabelSize, heading: false).weight(.medium))
+                .foregroundStyle(Color(dsHex: c.inkBody))
+            content
+                .font(DSFontResolver.font(family: theme.mobileType.body.family, size: DSComponentMetrics.fieldInputSize, heading: false))
+                .foregroundStyle(Color(dsHex: c.foreground))
+                .padding(.horizontal, DSComponentMetrics.fieldHPadding).frame(maxWidth: .infinity, minHeight: DSComponentMetrics.fieldHeight, alignment: .leading)
+                .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius))
+                .overlay(RoundedRectangle(cornerRadius: DSComponentMetrics.controlRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
                 .accessibilityLabel(accessibilityLabel)
         }
     }
@@ -347,9 +365,9 @@ public struct DSCard<Content: View>: View {
     public init(@ViewBuilder content: () -> Content) { self.content = content() }
     public var body: some View {
         let c = theme.colors(for: scheme)
-        content.padding(theme.mobileLayout.gutter).frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius))
-            .overlay(RoundedRectangle(cornerRadius: theme.mobileLayout.cardRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
+        content.padding(DSComponentMetrics.cardPadding).frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(dsHex: c.card), in: RoundedRectangle(cornerRadius: DSComponentMetrics.cardRadius))
+            .overlay(RoundedRectangle(cornerRadius: DSComponentMetrics.cardRadius).stroke(Color(dsHex: c.border), lineWidth: 1))
     }
 }
 
