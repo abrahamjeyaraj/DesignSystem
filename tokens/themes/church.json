@@ -1,5 +1,5 @@
 {
-  "$description": "ChurchHQ \"Sanctuary\": warm cream page, white cards, pine accent, Geist + Newsreader. Extracted from ChurchManagement/apps/web/src/app/tokens.css and layout.tsx on 2026-09-23. Values marked derived in DESIGN.md are computed from its rgba(var(--ink), a) usage.",
+  "$description": "Church-admin theme (key church), \"Sanctuary\" look: warm cream page, white cards, pine accent, Geist + Newsreader. Extracted from a consumer web tokens.css and layout fonts on 2026-09-23. Values marked derived in DESIGN.md are computed from rgba(var(--ink), a) usage.",
   "name": "church",
   "palette": {
     "pine": {

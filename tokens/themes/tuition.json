@@ -1,5 +1,5 @@
 {
-  "$description": "TuitionManager: cream paper, oxblood primary, burnt-orange accent, Inter + Fraunces, pill buttons. Light extracted from TuitionManager/apps/web/src/components/ui.tsx designTokens and app/layout.tsx on 2026-09-23. Tuition has no dark mode yet; dark here is a PROPOSAL built from its own ink palette.",
+  "$description": "Tuition-admin theme (key tuition): cream paper, oxblood primary, burnt-orange accent, Inter + Fraunces, pill buttons. Light values extracted from a consumer web token object and layout fonts on 2026-09-23. That app had no dark mode yet; dark here is a PROPOSAL built from its ink palette.",
   "name": "tuition",
   "palette": {
     "oxblood": {

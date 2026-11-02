@@ -1,7 +1,7 @@
 {
   "name": "design-system",
   "version": "0.2.1",
-  "description": "Shared design system for TheBibleProject, ChurchHQ and TuitionManager: one token source, per-app themes, web + React Native + SwiftUI + Compose + Flutter",
+  "description": "Shared design system for consumer apps: one token source, per-app themes, web + React Native + SwiftUI + Compose + Flutter",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.2",

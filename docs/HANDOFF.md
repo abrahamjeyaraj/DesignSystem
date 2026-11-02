@@ -6,16 +6,16 @@
   iOS = SwiftPM git tag (GH Packages has no Swift registry). Flutter = git dep + path (no pub registry).
 - Apps share structure, NOT look. Themes own colours/fonts/sizes.
 - Build order: 1) iOS + Android native SDKs  2) React Native SDK (Expo + RN-web, shareable by
-  Tuition + ChurchHQ mobile)  3) Flutter.
-- First consumer: TuitionManager ios-native + android-native. Editing TuitionManager repo needs a go-ahead.
+  mobile consumers on the tuition and church themes)  3) Flutter.
+- First consumer: native iOS + Android for the tuition-themed app. Editing that consumer repo needs a go-ahead.
 
 ## Source of truth for native look
-- `TuitionManager/ux/tuition-manager.pen` board "Native Design System": 21 `M /` components +
+- A Pen board "Native Design System" in the tuition consumer's design folder: 21 `M /` components +
   mobile scale (m-title 28, m-headline 20, m-body 15, m-label 13, m-caption 11, gutter 20,
   touch 48, card radius 16, sheet radius 24). Spec extract: docs/pen-native-spec.md.
-- Tuition iOS today: Sources/App.swift `Theme`, `PenTypography`, `PenList/PenForm`; PEN-THEME.md
+- Tuition-themed iOS today: Sources/App.swift `Theme`, `PenTypography`, `PenList/PenForm`; PEN-THEME.md
   (light-only, system font fallback New York/SF, @ScaledMetric no clamp).
-- Tuition Android today: ui/theme/{Color,Dimens,Type,Theme}.kt, ui/components/AppComponents.kt.
+- Tuition-themed Android today: ui/theme/{Color,Dimens,Type,Theme}.kt, ui/components/AppComponents.kt.
 
 ## Plan phase 1
 1. tokens: add per-theme `mobile` (type roles title/headline/body/label/caption with size,
@@ -28,8 +28,8 @@
 
 ## Traps
 - Tailwind CLI resolves imports relative to input file (test tmp lives in package/.tmp).
-- Native type names must stay Abe-prefixed (SwiftUI/Material3 ColorScheme clash).
-- Android built with TuitionManager's gradle wrapper; AGP 8.9.2, Kotlin 2.1.20, compose BOM 2025.04.01.
+- Native type names must stay DS-prefixed (SwiftUI/Material3 ColorScheme clash).
+- Android built with the pilot consumer's Gradle wrapper; AGP 8.9.2, Kotlin 2.1.20, compose BOM 2025.04.01.
 - context-mode hook blocks some build commands in Bash; use ctx_execute for gradle/swift builds.
 
 ## Phase 1-3 dispatch (2026-09-23, base main @ b595ce7, brief docs/sdk-brief.md)
@@ -55,28 +55,28 @@ Merged so far: Android (56b5058), iOS (22a63e1).
   Maven com.abrahamjeyaraj:designsystem:0.2.0 (tag run). SwiftPM + Flutter consume tag v0.2.0.
 - Trap: bun publish ignores publishConfig.registry; npm version/publish choke on workspace:*.
 - Trap: local gh token lacks read:packages; consumers need a PAT with read:packages.
-- Next: migrate TuitionManager ios-native + android-native (needs user go-ahead).
+- Next: migrate tuition-themed native iOS + Android (needs user go-ahead).
 
-## v0.2.1 + TuitionManager migration (2026-09-23)
+## v0.2.1 + tuition native migration (2026-09-23)
 - v0.2.1 released (tag 4d21c13): tab label fix all platforms, Android heading slots, Android CI
   version fix (v0.2.0 Maven went out as 0.0.0-SNAPSHOT; SNAPSHOT publish now refused).
 - Token: classic PAT read:packages stored in ~/.secrets.zsh (GITHUB_PACKAGES_TOKEN),
   ~/.gradle/gradle.properties (gpr.user/gpr.key), ~/.npmrc (scope + env ref). Verified 200s.
-- TuitionManager Android migrated + merged locally (5c4a358, ddde98b), NOT pushed (main ahead 7 incl.
+- Tuition-themed Android migrated + merged locally (5c4a358, ddde98b), NOT pushed (main ahead 7 incl.
   user's own web commits). Resolves designsystem:0.2.1 from GitHub Packages, 27 tests pass.
-- TuitionManager iOS thr_3ivjvzmyca: sent back (grey bg, double tab bar, small titles, double chevron,
+- Tuition-themed iOS thr_3ivjvzmyca: sent back (grey bg, double tab bar, small titles, double chevron,
   empty search, nested card); must bump to 0.2.1 and capture before shots.
 - Web: waiting on user (tokens-only vs full ui-web swap).
 - SDK gaps queued for next minor: selectable chip, field validation, outline destructive button,
   optional empty-state message, section-title size token, themed native list/form container, date picker.
 
-## Ruling (user, 2026-09-23): user owns Pen screen fidelity for Tuition iOS + Android
+## Ruling (user, 2026-09-23): user owns Pen screen fidelity for tuition iOS + Android
 - Screens on both platforms do not match the Pen mocks yet; the user will get that fixed. Agents should
   not iterate on screen layout unless asked.
 - iOS fix-up thread thr_khaaurgvuf stopped mid-edit. Uncommitted partial work (App.swift, project.yml,
-  new DSChrome.swift) left in worktree ~/.bb/.../thr_3ivjvzmyca-1/TuitionManager on branch
-  bb/impl-tuitionmanager-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
-- Android migration is merged into TuitionManager local main (5c4a358), not pushed.
+  new DSChrome.swift) left in a consumer worktree on branch
+  bb/impl-<consumer>-ios-onto-designsystem-sdk-thr_3ivjvzmyca (last commit 9ff6862, not merged).
+- Android migration is merged into that consumer's local main (5c4a358), not pushed.
 
 ## Released v0.2.4 (2026-09-24)
 - DSTabBar capsule height is a 64pt minimum instead of fixed on every platform; Android labels use a
@@ -99,7 +99,7 @@ Merged so far: Android (56b5058), iOS (22a63e1).
 
 ## Released v0.2.2 (2026-09-23)
 - DSToggle, DSProgress, DSInkCard, DSNudge on web, React Native, Swift, Android and Flutter (Pen
-  TuitionManager native frames). New shared roles: surface-card, surface-sand, accent-2, ink-900,
+  tuition-themed native frames). New shared roles: surface-card, surface-sand, accent-2, ink-900,
   on-ink, on-ink-muted, on-ink-accent, warn-bg, alert-bg, with a contrast test (on-ink 4.5:1,
   on-ink-muted 3:1 against ink-900) for every theme and mode.
-- Owner lifted the screen-fidelity pause: TuitionManager iOS and Android are being rebuilt to Pen.
+- Owner lifted the screen-fidelity pause: tuition-themed iOS and Android are being rebuilt to Pen.

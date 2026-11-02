@@ -2,7 +2,8 @@
 
 @~/Development/Projects/AGENTS.md
 
-Shared design system for TheBibleProject, ChurchManagement (ChurchHQ) and TuitionManager. Read
+Shared design system for consumer apps: one token contract, per-app themes, and SDKs for web and
+native. Read
 `README.md` for layout and `DESIGN.md` for decisions and open items.
 
 ## Rules

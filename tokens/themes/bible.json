@@ -1,5 +1,5 @@
 {
-  "$description": "TheBibleProject: cream ground, gold primary, ink text, iPhone-dark #121210 background in dark mode. Playfair Display headings, Geist body, IBM Plex Mono uppercase labels. Values match TheBibleProject/apps/web/src/app/globals.css (shadcn names) on 2026-09-24. Colour values are #rrggbb or {palette.step}; dark lists overrides only. Bible-only content colours (red-letter text, bookmark colours) stay in the app.",
+  "$description": "Reading-app theme (key bible): cream ground, gold primary, ink text, iPhone-dark #121210 background in dark mode. Playfair Display headings, Geist body, IBM Plex Mono uppercase labels. Values matched a consumer web globals.css (shadcn names) on 2026-09-24. Colour values are #rrggbb or {palette.step}; dark lists overrides only. App-only content colours (red-letter text, bookmark colours) stay in the consumer app.",
   "name": "bible",
   "palette": {
     "indigo": {

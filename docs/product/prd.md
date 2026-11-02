@@ -2,8 +2,7 @@
 
 ## Overview
 
-DesignSystem is the shared UI infrastructure for TheBibleProject, ChurchManagement (ChurchHQ) and
-TuitionManager. It supplies the token generator, the role contract (`tokens/base.json`), and
+DesignSystem is shared UI infrastructure for consumer apps. It supplies the token generator, the role contract (`tokens/base.json`), and
 generic components for web, React Native, SwiftUI, Compose and Flutter. Each app owns its own
 look: its theme (colours, fonts, sizes, radii, shadows, label style) lives in the app's repo and is
 generated with DesignSystem's tools.
@@ -13,7 +12,7 @@ This file is the product queue for the BB **Product** sidebar. Design rationale 
 
 ## Who it is for
 
-- **App teams (TheBibleProject, ChurchHQ, TuitionManager)**: install packages, own a theme JSON,
+- **App teams**: install packages, own a theme JSON,
   generate their theme CSS, and use shared components by role name.
 - **Agents working in this repo**: pick `[pending]` items; keep components generic (no product
   concepts, see [`AGENTS.md`](../../AGENTS.md)).
@@ -45,18 +44,18 @@ Defects go to Taskwarrior, not this queue.
   our project .. the infra is in designsystem", and "all projects will follow the same".
   DesignSystem keeps the generator, `base.json`, components, and a neutral default theme for its own
   gallery and tests. Each app keeps its theme JSON, commits the generated CSS, and runs
-  `ds-tokens css ... --check` in CI. Order: Bible web first; church and tuition move when those
+  `ds-tokens css ... --check` in CI. Order: first web consumer (`bible` theme); `church` and `tuition` move when those
   apps adopt it; native apps later.
 - **2026-09-25, consumer lint reads a locally generated theme.** `@shadcn/lint` ignores token
   declarations imported from `node_modules`, so a theme imported from the package fails
-  `no-raw-colors` (Bible web: 3,241 errors). Rejected: pointing `components.json` at the package
+  `no-raw-colors` (pilot web consumer: 3,241 errors). Rejected: pointing `components.json` at the package
   CSS (makes `shadcn add` write into `node_modules`, and loses app-only colours), and an allowlist
   (misses `hover:` and `/50` variants). A theme generated inside the app gives 0 errors.
 - **2026-09-25, app-only colours stay in the app.** Red-letter and bookmark colours were briefly
-  added to the bible theme in DesignSystem and withdrawn before push. They belong in the app's own
+  added to the `bible` theme in DesignSystem and withdrawn before push. They belong in the app's own
   theme `extra`.
-- **2026-09-24, CI/CD on Turborepo and GitHub Actions, not Jenkins.** CI and Release run on the
-  Mac mini self-hosted runner (`self-hosted, macOS, ARM64, macmini`); no Linux runner is needed
+- **2026-09-24, CI/CD on Turborepo and GitHub Actions, not Jenkins.** CI and Release run on a
+  Mac mini self-hosted runner (`self-hosted, macOS, ARM64, macmini` label in workflows); no Linux runner is needed
   today. Turbo cache in `~/.cache/turbo/DesignSystem`.
 - **2026-09-23, private distribution via GitHub Packages.** npm `@abrahamjeyaraj/*` and Android
   Maven via GitHub Packages; SwiftPM and Flutter via git tag. Consumers need
@@ -70,7 +69,7 @@ Defects go to Taskwarrior, not this queue.
   control layer) and scales; the generator rejects missing or unknown roles and new scale keys.
 - **DS-ARCH-2 `ds-tokens` bin** [done] : `@abrahamjeyaraj/tokens` ships `ds-tokens css
   <theme.json> <out.css> [--check]` and `base.json`, so apps generate their own Tailwind v4 theme
-  CSS. Shipped in 0.4.2; reviewed by the Bible web session (lint 0 errors, `--check` passes).
+  CSS. Shipped in 0.4.2; reviewed by a pilot web session (lint 0 errors, `--check` passes).
 - **DS-ARCH-3 Neutral default theme** [blocked] : a product-neutral theme for the DesignSystem
   gallery and tests, replacing `bible` as `DEFAULT_THEME`. Blocked on DS-THEME-1..3.
 - **DS-ARCH-4 Native codegen for app-owned themes** [proto] : `ds-tokens swift` and `ds-tokens
@@ -91,32 +90,31 @@ Defects go to Taskwarrior, not this queue.
 
 ## 3. Theme migration to the apps
 
-- **DS-THEME-1 Bible web owns its theme** [proto] : TheBibleProject `apps/web/theme/bible.json`
-  plus generated `theme.css`, `--check` in lint, `@source not` for the theme folder. Work happens
-  in TheBibleProject on `web/shadcn-colors` (commit `8d9a435b`, on 0.4.2: lint 0 errors,
+- **DS-THEME-1 First web consumer owns its theme** [proto] : consumer repo `apps/web/theme/bible.json`
+  plus generated `theme.css`, `--check` in lint, `@source not` for the theme folder. Work on a feature branch (commit `8d9a435b`, on 0.4.2: lint 0 errors,
   `theme:check` passes, compiled CSS unchanged). Done when merged to main.
 - **DS-THEME-2 Remove bible from DesignSystem** [blocked] : drop `tokens/themes/bible.json` and
   the shipped `bible.css` after DS-THEME-1 is merged. Blocked on DS-THEME-1.
-- **DS-THEME-3 Church and tuition move out** [planned] : ChurchManagement and TuitionManager own
+- **DS-THEME-3 Church and tuition move out** [planned] : those consumers own
   their themes when they adopt `ds-tokens`; remove them here afterwards. Not moved pre-emptively.
 
 ## 4. Web
 
 - **DS-WEB-1 `ui-web` usable from an installed package** [done] : ships `src` so Tailwind
   `@source` finds component classes (fixed in 0.4.1).
-- **DS-WEB-2 Bible web adoption** [proto] : Bible web installs ui-web and tokens, deletes about 140
+- **DS-WEB-2 First web consumer adoption** [proto] : installs ui-web and tokens, deletes about 140
   lines of duplicated theme CSS, screenshots match in light and dark. On 0.4.2 in `8d9a435b`;
   not merged yet.
-- **DS-WEB-3 ChurchHQ and TuitionManager web adoption** [planned] : wire both apps to `ui-web`
+- **DS-WEB-3 Remaining web consumers** [planned] : wire both to `ui-web`
   and `ds-tokens`.
 
 ## 5. Native
 
 - **DS-NATIVE-1 SDKs** [done] : SwiftUI, Compose, Flutter and React Native SDKs with galleries.
-- **DS-NATIVE-2 Bible iOS, tvOS and Android adoption** [pending] : TBP iOS (17), tvOS (17) and
+- **DS-NATIVE-2 Reading-app iOS, tvOS and Android adoption** [pending] : consumer iOS (17), tvOS (17) and
   Android (single `:app`) use the SDKs with a repo-level `theme/bible.json` shared with web.
   DesignSystem side: tvOS builds (TextEditor fallback) and iOS/tvOS builds run in CI; Android
-  library lowered to minSdk 24 and Kotlin language/API 2.0 for TBP. TBP side: GitHub credentials
+  library lowered to minSdk 24 and Kotlin language/API 2.0 for that consumer. Consumer side: GitHub credentials
   for SwiftPM and Maven, `mobile` and font values, replacing its own Theme files.
 - **DS-NATIVE-4 watchOS** [planned] : dropped from `Package.swift` (it never compiled:
   TextEditor, UIAccessibility). Add back with fallbacks when an app needs it.
@@ -125,5 +123,5 @@ Defects go to Taskwarrior, not this queue.
 
 ## 6. Accessibility
 
-- **DS-A11Y-1 Tuition contrast** [planned] : tuition `muted-foreground` on cream is about 3.9:1,
-  below AA for body text; decide with TuitionManager once it owns its theme (DS-THEME-3).
+- **DS-A11Y-1 Tuition contrast** [planned] : `tuition` `muted-foreground` on cream is about 3.9:1,
+  below AA for body text; decide once that consumer owns its theme (DS-THEME-3).

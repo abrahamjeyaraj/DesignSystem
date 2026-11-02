@@ -1,6 +1,6 @@
 # Design System
 
-One design system for TheBibleProject, ChurchHQ (ChurchManagement) and TuitionManager.
+One design system for multiple consumer apps.
 **Shared:** components, token names, scales, and structure. **Per app:** colours, fonts, type
 sizes, radii, shadows and button-label style, via a theme. The apps do not look alike; they are
 built the same way.
@@ -27,8 +27,8 @@ Everything is private. npm and Maven come from GitHub Packages; Swift and Flutte
 Any machine or CI job that installs needs a GitHub token with `read:packages` (classic PAT, or
 `GITHUB_TOKEN` inside GitHub Actions). Releases: push a `v*` tag once; the `Release` workflow runs `bun run ci` then `bun run release`,
 which publishes npm + Maven. `CI` runs `bun run ci` on every push to `main` and every PR. Both run on
-the Mac mini self-hosted runner `macmini-DesignSystem` (`~/actions-runner/runner.sh` on the Mac
-mini manages it).
+a Mac mini self-hosted runner (see `.github/workflows/ci.yml` labels; install the Actions runner
+on the host that runs CI).
 
 **iOS (SwiftUI)**: Xcode > Add Package > `https://github.com/abrahamjeyaraj/DesignSystem`, from `0.2.0`,
 product `DesignSystem` (Xcode must be signed in to GitHub).

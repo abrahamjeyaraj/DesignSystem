@@ -59,7 +59,7 @@ describe("theme contract", () => {
 });
 
 describe("themes keep their own look", () => {
-  test("bible matches TheBibleProject globals.css and ui components", () => {
+  test("bible theme matches reference consumer globals.css and ui components", () => {
     const t = byName("bible");
     expect(t.light.background).toBe("#f4f2ef"); // cream
     expect(t.light.primary).toBe("#c8b496"); // gold
@@ -75,7 +75,7 @@ describe("themes keep their own look", () => {
     expect(Object.keys(t.scales)).toEqual([]); // no numbered primary/accent scales
   });
 
-  test("church matches ChurchHQ tokens.css", () => {
+  test("church theme matches reference consumer tokens.css", () => {
     const t = byName("church");
     expect(t.light.background).toBe("#f8f6f1");
     expect(t.light.primary).toBe("#1a6b54");
@@ -86,7 +86,7 @@ describe("themes keep their own look", () => {
     expect(t.fontSize.base).toBe(16);
   });
 
-  test("tuition matches TuitionManager ui.tsx", () => {
+  test("tuition theme matches reference consumer ui.tsx tokens", () => {
     const t = byName("tuition");
     expect(t.light.background).toBe("#fbf7f0");
     expect(t.light.primary).toBe("#8a2b2b");

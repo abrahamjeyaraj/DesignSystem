@@ -5,8 +5,8 @@ Repo: abrahamjeyaraj/DesignSystem (private). Base: `main` @ 882f58f. Read `READM
 
 ## Objective
 Turn your platform's adapter into a component SDK that renders the Pen "Native Design System"
-(`docs/pen-native-spec.md`, 21 `M /` components) **from theme tokens only**, so TuitionManager uses it
-first and ChurchHQ / TheBibleProject can reuse it with their own themes.
+(`docs/pen-native-spec.md`, 21 `M /` components) **from theme tokens only**, so the first native
+consumer can adopt it and others can reuse the SDK with their own themes (`tuition`, `church`, `bible`, …).
 
 ## Hard rules
 - Values come from the generated tokens (`DSTokens.<theme>`: `light/dark` roles, `mobileType`,
@@ -45,10 +45,10 @@ light and dark, which doubles as the manual check against Pen.
 - Write only inside your platform's paths (given in your prompt). Do NOT edit `tokens/*.json`,
   `packages/tokens/scripts/build.ts` or any generated token file. If you need a new token, stop and
   report the proposed key and values instead.
-- Do not touch TuitionManager, ChurchManagement or TheBibleProject repos.
+- Do not edit consumer app repos from this assignment.
 - Do not push, tag, or publish. Commit on your worktree branch only.
 
 ## Report back (final message)
 Branch + commit SHA, files added/changed, component list with any Pen deviations, exact check
-commands run with pass/fail output, consumer install snippet for TuitionManager, and open issues or
+commands run with pass/fail output, consumer install snippet for the pilot native app, and open issues or
 token proposals.
