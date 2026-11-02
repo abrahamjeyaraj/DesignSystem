@@ -34,6 +34,9 @@
       "bin": {
         "ds-extract": "./src/extract-cli.ts",
         "ds-icons": "./src/icons-cli.ts",
+        "ds-art": "./src/art-cli.ts",
+        "ds-lint": "./src/lint-cli.ts",
+        "ds-init": "./src/init-cli.ts",
       },
       "dependencies": {
         "@abrahamjeyaraj/tokens": "workspace:*",
@@ -42,6 +45,12 @@
         "lucide-static": "0.469.0",
         "playwright-core": "^1.63.0",
       },
+      "peerDependencies": {
+        "playwright-core": ">=1.40.0",
+      },
+      "optionalPeers": [
+        "playwright-core",
+      ],
     },
     "packages/tokens": {
       "name": "@abrahamjeyaraj/tokens",

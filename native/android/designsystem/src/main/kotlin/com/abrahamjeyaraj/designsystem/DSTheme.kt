@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import android.graphics.Typeface
+import android.os.Build
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -73,7 +75,48 @@ object DS {
 fun DSThemeTokens.effectiveDark(systemDark: Boolean): Boolean = supportsDark && systemDark
 
 fun DSFontFamilyResolver.resolve(family: String, headingRole: Boolean): FontFamily =
-    this(family) ?: if (headingRole) FontFamily.Serif else FontFamily.Default
+    this(family) ?: DSFontResolver.fallbackFontFamily(headingRole)
+
+enum class DSFontFallback { Serif, System }
+
+/** Font lookup exposed for apps that want to diagnose which theme fonts are installed. Mirrors Swift `DSFontResolver`. */
+object DSFontResolver {
+    fun fallback(forHeading: Boolean): DSFontFallback = if (forHeading) DSFontFallback.Serif else DSFontFallback.System
+
+    fun fallbackFontFamily(forHeading: Boolean): FontFamily =
+        if (forHeading) FontFamily.Serif else FontFamily.Default
+
+    fun isAvailable(family: String): Boolean {
+        if (family.isBlank()) return false
+        return runCatching {
+            val created = Typeface.create(family, Typeface.NORMAL) ?: return false
+            val default = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+            if (created == default) return false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return typefaceFamilyName(created)?.equals(family, ignoreCase = true) == true
+            }
+            family.equals("sans-serif", ignoreCase = true) ||
+                family.equals("serif", ignoreCase = true) ||
+                family.equals("monospace", ignoreCase = true)
+        }.getOrDefault(false)
+    }
+
+    private fun typefaceFamilyName(typeface: Typeface): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return null
+        return runCatching {
+            Typeface::class.java.getMethod("getFamilyName").invoke(typeface) as? String
+        }.getOrNull()
+    }
+
+    fun weight(tokenWeight: Int): FontWeight = when {
+        tokenWeight < 450 -> FontWeight.Normal
+        tokenWeight < 550 -> FontWeight.Medium
+        tokenWeight < 650 -> FontWeight.SemiBold
+        tokenWeight < 750 -> FontWeight.Bold
+        tokenWeight < 850 -> FontWeight.ExtraBold
+        else -> FontWeight.Black
+    }
+}
 
 internal fun buildMobileTypography(tokens: DSThemeTokens, fonts: DSFontFamilyResolver): DSMobileTypography {
     fun roleStyle(role: DSTextRole, heading: Boolean): TextStyle =

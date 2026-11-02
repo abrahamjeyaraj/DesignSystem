@@ -60,33 +60,21 @@ fun DSButton(
     enabled: Boolean = true,
 ) {
     val design = DS.current
-    val c = design.colors
-    val tokens = design.tokens
-    val touch = tokens.mobileLayout.touchTarget.dp
-    val pill = RoundedCornerShape(tokens.radius.button.dp)
-    val (bg, fg, border) = when (variant) {
-        DSButtonVariant.Primary -> Triple(Color(c.action), Color(c.actionForeground), null)
-        DSButtonVariant.Secondary -> Triple(Color(c.card), Color(c.ink), Color(c.line))
-        DSButtonVariant.Ghost -> Triple(Color.Transparent, Color(c.ink), null)
-        DSButtonVariant.Destructive -> Triple(Color(c.destructive), Color(c.destructiveForeground), null)
-    }
+    val colors = dsButtonStyleColors(variant)
+    val uppercase = design.tokens.label.uppercase
     Row(
         modifier = modifier
-            .defaultMinSize(minHeight = touch)
-            .clip(pill)
-            .then(if (border != null) Modifier.border(1.dp, border, pill) else Modifier)
-            .background(bg)
+            .dsButtonStyle(variant, colors)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-            .padding(horizontal = 22.dp)
             .semantics { contentDescription = label },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (leadingIcon != null) {
-            Icon(leadingIcon, contentDescription = null, tint = fg, modifier = Modifier.size(DSPenMetrics.IconSm))
+            Icon(leadingIcon, contentDescription = null, tint = colors.foreground, modifier = Modifier.size(DSComponentMetrics.SmallIcon))
             Spacer(Modifier.width(8.dp))
         }
-        Text(label, style = design.typography.body.copy(fontWeight = FontWeight.SemiBold), color = fg)
+        dsButtonLabelText(label, colors, uppercase)
     }
 }
 
@@ -105,13 +93,13 @@ fun DSIconButton(
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .border(1.dp, Color(c.line), CircleShape)
+            .border(1.dp, Color(c.border), CircleShape)
             .background(Color(c.card))
             .clickable(role = Role.Button, onClick = onClick)
             .semantics { this.contentDescription = contentDescription },
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = null, tint = Color(c.ink), modifier = Modifier.size(DSPenMetrics.IconMd))
+        Icon(icon, contentDescription = null, tint = Color(c.foreground), modifier = Modifier.size(DSComponentMetrics.StandardIcon))
     }
 }
 
@@ -127,7 +115,7 @@ fun DSChip(
     val c = design.colors
     val (bg, fg) = when (variant) {
         DSChipVariant.Neutral -> Color(c.secondary) to Color(c.inkBody)
-        DSChipVariant.Accent -> Color(c.primary).copy(alpha = DSPenMetrics.TabActiveFillAlpha) to Color(c.primary)
+        DSChipVariant.Accent -> Color(c.primary).copy(alpha = DSComponentMetrics.TabActiveFillAlpha) to Color(c.primary)
         DSChipVariant.Success -> Color(c.successLight) to Color(c.success)
         DSChipVariant.Warning -> Color(c.warningLight) to Color(c.warning)
         DSChipVariant.Error -> Color(c.errorLight) to Color(c.error)
@@ -136,13 +124,13 @@ fun DSChip(
         modifier = modifier
             .clip(RoundedCornerShape(tokensRadiusFull(design.tokens)))
             .background(bg)
-            .padding(horizontal = DSPenMetrics.ChipPaddingH, vertical = DSPenMetrics.ChipPaddingV)
+            .padding(horizontal = DSComponentMetrics.ChipHorizontalPadding, vertical = DSComponentMetrics.ChipVerticalPadding)
             .semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
     ) {
         Text(
             label,
-            fontSize = DSPenMetrics.ChipLabelSize.sp,
+            fontSize = DSComponentMetrics.ChipLabelSize,
             fontWeight = FontWeight.SemiBold,
             fontFamily = design.typography.body.fontFamily,
             color = fg,
@@ -162,7 +150,7 @@ fun DSAvatar(
     val c = design.colors
     Box(
         modifier = modifier
-            .size(DSPenMetrics.AvatarSize)
+            .size(DSComponentMetrics.Avatar)
             .clip(CircleShape)
             .background(Color(c.muted))
             .semantics { this.contentDescription = contentDescription },
@@ -214,7 +202,7 @@ fun DSListRow(
         }
         trailing?.invoke()
         if (showChevron) {
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(c.inkMuted), modifier = Modifier.size(DSPenMetrics.IconSm))
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(c.inkMuted), modifier = Modifier.size(DSComponentMetrics.SmallIcon))
         }
     }
 }
@@ -251,11 +239,11 @@ fun DSStatTile(
         Text(label, style = design.typography.label.copy(fontWeight = FontWeight.Normal), color = Color(c.inkMuted))
         Text(
             value,
-            style = design.typography.headline.copy(fontSize = DSPenMetrics.StatValueSize.sp, fontWeight = FontWeight.Medium),
+            style = design.typography.headline.copy(fontSize = DSComponentMetrics.StatValueSize, fontWeight = FontWeight.Medium),
             color = Color(c.ink),
         )
         if (meta != null) {
-            Text(meta, fontSize = DSPenMetrics.ChipLabelSize.sp, fontWeight = FontWeight.Medium, fontFamily = design.typography.body.fontFamily, color = metaColor)
+            Text(meta, fontSize = DSComponentMetrics.ChipLabelSize, fontWeight = FontWeight.Medium, fontFamily = design.typography.body.fontFamily, color = metaColor)
         }
     }
 }
@@ -318,21 +306,28 @@ fun DSField(
 ) {
     val design = DS.current
     val c = design.colors
-    val tokens = design.tokens
+    val control = RoundedCornerShape(DSComponentMetrics.ControlRadius)
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(label, style = design.typography.label.copy(fontWeight = FontWeight.Medium), color = Color(c.inkBody))
+        Text(
+            label,
+            style = design.typography.label.copy(
+                fontSize = DSComponentMetrics.FieldLabelSize,
+                fontWeight = FontWeight.Medium,
+            ),
+            color = Color(c.inkBody),
+        )
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(tokens.mobileLayout.fieldHeight.dp)
-                .clip(RoundedCornerShape(tokens.mobileLayout.cardRadius.dp))
-                .border(1.dp, Color(c.line), RoundedCornerShape(tokens.mobileLayout.cardRadius.dp))
+                .height(DSComponentMetrics.FieldHeight)
+                .clip(control)
+                .border(1.dp, Color(c.border), control)
                 .background(Color(c.card))
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = DSComponentMetrics.FieldHPadding)
                 .semantics { contentDescription = label },
-            textStyle = design.typography.body.copy(fontSize = DSPenMetrics.FieldInputSize.sp, color = Color(c.ink)),
+            textStyle = design.typography.body.copy(fontSize = DSComponentMetrics.FieldInputSize, color = Color(c.foreground)),
             decorationBox = { inner ->
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                     if (value.isEmpty() && placeholder.isNotEmpty()) {
@@ -357,7 +352,7 @@ fun DSSearchField(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(DSPenMetrics.SearchHeight)
+            .height(DSComponentMetrics.FieldHeight)
             .clip(RoundedCornerShape(tokensRadiusFull(design.tokens)))
             .background(Color(c.secondary))
             .padding(horizontal = 14.dp)
@@ -365,7 +360,7 @@ fun DSSearchField(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.Default.Search, contentDescription = null, tint = Color(c.inkMuted), modifier = Modifier.size(DSPenMetrics.IconSm))
+        Icon(Icons.Default.Search, contentDescription = null, tint = Color(c.inkMuted), modifier = Modifier.size(DSComponentMetrics.SmallIcon))
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
@@ -432,7 +427,7 @@ fun DSNavBar(
         Box(Modifier.width(design.tokens.mobileLayout.touchTarget.dp)) { leading?.invoke() }
         Text(
             title,
-            fontSize = DSPenMetrics.NavTitleSize.sp,
+            fontSize = DSComponentMetrics.NavTitleSize,
             fontWeight = FontWeight.SemiBold,
             fontFamily = design.typography.body.fontFamily,
             color = Color(c.ink),
@@ -455,7 +450,7 @@ fun DSSheetHandle(modifier: Modifier = Modifier) {
     ) {
         Box(
             Modifier
-                .size(DSPenMetrics.GrabberWidth, DSPenMetrics.GrabberHeight)
+                .size(DSComponentMetrics.SheetHandleWidth, DSComponentMetrics.SheetHandleHeight)
                 .clip(RoundedCornerShape(3.dp))
                 .background(Color(c.line)),
         )
@@ -479,7 +474,7 @@ fun DSSectionHeader(
     ) {
         Text(
             title,
-            fontSize = DSPenMetrics.SectionTitleSize.sp,
+            fontSize = DSComponentMetrics.SectionTitleSize,
             fontWeight = FontWeight.SemiBold,
             fontFamily = design.typography.body.fontFamily,
             color = Color(c.ink),
@@ -526,11 +521,11 @@ fun DSTabBar(
             modifier = Modifier
                 .fillMaxWidth()
                 // Minimum, not fixed: labels grow with font scale instead of being clipped.
-                .heightIn(min = DSPenMetrics.TabBarCapsuleHeight)
+                .heightIn(min = DSComponentMetrics.TabBarCapsuleHeight)
                 .shadow(8.dp, capsuleShape)
                 .clip(capsuleShape)
                 .border(1.dp, Color(c.line), capsuleShape)
-                .background(Color(c.card).copy(alpha = DSPenMetrics.TabBarCapsuleFillAlpha))
+                .background(Color(c.card).copy(alpha = DSComponentMetrics.TabBarCapsuleFillAlpha))
                 .padding(6.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -543,7 +538,7 @@ fun DSTabBar(
                         .clip(pill)
                         .then(
                             if (selected) {
-                                Modifier.background(Color(c.primary).copy(alpha = DSPenMetrics.TabActiveFillAlpha))
+                                Modifier.background(Color(c.primary).copy(alpha = DSComponentMetrics.TabActiveFillAlpha))
                             } else Modifier,
                         )
                         .clickable(
@@ -561,7 +556,7 @@ fun DSTabBar(
                         item.icon,
                         contentDescription = null,
                         tint = if (selected) Color(c.primary) else Color(c.inkMuted),
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(DSComponentMetrics.TabIcon),
                     )
                     Text(
                         item.label,
@@ -569,7 +564,7 @@ fun DSTabBar(
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = 10.5.sp,
+                        fontSize = DSComponentMetrics.TabLabelSize,
                         lineHeight = 13.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                         fontFamily = design.typography.body.fontFamily,
@@ -588,15 +583,17 @@ fun DSCard(
 ) {
     val design = DS.current
     val c = design.colors
-    val tokens = design.tokens
+    val shape = RoundedCornerShape(DSComponentMetrics.CardRadius)
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(tokens.mobileLayout.cardRadius.dp),
+        shape = shape,
         color = Color(c.card),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(c.line)),
-        shadowElevation = 1.dp,
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(c.border)),
+        shadowElevation = 0.dp,
     ) {
-        content()
+        Box(Modifier.padding(DSComponentMetrics.CardPadding)) {
+            content()
+        }
     }
 }
 

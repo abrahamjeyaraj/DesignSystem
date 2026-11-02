@@ -52,6 +52,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
 @Stable
@@ -170,44 +171,77 @@ fun DSWeekStrip(
     onSelect: (DSWeekStripDay) -> Unit,
     modifier: Modifier = Modifier,
     todayDayId: String? = null,
+    isInteractive: Boolean = true,
+    eventDot: Long? = null,
+    highlightedNameInk: Long? = null,
 ) {
     val design = DS.current
     val c = design.colors
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         days.forEach { day ->
             val selected = day.id == selectedDayId
-            val isToday = day.id == todayDayId
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(DSPenMetrics.WeekCellRadius))
-                    .background(Color(if (selected) c.action else c.card))
-                    .then(if (isToday && !selected) Modifier.border(1.dp, Color(c.primary), RoundedCornerShape(DSPenMetrics.WeekCellRadius)) else Modifier)
-                    .clickable(role = Role.Tab, onClick = { onSelect(day) })
-                    .padding(vertical = 10.dp)
-                    .semantics {
-                        contentDescription = "${day.weekdaySymbol} ${day.dayNumber}"
-                        if (selected) stateDescription = "Selected"
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(day.weekdaySymbol, style = design.typography.caption, color = Color(if (selected) c.actionForeground else c.inkMuted))
-                Text(
-                    day.dayNumber.toString(),
-                    style = design.typography.body.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color(if (selected) c.actionForeground else c.ink),
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.height(DSPenMetrics.LoadDotSize)) {
-                    repeat(day.loadCount.coerceAtMost(4)) {
-                        Box(
-                            Modifier
-                                .size(DSPenMetrics.LoadDotSize)
-                                .clip(CircleShape)
-                                .background(Color(if (selected) c.actionForeground else c.accent2)),
+            val highlighted = if (isInteractive) selected else day.id == todayDayId
+            val cellShape = RoundedCornerShape(DSComponentMetrics.WeekCellRadius)
+            val borderColor = if (highlighted) c.primary else c.border
+            val nameInk = if (highlighted) (highlightedNameInk ?: c.actionForeground) else c.inkMuted
+            val numberInk = if (highlighted) c.actionForeground else c.foreground
+            val tile: @Composable () -> Unit = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(if (highlighted) c.action else c.card), cellShape)
+                        .border(1.dp, Color(borderColor), cellShape)
+                        .padding(
+                            top = DSComponentMetrics.WeekCellTopPadding,
+                            bottom = DSComponentMetrics.WeekCellBottomPadding,
                         )
+                        .semantics {
+                            contentDescription = "${day.weekdaySymbol} ${day.dayNumber}"
+                            if (selected) stateDescription = "Selected"
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                ) {
+                    Text(
+                        day.weekdaySymbol,
+                        fontSize = DSComponentMetrics.WeekDayNameSize,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.5.sp,
+                        fontFamily = design.typography.caption.fontFamily,
+                        color = Color(nameInk),
+                    )
+                    Text(
+                        day.dayNumber.toString(),
+                        fontSize = DSComponentMetrics.WeekDayNumberSize,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = design.typography.body.fontFamily,
+                        color = Color(numberInk),
+                    )
+                    Box(
+                        Modifier.size(DSComponentMetrics.LoadDotSize),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (day.loadCount > 0) {
+                            Box(
+                                Modifier
+                                    .size(DSComponentMetrics.LoadDotSize)
+                                    .clip(CircleShape)
+                                    .background(Color(eventDot ?: c.warning)),
+                            )
+                        }
                     }
                 }
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .then(
+                        if (isInteractive) {
+                            Modifier.clickable(role = Role.Tab, onClick = { onSelect(day) })
+                        } else Modifier,
+                    ),
+            ) {
+                tile()
             }
         }
     }
@@ -233,7 +267,7 @@ fun DSTimelineRow(
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         Column(
             Modifier
-                .width(DSPenMetrics.TimelineGutterWidth)
+                .width(DSComponentMetrics.TimelineGutterWidth)
                 .padding(top = 14.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
@@ -269,7 +303,7 @@ fun DSCountPill(
     val pressed by interaction.collectIsPressedAsState()
     Row(
         modifier = modifier
-            .height(DSPenMetrics.CountPillHeight)
+            .height(DSComponentMetrics.CountPillHeight)
             .clip(RoundedCornerShape(design.tokens.radius.full.dp))
             .background(Color(c.muted).copy(alpha = if (pressed) 0.75f else 1f))
             .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick)
@@ -337,7 +371,7 @@ fun DSMarkToggle(
     val c = design.colors
     Box(
         modifier = modifier
-            .size(DSPenMetrics.MarkToggleSize)
+            .size(DSComponentMetrics.MarkToggleSize)
             .clip(CircleShape)
             .background(Color(if (marked) c.successLight else c.error))
             .clickable(role = Role.Switch, onClick = { onMarkedChange(!marked) })
@@ -351,7 +385,7 @@ fun DSMarkToggle(
             if (marked) Icons.Default.Check else Icons.Default.Close,
             contentDescription = null,
             tint = Color(if (marked) c.success else c.destructiveForeground),
-            modifier = Modifier.size(DSPenMetrics.MarkIconSize),
+            modifier = Modifier.size(DSComponentMetrics.MarkIconSize),
         )
     }
 }
@@ -408,7 +442,7 @@ fun DSPresetGrid(
             Box(
                 Modifier
                     .weight(1f)
-                    .height(DSPenMetrics.PresetTileHeight)
+                    .height(DSComponentMetrics.PresetTileHeight)
                     .clip(RoundedCornerShape(tokens.mobileLayout.cardRadius.dp))
                     .background(Color(if (selected) c.action else c.card))
                     .then(if (!selected) Modifier.border(1.dp, Color(c.line), RoundedCornerShape(tokens.mobileLayout.cardRadius.dp)) else Modifier)
@@ -442,7 +476,7 @@ fun DSStepper(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(DSPenMetrics.PresetTileHeight)
+            .height(DSComponentMetrics.PresetTileHeight)
             .clip(RoundedCornerShape(tokens.mobileLayout.cardRadius.dp))
             .border(1.dp, Color(c.line), RoundedCornerShape(tokens.mobileLayout.cardRadius.dp))
             .background(Color(c.card))
@@ -469,8 +503,8 @@ fun DSQuickActionTile(
     Column(
         modifier = modifier
             .defaultMinSize(minHeight = design.tokens.mobileLayout.touchTarget.dp)
-            .clip(RoundedCornerShape(DSPenMetrics.QuickActionRadius))
-            .border(1.dp, Color(c.line), RoundedCornerShape(DSPenMetrics.QuickActionRadius))
+            .clip(RoundedCornerShape(DSComponentMetrics.QuickActionRadius))
+            .border(1.dp, Color(c.line), RoundedCornerShape(DSComponentMetrics.QuickActionRadius))
             .background(Color(c.card))
             .clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 12.dp)
@@ -478,7 +512,7 @@ fun DSQuickActionTile(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Icon(icon, contentDescription = null, tint = Color(c.primary), modifier = Modifier.size(DSPenMetrics.IconMd))
+        Icon(icon, contentDescription = null, tint = Color(c.primary), modifier = Modifier.size(DSComponentMetrics.StandardIcon))
         Text(title, style = design.typography.caption.copy(color = Color(c.inkBody)))
     }
 }
