@@ -8,6 +8,7 @@ import org.junit.Test
 class AppThemeTest {
     @Test
     fun appOwnedThemeMatchesBuiltIn() {
-        assertEquals(DSTokens.tuition, TuitionTheme)
+        assertEquals(DSTokens.default, DSTokens.themes[DSTokens.DEFAULT_THEME])
+        assertEquals(0xFF3B82F6, SampleAppTheme.extraLight["highlight"])
     }
 }

@@ -6,32 +6,30 @@ const { Platform } = await import('react-native');
 const { createTheme } = await import('../src/theme');
 
 describe('createTheme', () => {
-  test('tuition forces light mode', () => expect(createTheme('tuition', 'dark').mode).toBe('light'));
-  test('church and bible support dark mode', () => {
-    expect(createTheme('church', 'dark').mode).toBe('dark');
-    expect(createTheme('bible', 'dark').mode).toBe('dark');
+  test('default supports dark mode', () => {
+    expect(createTheme('default', 'dark').mode).toBe('dark');
+    expect(createTheme('default', 'light').mode).toBe('light');
   });
   test('exposes mobile tokens', () => {
-    const theme = createTheme('church');
+    const theme = createTheme('default');
     expect(theme.mobileType.title.size).toBe(28);
     expect(theme.mobileLayout.touchTarget).toBe(theme.minTouchTarget);
   });
   test('falls back when fonts are unloaded or unbundled by default', () => {
-    const unbundled = createTheme('church');
+    const unbundled = createTheme('default');
     expect(unbundled.fontFamily.heading).toBe(Platform.select({ ios: 'Georgia', android: 'serif', default: 'serif' }));
     expect(unbundled.fontFamily.body).toBe(Platform.select({ ios: 'System', android: 'sans-serif', default: 'sans-serif' }));
 
-    const explicitFalse = createTheme('church', 'light', { fontsLoaded: false });
+    const explicitFalse = createTheme('default', 'light', { fontsLoaded: false });
     expect(explicitFalse.fontFamily.heading).toBe(Platform.select({ ios: 'Georgia', android: 'serif', default: 'serif' }));
   });
   test('uses theme font when explicitly loaded', () => {
-    const loaded = createTheme('church', 'light', { fontsLoaded: true });
-    expect(loaded.fontFamily.heading).toBe('Newsreader');
-    expect(loaded.fontFamily.body).toBe('Geist');
+    const loaded = createTheme('default', 'light', { fontsLoaded: true });
+    expect(loaded.fontFamily.heading).toBe('Inter');
+    expect(loaded.fontFamily.body).toBe('Inter');
 
-    const partial = createTheme('tuition', 'light', { fontsLoaded: { Fraunces: true } });
-    expect(partial.fontFamily.heading).toBe('Fraunces');
-    expect(partial.fontFamily.body).toBe(Platform.select({ ios: 'System', android: 'sans-serif', default: 'sans-serif' }));
+    const partial = createTheme('default', 'light', { fontsLoaded: { Inter: true } });
+    expect(partial.fontFamily.heading).toBe('Inter');
+    expect(partial.fontFamily.body).toBe('Inter');
   });
 });
-

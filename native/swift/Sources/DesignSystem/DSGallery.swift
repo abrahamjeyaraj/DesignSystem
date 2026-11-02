@@ -15,7 +15,7 @@ public struct DSGallery: View {
     @State private var selectedPreset = "5"
     @State private var selectedWeekDay = "fri"
 
-    public init(theme: DSThemeTokens = DSTokens.tuition, colorScheme: ColorScheme? = nil) {
+    public init(theme: DSThemeTokens = DSTokens.default, colorScheme: ColorScheme? = nil) {
         self.theme = theme
         self.previewScheme = colorScheme
     }
@@ -150,10 +150,6 @@ public struct DSGallery: View {
     }
 }
 
-#Preview("Tuition · Light") { DSGallery(theme: DSTokens.tuition, colorScheme: .light) }
-#Preview("Tuition · Dark") { DSGallery(theme: DSTokens.tuition, colorScheme: .dark) }
-#Preview("Church · Light") { DSGallery(theme: DSTokens.church, colorScheme: .light) }
-#Preview("Church · Dark") { DSGallery(theme: DSTokens.church, colorScheme: .dark) }
-#Preview("Bible · Light") { DSGallery(theme: DSTokens.bible, colorScheme: .light) }
-#Preview("Bible · Dark") { DSGallery(theme: DSTokens.bible, colorScheme: .dark) }
+#Preview("Default · Light") { DSGallery(theme: DSTokens.default, colorScheme: .light) }
+#Preview("Default · Dark") { DSGallery(theme: DSTokens.default, colorScheme: .dark) }
 #endif

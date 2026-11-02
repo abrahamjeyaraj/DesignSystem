@@ -2,8 +2,8 @@
 ///
 /// ```dart
 /// MaterialApp(
-///   theme: dsThemeData(DSTokens.church, brightness: Brightness.light),
-///   darkTheme: dsThemeData(DSTokens.church, brightness: Brightness.dark),
+///   theme: dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light),
+///   darkTheme: dsThemeData(DSTokens.defaultTheme, brightness: Brightness.dark),
 /// );
 /// ```
 library;

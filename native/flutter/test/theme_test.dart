@@ -5,76 +5,44 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   tearDown(DSFonts.clear);
 
-  test(
-    'each app keeps its own look and mobile typography comes from mobileType',
-    () {
-      final church = dsThemeData(
-        DSTokens.church,
-        brightness: Brightness.light,
-      );
-      final bible = dsThemeData(DSTokens.bible, brightness: Brightness.dark);
-      expect(church.colorScheme.primary, const Color(0xFF1A6B54));
-      expect(
-        church.extension<DSTheme>()!.extra('verified-blue'),
-        const Color(0xFF1D9BF0),
-      );
-      expect(bible.scaffoldBackgroundColor, const Color(0xFF121210));
-      expect(
-        church.textTheme.bodyMedium!.fontSize,
-        DSTokens.church.mobileType.body.size,
-      );
-      expect(
-        church.textTheme.headlineMedium!.fontSize,
-        DSTokens.church.mobileType.headline.size,
-      );
-      expect(DSTokens.tuition.radius.button, 9999.0);
-    },
-  );
-
-  test('theme mode ignores dark OS brightness for light-only themes', () {
+  test('default theme exposes mobile typography and extras map', () {
+    final theme = dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light);
+    expect(theme.colorScheme.primary, const Color(0xFF2563EB));
     expect(
-      DSThemeMode.forTheme(DSTokens.tuition, Brightness.dark),
-      Brightness.light,
+      theme.textTheme.bodyMedium!.fontSize,
+      DSTokens.defaultTheme.mobileType.body.size,
     );
-    expect(
-      DSThemeMode.forTheme(DSTokens.church, Brightness.dark),
-      Brightness.dark,
-    );
-    final resolved = dsThemeData(
-      DSTokens.tuition,
-      brightness: Brightness.dark,
-    );
-    expect(resolved.brightness, Brightness.light);
-    expect(
-      resolved.scaffoldBackgroundColor,
-      Color(DSTokens.tuition.light.background),
-    );
-    expect(resolved.extension<DSTheme>()!.dark, isFalse);
+    expect(DSTokens.defaultTheme.radius.button, 6.0);
   });
 
-  test(
-    'font families fall back to platform serif and sans until registered',
-    () {
-      final theme = dsThemeData(DSTokens.bible, brightness: Brightness.light);
-      expect(theme.textTheme.bodyMedium!.fontFamily, 'sans-serif');
-      expect(theme.textTheme.headlineMedium!.fontFamily, 'serif');
-      DSFonts.register('Geist');
-      expect(
-        dsThemeData(
-          DSTokens.bible,
-          brightness: Brightness.light,
-        ).textTheme.bodyMedium!.fontFamily,
-        'Geist',
-      );
-    },
-  );
+  test('theme mode follows supportsDark', () {
+    expect(
+      DSThemeMode.forTheme(DSTokens.defaultTheme, Brightness.dark),
+      Brightness.dark,
+    );
+    final resolved = dsThemeData(DSTokens.defaultTheme, brightness: Brightness.dark);
+    expect(resolved.brightness, Brightness.dark);
+    expect(
+      resolved.scaffoldBackgroundColor,
+      Color(DSTokens.defaultTheme.dark.background),
+    );
+  });
 
-  testWidgets('DSTheme is available to descendants and uses selected scheme', (
-    tester,
-  ) async {
+  test('font families fall back to platform serif and sans until registered', () {
+    final theme = dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light);
+    expect(theme.textTheme.bodyMedium!.fontFamily, 'sans-serif');
+    expect(theme.textTheme.headlineMedium!.fontFamily, 'serif');
+    DSFonts.register('Inter');
+    expect(
+      dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light).textTheme.bodyMedium!.fontFamily,
+      'Inter',
+    );
+  });
+
+  testWidgets('DSTheme is available to descendants and uses selected scheme', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: dsThemeData(DSTokens.church, brightness: Brightness.dark),
+        theme: dsThemeData(DSTokens.defaultTheme, brightness: Brightness.dark),
         home: Builder(
           builder: (context) {
             final theme = DSTheme.of(context);
@@ -83,7 +51,7 @@ void main() {
         ),
       ),
     );
-    expect(find.text('church'), findsOneWidget);
-    expect(DSTheme.of(tester.element(find.text('church'))).dark, isTrue);
+    expect(find.text('default'), findsOneWidget);
+    expect(DSTheme.of(tester.element(find.text('default'))).dark, isTrue);
   });
 }

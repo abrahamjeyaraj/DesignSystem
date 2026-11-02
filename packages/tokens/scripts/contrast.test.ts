@@ -12,11 +12,20 @@ const run = (cwd: string, ...args: string[]) => Bun.spawnSync(["bun", CLI, ...ar
 
 /** A theme whose every text role is black and every surface white: passes everything. */
 function highContrast(): ThemeSource {
-  const src = source("church");
+  const src = source("default");
   const texts = new Set(CONTRAST_PAIRS.map((p) => p.text));
   const light = Object.fromEntries(base.roles.map((r) => [r, texts.has(r) ? "#000000" : "#ffffff"]));
   const dark = Object.fromEntries(base.roles.map((r) => [r, texts.has(r) ? "#ffffff" : "#000000"]));
   return { ...src, name: "app", light, dark, darkScales: undefined, scales: {} };
+}
+
+function lowContrast(): ThemeSource {
+  const src = source("default");
+  return {
+    ...src,
+    name: "failApp",
+    light: { ...src.light, "muted-foreground": "#cccccc", background: "#dddddd" },
+  };
 }
 
 describe("contrastRatio (WCAG 2.x relative luminance)", () => {
@@ -42,14 +51,14 @@ describe("checkContrast", () => {
   });
 
   test("checks both modes when the theme supports dark, light only otherwise", () => {
-    const church = checkContrast(resolveTheme(source("church"), base));
-    expect(new Set(church.map((r) => r.mode))).toEqual(new Set(["light", "dark"]));
-    const noDark = checkContrast(resolveTheme({ ...source("church"), supportsDark: false }, base));
+    const def = checkContrast(resolveTheme(source("default"), base));
+    expect(new Set(def.map((r) => r.mode))).toEqual(new Set(["light", "dark"]));
+    const noDark = checkContrast(resolveTheme({ ...source("default"), supportsDark: false }, base));
     expect(new Set(noDark.map((r) => r.mode))).toEqual(new Set(["light"]));
   });
 
-  test("flags a known failure: tuition muted text on its cream page", () => {
-    const results = checkContrast(resolveTheme(source("tuition"), base));
+  test("flags low-contrast muted text on a pale background", () => {
+    const results = checkContrast(resolveTheme(lowContrast(), base));
     const muted = results.find((r) => r.mode === "light" && r.text === "muted-foreground" && r.surface === "background");
     expect(muted?.pass).toBe(false);
     expect(muted?.ratio).toBeLessThan(4.5);
@@ -62,17 +71,17 @@ describe("checkContrast", () => {
 
 describe("ds-tokens contrast", () => {
   const dir = mkdtempSync(join(tmpdir(), "ds-contrast-"));
-  writeFileSync(join(dir, "tuition.json"), JSON.stringify(source("tuition")));
+  writeFileSync(join(dir, "failApp.json"), JSON.stringify(lowContrast()));
   writeFileSync(join(dir, "good.json"), JSON.stringify(highContrast()));
 
   test("reports failures but exits 0 without --strict", () => {
-    const r = run(dir, "contrast", "tuition.json");
+    const r = run(dir, "contrast", "failApp.json");
     expect(r.exitCode).toBe(0);
     expect(r.stdout.toString()).toMatch(/FAIL\s+light\s+muted-foreground on background/);
   });
 
   test("--strict exits 1 on any failure and 0 when all pass", () => {
-    expect(run(dir, "contrast", "tuition.json", "--strict").exitCode).toBe(1);
+    expect(run(dir, "contrast", "failApp.json", "--strict").exitCode).toBe(1);
     expect(run(dir, "contrast", "good.json", "--strict").exitCode).toBe(0);
   });
 });

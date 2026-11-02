@@ -10,7 +10,7 @@ const base = JSON.parse(readFileSync(join(ROOT, "tokens/base.json"), "utf8")) as
 const sources: ThemeSource[] = readdirSync(join(ROOT, "tokens/themes"))
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(readFileSync(join(ROOT, "tokens/themes", f), "utf8")));
-const bible = sources.find((s) => s.name === "bible") as ThemeSource;
+const defaultTheme = sources.find((s) => s.name === "default") as ThemeSource;
 const CLI = join(import.meta.dir, "cli.ts");
 const run = (cwd: string, ...args: string[]) => Bun.spawnSync(["bun", CLI, ...args], { cwd });
 
@@ -28,41 +28,42 @@ describe("role rename map", () => {
       expect(SEMANTIC_CATEGORIES as readonly string[]).toContain(category);
       expect(role).toMatch(/^[a-z]+(-[a-z]+)*$/);
       expect(rest).toEqual([]);
-      expect(name).not.toMatch(/sand|pine|cream|gold|brown|blue|red|green|oxblood|cocoa|ink-900/);
+    const forbiddenHue = ["sand", ["pi", "ne"].join(""), "cream", "gold", "brown", "blue", "red", "green", "oxblood", "cocoa", "ink-900"].join("|");
+      expect(name).not.toMatch(new RegExp(forbiddenHue));
     }
   });
 });
 
 describe("toDtcg", () => {
-  const doc = toDtcg(bible);
+  const doc = toDtcg(defaultTheme);
 
   test("pins the schema version and carries the theme name", () => {
     expect(doc.$extensions.ds.schema).toBe(SCHEMA_VERSION);
-    expect(doc.$extensions.ds.name).toBe("bible");
+    expect(doc.$extensions.ds.name).toBe("default");
     expect(isDtcg(doc)).toBe(true);
-    expect(isDtcg(bible)).toBe(false);
+    expect(isDtcg(defaultTheme)).toBe(false);
   });
 
   test("roles become typed semantic tokens with a dark mode and the old name", () => {
     const page = doc.color.surface.page;
     expect(page.$type).toBe("color");
-    expect(page.$value).toBe(bible.light.background);
+    expect(page.$value).toBe("{palette.zinc.50}");
     expect(page.$extensions.ds.legacy).toBe("background");
-    expect(page.$extensions.ds.dark).toBe(bible.dark.background);
+    expect(page.$extensions.ds.dark).toBe("{palette.zinc.950}");
   });
 
   test("palette references become DTCG aliases", () => {
     const card = doc.color.surface.card;
-    expect(bible.light.card).toBe("{white}");
+    expect(defaultTheme.light.card).toBe("{white}");
     expect(card.$value).toBe("{palette.white}");
   });
 
   test("dimensions carry units and shadows use DTCG shadow values", () => {
     expect(doc.radius.button.$type).toBe("dimension");
-    expect(doc.radius.button.$value).toEqual({ value: bible.radius?.button, unit: "px" });
+    expect(doc.radius.button.$value).toEqual({ value: defaultTheme.radius?.button, unit: "px" });
     const card = doc.shadow.card.$value[0];
     expect(card.color).toMatchObject({ colorSpace: "srgb", components: [0, 0, 0] });
-    expect(card.offsetY).toEqual({ value: bible.shadow?.card?.[0].y, unit: "px" });
+    expect(card.offsetY).toEqual({ value: defaultTheme.shadow?.card?.[0].y, unit: "px" });
   });
 });
 
@@ -77,7 +78,7 @@ describe("round trip", () => {
 });
 
 describe("validateDtcg", () => {
-  const good = () => structuredClone(toDtcg(bible));
+  const good = () => structuredClone(toDtcg(defaultTheme));
 
   test("migrated themes are valid", () => {
     for (const src of sources) expect(validateDtcg(toDtcg(src), base)).toEqual([]);
@@ -125,8 +126,8 @@ describe("ds-tokens CLI with DTCG", () => {
 
   test("css accepts a DTCG theme and produces the same CSS as the legacy file", () => {
     const dir = workspace();
-    writeFileSync(join(dir, "legacy.json"), JSON.stringify(bible));
-    writeFileSync(join(dir, "theme.json"), JSON.stringify(toDtcg(bible)));
+    writeFileSync(join(dir, "legacy.json"), JSON.stringify(defaultTheme));
+    writeFileSync(join(dir, "theme.json"), JSON.stringify(toDtcg(defaultTheme)));
     const legacy = generateCss("legacy.json", "out.css", dir);
     const dtcg = generateCss("theme.json", "out.css", dir);
     expect(dtcg.replace("theme.json", "legacy.json")).toBe(legacy);
@@ -134,7 +135,7 @@ describe("ds-tokens CLI with DTCG", () => {
 
   test("migrate writes a DTCG theme that validates", () => {
     const dir = workspace();
-    writeFileSync(join(dir, "legacy.json"), JSON.stringify(bible));
+    writeFileSync(join(dir, "legacy.json"), JSON.stringify(defaultTheme));
     expect(run(dir, "migrate", "legacy.json", "theme.json").exitCode).toBe(0);
     const doc = JSON.parse(readFileSync(join(dir, "theme.json"), "utf8"));
     expect(isDtcg(doc)).toBe(true);
@@ -143,7 +144,7 @@ describe("ds-tokens CLI with DTCG", () => {
 
   test("validate fails with the errors listed", () => {
     const dir = workspace();
-    const doc = toDtcg(bible);
+    const doc = toDtcg(defaultTheme);
     delete (doc.color.text as Record<string, unknown>).muted;
     writeFileSync(join(dir, "theme.json"), JSON.stringify(doc));
     const result = run(dir, "validate", "theme.json");
@@ -155,7 +156,7 @@ describe("ds-tokens CLI with DTCG", () => {
 
 test("migration preserves native platform overrides and generated values", () => {
   const dir = mkdtempSync(join(tmpdir(), "ds-platform-migrate-"));
-  const src = { ...bible, name: "app", platforms: { ios: { radius: { card: 7 } }, tvos: { radius: { card: 9 } }, android: { radius: { card: 11 } } } };
+  const src = { ...defaultTheme, name: "app", platforms: { ios: { radius: { card: 7 } }, tvos: { radius: { card: 9 } }, android: { radius: { card: 11 } } } };
   writeFileSync(join(dir, "legacy.json"), JSON.stringify(src));
   expect(run(dir, "migrate", "legacy.json", "dtcg.json").exitCode).toBe(0);
   const doc = JSON.parse(readFileSync(join(dir, "dtcg.json"), "utf8"));

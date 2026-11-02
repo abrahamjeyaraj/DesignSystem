@@ -44,7 +44,7 @@ Defects go to Taskwarrior, not this queue.
   our project .. the infra is in designsystem", and "all projects will follow the same".
   DesignSystem keeps the generator, `base.json`, components, and a neutral default theme for its own
   gallery and tests. Each app keeps its theme JSON, commits the generated CSS, and runs
-  `ds-tokens css ... --check` in CI. Order: first web consumer (`bible` theme); `church` and `tuition` move when those
+  `ds-tokens css ... --check` in CI. Order: first web consumer (`app` theme); `app` and `app` move when those
   apps adopt it; native apps later.
 - **2026-09-25, consumer lint reads a locally generated theme.** `@shadcn/lint` ignores token
   declarations imported from `node_modules`, so a theme imported from the package fails
@@ -52,7 +52,7 @@ Defects go to Taskwarrior, not this queue.
   CSS (makes `shadcn add` write into `node_modules`, and loses app-only colours), and an allowlist
   (misses `hover:` and `/50` variants). A theme generated inside the app gives 0 errors.
 - **2026-09-25, app-only colours stay in the app.** Red-letter and bookmark colours were briefly
-  added to the `bible` theme in DesignSystem and withdrawn before push. They belong in the app's own
+  added to the `app` theme in DesignSystem and withdrawn before push. They belong in the app's own
   theme `extra`.
 - **2026-09-24, CI/CD on Turborepo and GitHub Actions, not Jenkins.** CI and Release run on a
   Mac mini self-hosted runner (`self-hosted, macOS, ARM64, macmini` label in workflows); no Linux runner is needed
@@ -71,7 +71,7 @@ Defects go to Taskwarrior, not this queue.
   <theme.json> <out.css> [--check]` and `base.json`, so apps generate their own Tailwind v4 theme
   CSS. Shipped in 0.4.2; reviewed by a pilot web session (lint 0 errors, `--check` passes).
 - **DS-ARCH-3 Neutral default theme** [blocked] : a product-neutral theme for the DesignSystem
-  gallery and tests, replacing `bible` as `DEFAULT_THEME`. Blocked on DS-THEME-1..3.
+  gallery and tests, replacing `app` as `DEFAULT_THEME`. Blocked on DS-THEME-1..3.
 - **DS-ARCH-4 Native codegen for app-owned themes** [proto] : `ds-tokens swift` and `ds-tokens
   kotlin --package` emit a theme value against SDK-owned types (Swift types now have public
   inits). Each SDK's tests compile a generated app theme from public API. Unreleased; Dart later.
@@ -90,12 +90,12 @@ Defects go to Taskwarrior, not this queue.
 
 ## 3. Theme migration to the apps
 
-- **DS-THEME-1 First web consumer owns its theme** [proto] : consumer repo `apps/web/theme/bible.json`
+- **DS-THEME-1 First web consumer owns its theme** [proto] : consumer repo `apps/web/theme/app.json`
   plus generated `theme.css`, `--check` in lint, `@source not` for the theme folder. Work on a feature branch (commit `8d9a435b`, on 0.4.2: lint 0 errors,
   `theme:check` passes, compiled CSS unchanged). Done when merged to main.
-- **DS-THEME-2 Remove bible from DesignSystem** [blocked] : drop `tokens/themes/bible.json` and
-  the shipped `bible.css` after DS-THEME-1 is merged. Blocked on DS-THEME-1.
-- **DS-THEME-3 Church and tuition move out** [planned] : those consumers own
+- **DS-THEME-2 Remove app from DesignSystem** [blocked] : drop `tokens/themes/app.json` and
+  the shipped `app.css` after DS-THEME-1 is merged. Blocked on DS-THEME-1.
+- **DS-THEME-3 app move out** [planned] : those consumers own
   their themes when they adopt `ds-tokens`; remove them here afterwards. Not moved pre-emptively.
 
 ## 4. Web
@@ -111,8 +111,8 @@ Defects go to Taskwarrior, not this queue.
 ## 5. Native
 
 - **DS-NATIVE-1 SDKs** [done] : SwiftUI, Compose, Flutter and React Native SDKs with galleries.
-- **DS-NATIVE-2 Reading-app iOS, tvOS and Android adoption** [pending] : consumer iOS (17), tvOS (17) and
-  Android (single `:app`) use the SDKs with a repo-level `theme/bible.json` shared with web.
+- **DS-NATIVE-2 example consumer iOS, tvOS and Android adoption** [pending] : consumer iOS (17), tvOS (17) and
+  Android (single `:app`) use the SDKs with a repo-level `theme/app.json` shared with web.
   DesignSystem side: tvOS builds (TextEditor fallback) and iOS/tvOS builds run in CI; Android
   library lowered to minSdk 24 and Kotlin language/API 2.0 for that consumer. Consumer side: GitHub credentials
   for SwiftPM and Maven, `mobile` and font values, replacing its own Theme files.
@@ -123,5 +123,5 @@ Defects go to Taskwarrior, not this queue.
 
 ## 6. Accessibility
 
-- **DS-A11Y-1 Tuition contrast** [planned] : `tuition` `muted-foreground` on cream is about 3.9:1,
+- **DS-A11Y-1 default contrast** [planned] : `app` `muted-foreground` on cream is about 3.9:1,
   below AA for body text; decide once that consumer owns its theme (DS-THEME-3).

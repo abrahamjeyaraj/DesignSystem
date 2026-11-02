@@ -75,7 +75,7 @@ export function DSText({ variant = 'body', style, allowFontScaling = true, ...pr
       lineHeight: m.label.lineHeight,
       fontWeight: t.weight(m.label.weight),
       letterSpacing: t.label.tracking,
-      textTransform: t.label.case === 'uppercase' ? 'uppercase' : 'none',
+      textTransform: (t.label.case as 'none' | 'uppercase') === 'uppercase' ? 'uppercase' : 'none',
       color: t.colors.ink,
     },
     caption: {

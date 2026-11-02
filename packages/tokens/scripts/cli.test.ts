@@ -6,7 +6,7 @@ import { ROOT } from "./build";
 import { generate, generateCss } from "./cli";
 
 const CLI = join(import.meta.dir, "cli.ts");
-const theme = JSON.parse(readFileSync(join(ROOT, "tokens/themes/church.json"), "utf8"));
+const theme = JSON.parse(readFileSync(join(ROOT, "packages/design-tools/test/fixtures/app-theme.json"), "utf8"));
 
 function workspace(src: object) {
   const dir = mkdtempSync(join(tmpdir(), "ds-tokens-"));

@@ -47,7 +47,7 @@ const {
   Badge,
 } = await import('../src/components');
 
-function render(node: React.ReactNode, theme: 'tuition' | 'church' | 'bible' = 'tuition') {
+function render(node: React.ReactNode, theme: 'default' = 'default') {
   return renderToString(<DSThemeProvider theme={theme}>{node}</DSThemeProvider>);
 }
 
@@ -158,9 +158,9 @@ test('DSField renders label and text input', () => {
 });
 
 test('DSSearchField renders search role and placeholder', () => {
-  const html = render(<DSSearchField placeholder="Search students" icon="🔍" />);
+  const html = render(<DSSearchField placeholder="Search items" icon="🔍" />);
   expect(html).toContain('role="search"');
-  expect(html).toContain('Search students');
+  expect(html).toContain('Search items');
   expect(html).toContain('🔍');
 });
 
@@ -174,9 +174,9 @@ test('DSLargeTitle renders eyebrow and title with header role', () => {
 });
 
 test('DSNavBar renders header role with title and actions', () => {
-  const html = render(<DSNavBar leading="Back" title="Student" trailing="More" />);
+  const html = render(<DSNavBar leading="Back" title="Overview" trailing="More" />);
   expect(html).toContain('role="heading"');
-  expect(html).toContain('Student');
+  expect(html).toContain('Overview');
   expect(html).toContain('Back');
   expect(html).toContain('More');
 });
@@ -197,8 +197,8 @@ test('DSTabBar renders floating capsule with tab items', () => {
     <DSTabBar
       items={[
         { label: 'Today', value: 'today', icon: '📅' },
-        { label: 'Students', value: 'students', icon: '👥' },
-        { label: 'Fees', value: 'fees', icon: '💳' },
+        { label: 'People', value: 'people', icon: '👥' },
+        { label: 'Billing', value: 'billing', icon: '💳' },
       ]}
       selected="today"
     />
@@ -206,8 +206,8 @@ test('DSTabBar renders floating capsule with tab items', () => {
   expect(html).toContain('role="tablist"');
   expect(html).toContain('role="tab"');
   expect(html).toContain('Today');
-  expect(html).toContain('Students');
-  expect(html).toContain('Fees');
+  expect(html).toContain('People');
+  expect(html).toContain('Billing');
 });
 
 test('DSCard and backwards-compatible primitives render', () => {
@@ -227,12 +227,12 @@ test('DSCard and backwards-compatible primitives render', () => {
 
 test('DSEmptyState renders icon, title, message and action', () => {
   const html = render(
-    <DSEmptyState icon="📂" title="No Students" message="Add a student to get started." action={<DSButton>Add Student</DSButton>} />
+    <DSEmptyState icon="📂" title="No items" message="Add an item to get started." action={<DSButton>Add item</DSButton>} />
   );
   expect(html).toContain('📂');
-  expect(html).toContain('No Students');
-  expect(html).toContain('Add a student to get started.');
-  expect(html).toContain('Add Student');
+  expect(html).toContain('No items');
+  expect(html).toContain('Add an item to get started.');
+  expect(html).toContain('Add item');
 });
 
 test('pattern components render with roles and touch-friendly actions', () => {
@@ -264,20 +264,15 @@ test('ink card and toggle components render accessible controls and clamped prog
   expect(html).toContain('Reminder ready');
 });
 
-test('DSGallery renders all 3 themes and honours supportsDark', () => {
+test('DSGallery renders the default theme in light and dark', () => {
   const html = renderToString(<DSGallery />);
-  expect(html).toContain('tuition (light)');
-  expect(html).toContain('Light only - supportsDark: false');
-  expect(html).toContain('church (light)');
-  expect(html).toContain('church (dark)');
-  expect(html).toContain('bible (light)');
-  expect(html).toContain('bible (dark)');
+  expect(html).toContain('default (light)');
+  expect(html).toContain('default (dark)');
 
-  const tuitionOnly = renderToString(<DSGallery theme="tuition" />);
-  expect(tuitionOnly).toContain('tuition (light)');
-  expect(tuitionOnly).not.toContain('church');
+  const onlyDefault = renderToString(<DSGallery theme="default" />);
+  expect(onlyDefault).toContain('default (light)');
+  expect(onlyDefault).toContain('default (dark)');
 
-  const tuitionDarkRequested = renderToString(<DSGallery theme="tuition" mode="dark" />);
-  expect(tuitionDarkRequested).toContain('tuition (light)');
-  expect(tuitionDarkRequested).not.toContain('tuition (dark)');
+  const darkRequested = renderToString(<DSGallery theme="default" mode="dark" />);
+  expect(darkRequested).toContain('default (dark)');
 });

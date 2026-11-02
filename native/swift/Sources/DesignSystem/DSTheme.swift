@@ -31,7 +31,7 @@ public extension EnvironmentValues {
 }
 
 public extension View {
-    /// Set once at the app root: `.dsTheme(DSTokens.church)`.
+    /// Set once at the app root: `.dsTheme(DSTokens.default)` or an app-generated theme.
     func dsTheme(_ theme: DSThemeTokens) -> some View { environment(\.dsTheme, theme) }
 }
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _app(Widget child) => MaterialApp(
-  theme: dsThemeData(DSTokens.tuition, brightness: Brightness.light),
+  theme: dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light),
   home: Scaffold(body: child),
 );
 
@@ -109,7 +109,7 @@ void main() {
       ]) {
         expect(
           tester.getSize(f).height,
-          greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
+          greaterThanOrEqualTo(DSTokens.defaultTheme.mobileLayout.touchTarget),
         );
       }
     },
@@ -125,7 +125,7 @@ void main() {
             mainAxisSize: MainAxisSize.min,
             children: [
               DSListRow(
-                title: 'Student',
+                title: 'Item',
                 subtitle: 'Class 10',
                 onTap: () => rowTapped = true,
               ),
@@ -135,11 +135,11 @@ void main() {
                 onChanged: (v) => selected = v,
               ),
               const DSField(label: 'Amount', hintText: 'Enter amount'),
-              const DSSearchField(hintText: 'Search students'),
+              const DSSearchField(hintText: 'Search items'),
               DSTabBar(
                 items: const [
                   DSTabItem(label: 'Today', icon: Icons.today),
-                  DSTabItem(label: 'Fees', icon: Icons.money),
+                  DSTabItem(label: 'Billing', icon: Icons.money),
                 ],
                 selectedIndex: 0,
                 onChanged: (v) => tab = v,
@@ -148,16 +148,16 @@ void main() {
           ),
         ),
       );
-      expect(find.bySemanticsLabel('Student, Class 10'), findsOneWidget);
-      await tester.tap(find.text('Student'));
+      expect(find.bySemanticsLabel('Item, Class 10'), findsOneWidget);
+      await tester.tap(find.text('Item'));
       await tester.tap(find.text('Due'));
-      await tester.tap(find.text('Fees'));
+      await tester.tap(find.text('Billing'));
       expect(rowTapped, isTrue);
       expect(selected, 1);
       expect(tab, 1);
       for (final f in [
         find
-            .ancestor(of: find.text('Student'), matching: find.byType(InkWell))
+            .ancestor(of: find.text('Item'), matching: find.byType(InkWell))
             .first,
         find
             .ancestor(of: find.text('All'), matching: find.byType(TextButton))
@@ -171,12 +171,12 @@ void main() {
             .ancestor(of: find.text('Today'), matching: find.byType(InkWell))
             .last,
         find
-            .ancestor(of: find.text('Fees'), matching: find.byType(InkWell))
+            .ancestor(of: find.text('Billing'), matching: find.byType(InkWell))
             .last,
       ]) {
         expect(
           tester.getSize(f).height,
-          greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
+          greaterThanOrEqualTo(DSTokens.defaultTheme.mobileLayout.touchTarget),
           reason: '$f should meet target',
         );
       }
@@ -201,7 +201,7 @@ void main() {
     expect(find.textContaining('42'), findsWidgets);
     expect(
       tester.getSize(find.bySemanticsLabel('Undo')).height,
-      greaterThanOrEqualTo(DSTokens.tuition.mobileLayout.touchTarget),
+      greaterThanOrEqualTo(DSTokens.defaultTheme.mobileLayout.touchTarget),
     );
   });
 
@@ -221,7 +221,7 @@ void main() {
                 tone: DSStatTone.success,
               ),
               DSLargeTitle(eyebrow: 'Today', title: 'Dashboard'),
-              DSNavBar(title: 'Student'),
+              DSNavBar(title: 'Overview'),
               DSSectionHeader(title: 'Classes', actionLabel: 'See all'),
               DSEmptyState(
                 icon: Icons.inbox,
@@ -237,7 +237,7 @@ void main() {
         'Collected',
         '240',
         'Dashboard',
-        'Student',
+        'Overview',
         'Classes',
         'See all',
         'No results',

@@ -52,7 +52,7 @@ Rules:
 modes inside DesignSystem.
 
 **Tiers:**
-1. Primitive — raw ramps: `color.pine.600`, `size.4`. App-owned, any names.
+1. Primitive — raw ramps: `color.app.600`, `size.4`. App-owned, any names.
 2. Semantic — the contract every component uses. DesignSystem owns the names; apps own the values.
 3. Component — optional per-component overrides aliasing semantic tokens.
 
@@ -106,7 +106,7 @@ Components use DesignSystem's fixed semantic names (`chevron-right`, `close`, `s
 iOS `.xcassets` (vector, template rendering for monochrome), Android VectorDrawable, Flutter
 `vector_graphics`, and an SVG sprite for design tools. No path simplification or rounding.
 
-### 4.1 Delivery per platform (custom stroke sets, e.g. the `bible` theme)
+### 4.1 Delivery per platform (custom stroke sets, e.g. the `app` theme)
 
 The frozen SVG is the master. Each platform gets the form that renders it best, generated, never
 hand-made:
@@ -161,7 +161,7 @@ source SVG rules of section 4; a stroke's faintness is `data-faint`, not SVG opa
 
 ## 6. Components
 
-- **Spec format** (adopted from Claude Design design-system projects, which one church-admin consumer already uses):
+- **Spec format** (adopted from Claude Design design-system projects, which one app consumer consumer already uses):
   per component a `.d.ts` (props, variants, sizes) + `.prompt.md` (when to use, rules, examples)
   + a preview card. DesignSystem keeps generic specs; apps keep app-only patterns.
 - Each spec lists: anatomy, variants, states (default, hover, pressed, focus, disabled, loading),
@@ -195,7 +195,7 @@ compiler.
 
 **Generated into the app, never shipped by DesignSystem:**
 - **Theme**: `ds-tokens` writes only that app's theme (one brand, the modes it supports).
-- **Icons**: `ds-icons` emits only the icons the app references (the approach one reading-app consumer's
+- **Icons**: `ds-icons` emits only the icons the app references (the approach one app consumer consumer's
   Lucide sync script already uses for iOS); an icon in `icons.json` that no code uses is a CI
   warning, a used icon missing from `icons.json` is a CI error.
 - **Art**: only the scenes the app declares; each scene is a small JSON, loaded when its screen opens.
@@ -258,21 +258,21 @@ one minor of `$deprecated`. Changelog per release; upgrade PRs into each app.
 
 ### Taken (2026-09-30)
 
-1. **Reading-app colours: the latest design is the reference.** The live iOS app (screenshots) measures
+1. **Example palette colours: the latest design is the reference.** The live iOS app (screenshots) measures
    brown `#8B5D2E`, blue `#5A7BBF`, gold `#C8B496`, page `#F4F2EF`, the values in the newest
-   Claude Design screens (Scan a Verse, Home Refresh). Older values (`#B07C4B`, `#384F84`) are
+   Claude Design screens (scan flow, home refresh). Older values (`#B07C4B`, `#384F84`) are
    superseded. Web still uses the old values; iOS/Android are mixed. A full colour audit follows
    in the freeze step (phase 2) before `theme.json` is final.
-2. **Reading-app icons: a custom set, stroke 1.6 on a 24 grid, round caps and joins.** No SF Symbols and
+2. **Example palette icons: a custom set, stroke 1.6 on a 24 grid, round caps and joins.** No SF Symbols and
    no Material Icons on any platform. One variant per icon is frozen from the Claude Design
    drawings (the live tab bar set, `primitives.jsx`, is the starting point). Delivery per platform
    is in section 4.1.
-3. **Church-admin icons: Lucide on every platform**, one pinned version. The mobile app moves off
+3. **Example palette icons: Lucide on every platform**, one pinned version. The mobile app moves off
    Material Symbols Rounded. An icon Lucide lacks is drawn as a custom icon in Lucide's style
    (24 grid, same stroke, round caps) and added to the app's set, reviewed like any other.
-4. **Church-admin colours: to be standardised.** The design is early; values will be streamlined in
+4. **Example palette colours: to be standardised.** The design is early; values will be streamlined in
    the freeze/audit step rather than picked now.
-5. **Tuition theme: the updated Pen file is the source.** An older Claude Design export
+5. **Example theme: the updated Pen file is the source.** An older Claude Design export
    (navy/yellow, Ionicons) is dropped. Icons: Lucide. Dark mode off until the Pen file has one.
 6. **Scope:** these three pilot apps first; any other app follows the same standard later.
 
@@ -280,7 +280,7 @@ one minor of `$deprecated`. Changelog per release; upgrade PRs into each app.
 
 7. **Native depth** (explained in section 9.1): full SDK components, or foundations only.
 8. **Other design tools:** which tool "plot design" / "open design" refers to (Penpot?).
-9. **Church-admin light/dark values** and **the reading-app's remaining colour set**, resolved by the audit.
+9. **Example palette light/dark values** and **the app consumer's remaining colour set**, resolved by the audit.
 
 ### 9.1 Native depth, explained
 
@@ -297,7 +297,7 @@ illustrations. The open question is whether it also gets the *building blocks*:
   re-implements the same components, which is the drift seen today.
 
 Recommendation: **A for common controls** (button, field, chip, list row, card, tab bar, sheet,
-dialog, empty state), **B for app-specific patterns** (verse card, receipt, leaderboard), which
+dialog, empty state), **B for app-specific patterns** (detail card, receipt, leaderboard), which
 live in the app and compose SDK components.
 
 ## 10. Roadmap
@@ -306,9 +306,9 @@ live in the app and compose SDK components.
 |---|---|---|
 | 0 | This standard agreed; `design/` template; exports committed to each app's `design/source/` | decision 7 |
 | 1 | DTCG schema + naming grammar + rename map with deprecated aliases; generator reads DTCG | 0 |
-| 2 | `ds-extract` (Claude Design + Pen) and the freeze/diff review; freeze the three pilot themes (`bible`, `church`, `tuition`) | 1 |
-| 3 | `ds-icons` + `DSIcon` API on every platform, pixel-diff CI; reading-app custom set first | 2 |
-| 4 | `ds-art` + `DSStrokeScene`; reading-app onboarding moves from hand-typed Kotlin to data | 2 |
+| 2 | `ds-extract` (Claude Design + Pen) and the freeze/diff review; freeze the three pilot themes (`app`, `app`, `app`) | 1 |
+| 3 | `ds-icons` + `DSIcon` API on every platform, pixel-diff CI; app consumer custom set first | 2 |
+| 4 | `ds-art` + `DSStrokeScene`; app consumer onboarding moves from hand-typed Kotlin to data | 2 |
 | 5 | Runtime native themes (SDKs accept an app theme), split SDKs into modules (6.1), product themes leave DesignSystem | 1 |
 | 6 | Adapters: `/design-sync` publish, Pen export, Figma, Penpot | 1–3 |
 | 7 | Roll out per app with CI checks and AGENTS.md rules: pilot consumers, then others | 3–6 |
@@ -322,13 +322,13 @@ Built test-first in this repo (each step committed red, then green); `bun run ve
 | 3 Tokens | DTCG themes, `ROLE_MAP`, `ds-tokens validate / migrate`, `contrast` | merge duplicate roles after each app's audit; `icon.size` and type-role tokens in base |
 | 2 design/ folder | `ds-init` (SKILL.md, readme, starter theme, icons, art, lint, sources, LFS, agent rules) | commit the exports into each app (phase 0) |
 | 7 Design tools | `ds-extract` for Claude Design exports and `.pen`, drift vs a theme | Pen / Figma / Penpot export adapters; `/design-sync` publish |
-| 4 Icons | `ds-icons build` (web/RN, iOS, Android XML, Compose, Flutter, sprite), used-only, `verify` pixel check | freeze the reading-app custom set; native `DSIcon` wrappers; RN `DSIcon` |
+| 4 Icons | `ds-icons build` (web/RN, iOS, Android XML, Compose, Flutter, sprite), used-only, `verify` pixel check | freeze the app consumer custom set; native `DSIcon` wrappers; RN `DSIcon` |
 | 5 Illustrations | scene format, `ds-art extract / build`, `DSStrokeScene` (web) | SwiftUI / Compose / Flutter players (need a Mac to compile) |
 | 6.1 Packaging | ui-web module subpaths with isolation tests; per-app Swift/Kotlin/Dart themes; public Swift inits | SwiftPM products and Gradle modules; neutral default theme as SDK default |
 | 8 Checks | `ds-lint` with baseline, brand-free test for DesignSystem | wire into each app's CI |
 
-First `ds-lint` run on the apps (for baselines): reading-app about 1,130 findings, church-admin 212,
-Tuition-themed 161, mostly colour literals and platform icons.
+First `ds-lint` run on the apps (for baselines): app consumer about 1,130 findings, app consumer 212,
+App-themed 161, mostly colour literals and platform icons.
 
 ---
 
@@ -337,12 +337,12 @@ Tuition-themed 161, mostly colour literals and platform icons.
 ### Integration today
 | | Web | iOS | Android / mobile |
 |---|---|---|---|
-| Reading-app (`bible`) | tokens via `ds-tokens` 0.4.2 with `theme:check`; components are local copies in `components/ui/` (18 files, diverged), ui-web imported in 1 file | own `Tokens.swift` | own `Tokens.kt` |
-| Church-admin (`church`) | own `tokens.css` | Expo app, own tokens mirrored from a Pen file | same |
-| Tuition (`tuition`) | none | none (migration branch unmerged) | none on `origin/main` |
+| Example palette (`app`) | tokens via `ds-tokens` 0.4.2 with `theme:check`; components are local copies in `components/ui/` (18 files, diverged), ui-web imported in 1 file | own `Tokens.swift` | own `Tokens.kt` |
+| Example palette (`app`) | own `tokens.css` | Expo app, own tokens mirrored from a Pen file | same |
+| Example app (`app`) | none | none (migration branch unmerged) | none on `origin/main` |
 
-### Reading-app consumer — Claude Design export (211 files, 102 MB, mostly images)
-- 26 designs (Scan a Verse ×4, Home Refresh ×2, Community ×2, Unified Search, Word of the Day,
+### Example palette consumer — Claude Design export (211 files, 102 MB, mostly images)
+- 26 designs (scan flow ×4, home refresh ×2, community ×2, unified search, daily highlight,
   Feature Intros, Onboarding, Apple TV system, Emails, Top Shelf) plus specs (`TV_*.md`,
   `ENGINEERING-DIRECTIONS.md`, feature briefs).
 - Tokens: per-file CSS variables with shifting short names (`--fd`, `--bgp`, `--dks`) and a JS
@@ -355,7 +355,7 @@ Tuition-themed 161, mostly colour literals and platform icons.
 - Live app icons: web Lucide (70 files), iOS SF Symbols (168 uses) + vendored Lucide (30),
   Android Material Icons (56).
 
-### Church-admin consumer — Claude Design design-system project (198 files, 11 MB)
+### Example palette consumer — Claude Design design-system project (198 files, 11 MB)
 - Full system: `SKILL.md`, `readme.md` (voice, foundations, iconography), `tokens/*.css`
   (colours with a semantic layer, type, spacing, mobile, `mobile.native.ts`), `foundations/`
   specimens, 27 component specs (`.jsx` + `.d.ts` + `.prompt.md`), `ui_kits/` (app, marketing,
@@ -366,10 +366,10 @@ Tuition-themed 161, mostly colour literals and platform icons.
   The web spec in the consumer repo was hand-summarised because the
   design file was not readable by agents.
 
-### Tuition-themed consumer — Pencil file
+### App-themed consumer — Pencil file
 - Updated Pen file: 24 boards (repo copy has 14), 54 variables (unchanged), 39
   reusable components, 197 Lucide icons, 4,707 variable references and only 11 raw hex values
-  (success green `#3F6B3A`/`#E3ECDF` lacks a variable). DesignSystem's tuition theme matches it.
+  (success green `#3F6B3A`/`#E3ECDF` lacks a variable). DesignSystem's app theme matches it.
 - Live apps: iOS SF Symbols, Android Material Icons, web none.
 - A Claude Design "Redesign v2" export in the repo uses navy/yellow and Ionicons (conflicts).
 

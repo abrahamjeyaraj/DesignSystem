@@ -6,8 +6,9 @@ import { dart, dartTheme, kotlin, kotlinTheme, load, ROOT, swift, swiftTheme, ty
 import { toDtcg } from "./dtcg";
 
 const { base, themes } = load();
-const church = themes.find((t) => t.name === "church") as Theme;
-const asApp = { ...church, name: "app" } as Theme;
+const defaultTheme = themes.find((t) => t.name === "default") as Theme;
+const asApp = { ...defaultTheme, name: "app" } as Theme;
+const fixturePath = "packages/design-tools/test/fixtures/app-theme.json";
 const CLI = join(import.meta.dir, "cli.ts");
 const run = (cwd: string, ...args: string[]) => Bun.spawnSync(["bun", CLI, ...args], { cwd });
 
@@ -19,7 +20,7 @@ function constructorIn(file: string, marker: string): string {
   let depth = 0;
   for (let i = from; i < file.length; i++) {
     if (file[i] === "(") depth++;
-    if (file[i] === ")" && --depth === 0) return file.slice(from, i + 1).replace(/name: "church"|name = "church"|name: 'church'/, "NAME");
+    if (file[i] === ")" && --depth === 0) return file.slice(from, i + 1).replace(/name: "default"|name = "default"|name: 'default'/, "NAME");
   }
   throw new Error("unbalanced");
 }
@@ -43,13 +44,13 @@ describe("app-owned native themes", () => {
     expect(out).toContain("public extension DSTokens {");
     expect(out).toContain("    public static let app = DSThemeTokens(");
     expect(out).toContain("static let app = DSThemeTokens.app");
-    expect(constructorIn(out, "static let app").replace('name: "app"', "NAME")).toBe(constructorIn(swift(base, themes), "static let church"));
+    expect(constructorIn(out, "static let app").replace('name: "app"', "NAME")).toBe(constructorIn(swift(base, themes), "static let `default`"));
   });
 
   test("an app named after a bundled theme avoids a duplicate DSTokens member", () => {
-    const out = swiftTheme(church, "design/theme.json");
+    const out = swiftTheme(defaultTheme, "design/theme.json");
     expect(out).toContain("extension DSThemeTokens {");
-    expect(out).toContain("public static let church = DSThemeTokens(");
+    expect(out).toContain("public static let `default` = DSThemeTokens(");
     expect(out).not.toContain("extension DSTokens");
   });
 
@@ -58,19 +59,19 @@ describe("app-owned native themes", () => {
     expect(out).toContain("package com.example.app.design");
     expect(out).toContain("import com.abrahamjeyaraj.designsystem.*");
     expect(out).toContain("val AppTheme: DSThemeTokens = DSThemeTokens(");
-    expect(constructorIn(out, "val AppTheme").replace('name = "app"', "NAME")).toBe(constructorIn(kotlin(base, themes), "val church"));
+    expect(constructorIn(out, "val AppTheme").replace('name = "app"', "NAME")).toBe(constructorIn(kotlin(base, themes), "val default"));
   });
 
   test("Dart: a const theme next to the package import", () => {
     const out = dartTheme(asApp, "design/theme.json");
     expect(out).toContain("import 'package:design_system/design_system.dart';");
     expect(out).toContain("const appTheme = DSThemeTokens(");
-    expect(constructorIn(out, "const appTheme").replace("name: 'app'", "NAME")).toBe(constructorIn(dart(base, themes), "static const church"));
+    expect(constructorIn(out, "const appTheme").replace("name: 'app'", "NAME")).toBe(constructorIn(dart(base, themes), "static const defaultTheme"));
   });
 
   test("CLI: swift, kotlin and dart targets with --check, from a DTCG theme", () => {
     const dir = mkdtempSync(join(tmpdir(), "ds-native-"));
-    const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/church.json"), "utf8"));
+    const src = JSON.parse(readFileSync(join(ROOT, fixturePath), "utf8"));
     writeFileSync(join(dir, "theme.json"), JSON.stringify(toDtcg({ ...src, name: "app" })));
     expect(run(dir, "swift", "theme.json", "AppTheme.swift", "--check").exitCode).toBe(1);
     expect(run(dir, "swift", "theme.json", "AppTheme.swift").exitCode).toBe(0);
@@ -90,7 +91,7 @@ test("packaged Swift generator works without repository token sources", () => {
   mkdirSync(join(dir, "generated"));
   for (const name of ["build.ts", "cli.ts", "dtcg.ts", "contrast.ts"]) cpSync(join(import.meta.dir, name), join(dir, "scripts", name));
   for (const name of ["base.json", "tokens.json"]) cpSync(join(ROOT, "packages/tokens/generated", name), join(dir, "generated", name));
-  const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/church.json"), "utf8"));
+  const src = JSON.parse(readFileSync(join(ROOT, fixturePath), "utf8"));
   writeFileSync(join(dir, "theme.json"), JSON.stringify({ ...src, name: "app" }));
   const result = Bun.spawnSync(["bun", join(dir, "scripts/cli.ts"), "swift", "theme.json", "App.swift"], { cwd: dir });
   expect(result.exitCode).toBe(0);

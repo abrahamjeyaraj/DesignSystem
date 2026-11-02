@@ -1,6 +1,6 @@
 # Native mobile component spec (layout reference)
 
-`$name` = Pen variable (see tokens/themes/tuition.json mapping). Sizes in pt/dp.
+`$name` = Pen variable (see tokens/themes/app.json mapping). Sizes in pt/dp.
 
 ## M / Status Bar
 ```json
@@ -14,12 +14,12 @@
 
 ## M / Tab Item / Rest
 ```json
-{"type":"frame","name":"M / Tab Item / Rest","width":76,"cornerRadius":999,"padding":[6,14],"gap":3,"layout":"vertical","alignItems":"center","justifyContent":"center","children":[{"type":"icon","name":"Icon","width":22,"height":22,"fill":"$text-muted"},{"type":"text","name":"Label","fill":"$text-muted","fontSize":10.5,"fontWeight":"500","fontFamily":"$font-body","content":"Students"}]}
+{"type":"frame","name":"M / Tab Item / Rest","width":76,"cornerRadius":999,"padding":[6,14],"gap":3,"layout":"vertical","alignItems":"center","justifyContent":"center","children":[{"type":"icon","name":"Icon","width":22,"height":22,"fill":"$text-muted"},{"type":"text","name":"Label","fill":"$text-muted","fontSize":10.5,"fontWeight":"500","fontFamily":"$font-body","content":"Users"}]}
 ```
 
 ## M / Tab Bar
 ```json
-{"type":"frame","name":"M / Tab Bar","width":390,"padding":[0,16,12,16],"children":[{"type":"frame","name":"Capsule","width":"fill_container","height":64,"fill":"#FFFFFFE6","cornerRadius":32,"padding":6,"alignItems":"center","justifyContent":"space_between","stroke":"$border","strokeWidth":1,"effect":{"type":"shadow","shadowType":"outer","color":"#2A211D1F","offset":{"x":0,"y":8},"blur":24},"children":[{"type":"ref","name":"Tab Today","width":68,"ref":"G7a2WE"},{"type":"ref","name":"Tab Students","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab Fees","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab Classes","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab More","width":68,"ref":"dJKN8"}]}]}
+{"type":"frame","name":"M / Tab Bar","width":390,"padding":[0,16,12,16],"children":[{"type":"frame","name":"Capsule","width":"fill_container","height":64,"fill":"#FFFFFFE6","cornerRadius":32,"padding":6,"alignItems":"center","justifyContent":"space_between","stroke":"$border","strokeWidth":1,"effect":{"type":"shadow","shadowType":"outer","color":"#2A211D1F","offset":{"x":0,"y":8},"blur":24},"children":[{"type":"ref","name":"Tab Today","width":68,"ref":"G7a2WE"},{"type":"ref","name":"Tab Users","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab Billing","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab Classes","width":68,"ref":"dJKN8"},{"type":"ref","name":"Tab More","width":68,"ref":"dJKN8"}]}]}
 ```
 
 ## M / Button / Primary
@@ -84,7 +84,7 @@
 
 ## M / Search
 ```json
-{"type":"frame","name":"M / Search","width":390,"height":44,"fill":"$surface-sand","cornerRadius":999,"padding":[0,14],"gap":8,"alignItems":"center","children":[{"type":"icon","name":"Icon","width":18,"height":18,"fill":"$text-muted"},{"type":"text","name":"Placeholder","fill":"$text-muted","fontSize":"$m-body","fontWeight":"normal","fontFamily":"$font-body","content":"Search students"}]}
+{"type":"frame","name":"M / Search","width":390,"height":44,"fill":"$surface-sand","cornerRadius":999,"padding":[0,14],"gap":8,"alignItems":"center","children":[{"type":"icon","name":"Icon","width":18,"height":18,"fill":"$text-muted"},{"type":"text","name":"Placeholder","fill":"$text-muted","fontSize":"$m-body","fontWeight":"normal","fontFamily":"$font-body","content":"Search users"}]}
 ```
 
 ## M / Large Title
@@ -94,7 +94,7 @@
 
 ## M / Nav Bar
 ```json
-{"type":"frame","name":"M / Nav Bar","width":390,"height":52,"padding":[0,12],"alignItems":"center","justifyContent":"space_between","children":[{"type":"ref","name":"Back","ref":"PPOXG"},{"type":"text","name":"Title","fill":"$text-primary","fontSize":16,"fontWeight":"600","fontFamily":"$font-body","content":"Student"},{"type":"ref","name":"More","ref":"PPOXG"}]}
+{"type":"frame","name":"M / Nav Bar","width":390,"height":52,"padding":[0,12],"alignItems":"center","justifyContent":"space_between","children":[{"type":"ref","name":"Back","ref":"PPOXG"},{"type":"text","name":"Title","fill":"$text-primary","fontSize":16,"fontWeight":"600","fontFamily":"$font-body","content":"User"},{"type":"ref","name":"More","ref":"PPOXG"}]}
 ```
 
 ## M / Sheet Handle

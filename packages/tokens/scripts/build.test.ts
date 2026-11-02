@@ -35,7 +35,7 @@ test("ident maps keys to platform-safe identifiers", () => {
 });
 
 describe("theme contract", () => {
-  const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/bible.json"), "utf8"));
+  const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/default.json"), "utf8"));
 
   test("every theme defines every role, in base order", () => {
     for (const t of themes) {
@@ -58,90 +58,41 @@ describe("theme contract", () => {
   });
 });
 
-describe("themes keep their own look", () => {
-  test("bible theme matches reference consumer globals.css and ui components", () => {
-    const t = byName("bible");
-    expect(t.light.background).toBe("#f4f2ef"); // cream
-    expect(t.light.primary).toBe("#c8b496"); // gold
-    expect(t.light.action).toBe("#c8b496");
-    expect(t.dark.background).toBe("#121210"); // iPhone dark
-    expect(t.dark.action).toBe("#d9c9a8");
-    expect(t.dark.warning).toBe("#b8851f"); // inherited
-    expect(t.fontSize.base).toBe(15);
-    expect(t.radius.button).toBe(2);
-    expect(t.label).toEqual({ case: "uppercase", tracking: 1.5, size: 13, weight: 500 });
-    expect(t.extraLight["brand-brown-strong"]).toBe("#8a5a2e");
-    expect(t.extraDark["brand-brown-strong"]).toBe("#d9a86a");
-    expect(Object.keys(t.scales)).toEqual([]); // no numbered primary/accent scales
-  });
-
-  test("church theme matches reference consumer tokens.css", () => {
-    const t = byName("church");
-    expect(t.light.background).toBe("#f8f6f1");
-    expect(t.light.primary).toBe("#1a6b54");
-    expect(t.dark.background).toBe("#26241e");
-    expect(t.fontFamily.heading.family).toBe("Newsreader");
-    expect(t.radius.control).toBe(10);
-    expect(t.radius.card).toBe(15);
+describe("default SDK theme", () => {
+  test("default theme uses neutral zinc and blue action roles", () => {
+    const t = byName("default");
+    expect(t.light.background).toBe("#fafafa");
+    expect(t.light.primary).toBe("#2563eb");
+    expect(t.light.action).toBe("#2563eb");
+    expect(t.dark.background).toBe("#09090b");
+    expect(t.supportsDark).toBe(true);
     expect(t.fontSize.base).toBe(16);
-  });
-
-  test("tuition theme matches reference consumer ui.tsx tokens", () => {
-    const t = byName("tuition");
-    expect(t.light.background).toBe("#fbf7f0");
-    expect(t.light.primary).toBe("#8a2b2b");
-    expect(t.fontFamily.heading.family).toBe("Fraunces");
-    expect(t.radius.button).toBe(9999);
-    expect(t.label.weight).toBe(800);
+    expect(t.radius.button).toBe(6);
   });
 });
 
 describe("mobile layer", () => {
-  test("tuition native matches Pen Native Design System", () => {
-    const t = byName("tuition");
-    expect(t.mobile.type.title).toEqual({ font: "heading", size: 28, lineHeight: 36, weight: 500 });
-    expect(t.mobile.type.body.size).toBe(15);
-    expect(t.mobile.layout.touchTarget).toBe(48);
-    expect(t.mobile.layout.sheetRadius).toBe(24);
-    expect(t.supportsDark).toBe(false);
-    expect(t.light.success).toBe("#3f6b3a"); // Pen "Paid" chip
-  });
-
-  test("other themes inherit base mobile defaults", () => {
-    expect(byName("church").mobile.layout.touchTarget).toBe(44);
-    expect(byName("church").supportsDark).toBe(true);
+  test("default inherits base mobile defaults", () => {
+    expect(byName("default").mobile.layout.touchTarget).toBe(44);
   });
 
   test("unknown mobile keys and fonts are rejected", () => {
-    const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/bible.json"), "utf8"));
+    const src = JSON.parse(readFileSync(join(ROOT, "tokens/themes/default.json"), "utf8"));
     expect(() => resolveTheme({ ...src, mobile: { layout: { huge: 1 } } }, base)).toThrow(/mobile\.layout\.huge/);
     expect(() => resolveTheme({ ...src, mobile: { type: { body: { font: "comic" } } } }, base)).toThrow(/not a fontFamily key/);
   });
 });
 
 describe("css", () => {
-  const bible = themeCss(base, byName("bible"));
-  const church = themeCss(base, byName("church"));
+  const css = themeCss(base, byName("default"));
 
   test("emits Tailwind v4 namespaces and class dark mode", () => {
-    expect(bible).toContain("@custom-variant dark (&:where(.dark, .dark *));");
-    expect(bible).toContain("--color-sky-700: #2f6b8c;"); // bible-only palette alias
-    expect(bible).not.toMatch(/--color-(primary|accent|gray)-\d{2,3}:/);
-    expect(bible).toContain("--text-base: 0.9375rem;");
-    expect(bible).toContain("--radius-button: 0.125rem;");
-    expect(bible).toContain('--font-label: var(--font-ibm-plex-mono), "IBM Plex Mono", monospace;');
-    expect(bible).toContain("--label-case: uppercase;");
-    expect(bible).toMatch(/\.dark \{[^}]*--color-background: #121210;/);
-    expect(bible).not.toMatch(/\.dark \{[^}]*--color-warning:/); // unchanged roles not repeated
-    expect(bible).toContain("@utility label-text {");
-  });
-
-  test("church gets its own values and dark scale overrides", () => {
-    expect(church).toContain("--color-primary: #1a6b54;");
-    expect(church).toContain("--radius-card: 0.9375rem;");
-    expect(church).toContain("--color-verified-blue: #1d9bf0;");
-    expect(church).toMatch(/\.dark \{[^}]*--color-accent-600: #3a9b7a;/);
-    expect(church).not.toContain("--color-gray-500"); // no bible aliases leak
+    expect(css).toContain("@custom-variant dark (&:where(.dark, .dark *));");
+    expect(css).toContain("--color-primary: #2563eb;");
+    expect(css).toContain("--text-base: 1rem;");
+    expect(css).toContain("--radius-button: 0.375rem;");
+    expect(css).toMatch(/\.dark \{[^}]*--color-background: #09090b;/);
+    expect(css).toContain("@utility label-text {");
   });
 });
 

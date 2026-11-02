@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { dirname, join, resolve } from "node:path";
 
 export const ROOT = resolve(import.meta.dir, "../../..");
-export const DEFAULT_THEME = "bible";
+export const DEFAULT_THEME = "default";
 
 type Hex = string;
 type Scale = Record<string, Hex>;
@@ -224,6 +224,10 @@ export const ident = (key: string) => {
   if (m) return `${m[2]}${m[1]}`;
   return key.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
 };
+/** Swift reserves `default`; theme name "default" uses backticks in generated Swift. */
+const swiftThemeIdent = (name: string) => (name === "default" ? "`default`" : ident(name));
+/** Dart reserves `default`; bundled theme "default" is emitted as `defaultTheme`. */
+const dartThemeIdent = (name: string) => (name === "default" ? "defaultTheme" : ident(name));
 const hex6 = (hex: Hex) => hex.slice(1).toUpperCase();
 
 // ---------- CSS (Tailwind v4), one self-contained file per theme ----------
@@ -532,9 +536,9 @@ public enum DSTokens {
     public static let defaultTheme = "${DEFAULT_THEME}"
     public static let minTouchTarget: Double = ${base.minTouchTarget}
 
-${themes.map((t) => `    public static let ${ident(t.name)} = ${SWIFT.construct("DSThemeTokens", themeArgs(SWIFT, t, "    ", "DS"), "    ")}`).join("\n\n")}
+${themes.map((t) => `    public static let ${swiftThemeIdent(t.name)} = ${SWIFT.construct("DSThemeTokens", themeArgs(SWIFT, t, "    ", "DS"), "    ")}`).join("\n\n")}
 
-    public static let themes: [String: DSThemeTokens] = [${themes.map((t) => `"${t.name}": ${ident(t.name)}`).join(", ")}]
+    public static let themes: [String: DSThemeTokens] = [${themes.map((t) => `"${t.name}": ${swiftThemeIdent(t.name)}`).join(", ")}]
 
 ${consts("Spacing", base.spacing)}
 ${consts("Duration", base.duration)}
@@ -654,12 +658,12 @@ class DSThemeTokens {
 }
 
 abstract final class DSTokens {
-  static const String defaultTheme = '${DEFAULT_THEME}';
+  static const String defaultThemeName = '${DEFAULT_THEME}';
   static const double minTouchTarget = ${num(base.minTouchTarget, true)};
 
-${themes.map((t) => `  static const ${ident(t.name)} = ${DART.construct("DSThemeTokens", themeArgs(DART, t, "  ", "DS"), "  ")};`).join("\n\n")}
+${themes.map((t) => `  static const ${dartThemeIdent(t.name)} = ${DART.construct("DSThemeTokens", themeArgs(DART, t, "  ", "DS"), "  ")};`).join("\n\n")}
 
-  static const Map<String, DSThemeTokens> themes = {${themes.map((t) => `'${t.name}': ${ident(t.name)}`).join(", ")}};
+  static const Map<String, DSThemeTokens> themes = {${themes.map((t) => `'${t.name}': ${dartThemeIdent(t.name)}`).join(", ")}};
 }
 
 ${consts("DSSpacing", base.spacing, "double")}
@@ -678,10 +682,11 @@ const pascalIdent = (name: string) => ident(name).replace(/^./, (c) => c.toUpper
 /** App themes support contextual `.dsTheme(.app)` and the existing `DSTokens.app` spelling.
  * Built-in DSTokens names already exist; those app names use DSThemeTokens only. */
 export function swiftTheme(t: Theme, source: string, tv?: Theme): string {
-  const name = ident(t.name);
+  const name = swiftThemeIdent(t.name);
   const decl = (x: Theme) => `    public static let ${name} = ${SWIFT.construct("DSThemeTokens", themeArgs(SWIFT, x, "    ", "DS"), "    ")}`;
   const body = tv && JSON.stringify(tv) !== JSON.stringify(t) ? `    #if os(tvOS)\n${decl(tv)}\n    #else\n${decl(t)}\n    #endif` : decl(t);
-  const reserved = Object.keys(JSON.parse(readFileSync(join(import.meta.dir, "../generated/tokens.json"), "utf8")).themes).some((theme) => ident(theme) === name) || ["defaultTheme", "minTouchTarget", "themes", "Spacing", "Duration", "Breakpoint", "ZIndex"].includes(name);
+  const plainName = ident(t.name);
+  const reserved = Object.keys(JSON.parse(readFileSync(join(import.meta.dir, "../generated/tokens.json"), "utf8")).themes).some((theme) => ident(theme) === plainName) || ["defaultTheme", "minTouchTarget", "themes", "Spacing", "Duration", "Breakpoint", "ZIndex"].includes(plainName);
   const bridge = reserved ? "" : `\npublic extension DSTokens {\n    static let ${name} = DSThemeTokens.${name}\n}\n`;
   return `${appHeader(source)}
 // swiftlint:disable all
@@ -725,13 +730,16 @@ export function outputs(root = ROOT): Record<string, string> {
   files["native/swift/Sources/DesignSystem/DSTokens.swift"] = swift(base, themes);
   files["native/android/designsystem/src/main/kotlin/com/abrahamjeyaraj/designsystem/DSTokens.kt"] = kotlin(base, themes);
   files["native/flutter/lib/src/ds_tokens.g.dart"] = dart(base, themes);
-  const fixture = themes.find((t) => t.name === "tuition");
-  if (fixture) {
-    files["native/swift/Tests/DesignSystemPublicAPITests/AppTheme.swift"] = swiftTheme(fixture, "tokens/themes/tuition.json");
-    files["native/swift/Tests/DesignSystemPublicAPITests/CompatibleTheme.swift"] = swiftTheme({ ...fixture, name: "compatibilityFixture" }, "tokens/themes/tuition.json");
-    files["native/android/designsystem/src/test/kotlin/com/abrahamjeyaraj/designsystem/apptheme/AppTheme.kt"] =
-      kotlinTheme(fixture, "com.abrahamjeyaraj.designsystem.apptheme", "tokens/themes/tuition.json");
-  }
+  const fixtureRel = "packages/design-tools/test/fixtures/app-theme.json";
+  const fixtureSrc = JSON.parse(readFileSync(join(root, fixtureRel), "utf8")) as ThemeSource;
+  const fixture = resolveTheme(fixtureSrc, base);
+  files["native/swift/Tests/DesignSystemPublicAPITests/AppTheme.swift"] = swiftTheme(fixture, fixtureRel);
+  files["native/swift/Tests/DesignSystemPublicAPITests/CompatibleTheme.swift"] = swiftTheme(
+    { ...fixture, name: "compatibilityFixture" },
+    fixtureRel,
+  );
+  files["native/android/designsystem/src/test/kotlin/com/abrahamjeyaraj/designsystem/apptheme/AppTheme.kt"] =
+    kotlinTheme(fixture, "com.abrahamjeyaraj.designsystem.apptheme", fixtureRel);
   return files;
 }
 

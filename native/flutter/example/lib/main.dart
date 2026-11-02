@@ -11,13 +11,12 @@ class GalleryApp extends StatefulWidget {
 }
 
 class _GalleryAppState extends State<GalleryApp> {
-  DSThemeTokens _tokens = DSTokens.tuition;
   ThemeMode _mode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
-    final light = dsThemeData(_tokens, brightness: Brightness.light);
-    final dark = dsThemeData(_tokens, brightness: Brightness.dark);
+    final light = dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light);
+    final dark = dsThemeData(DSTokens.defaultTheme, brightness: Brightness.dark);
     return MaterialApp(
       title: 'DS Design Gallery',
       theme: light,
@@ -27,35 +26,12 @@ class _GalleryAppState extends State<GalleryApp> {
         appBar: AppBar(
           title: const Text('DS Design Gallery'),
           actions: [
-            PopupMenuButton<String>(
-              tooltip: 'Choose theme',
-              onSelected: (name) => setState(
-                () => _tokens = switch (name) {
-                  'Church' => DSTokens.church,
-                  'Bible' => DSTokens.bible,
-                  _ => DSTokens.tuition,
-                },
-              ),
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'Tuition', child: Text('Tuition')),
-                PopupMenuItem(value: 'Church', child: Text('Church')),
-                PopupMenuItem(value: 'Bible', child: Text('Bible')),
-              ],
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Center(child: Text(_tokens.name)),
-              ),
-            ),
             IconButton(
               tooltip: 'Switch light/dark theme',
               onPressed: () => setState(
-                () => _mode = _mode == ThemeMode.dark
-                    ? ThemeMode.light
-                    : ThemeMode.dark,
+                () => _mode = _mode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark,
               ),
-              icon: Icon(
-                _mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
-              ),
+              icon: Icon(_mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode),
             ),
           ],
         ),

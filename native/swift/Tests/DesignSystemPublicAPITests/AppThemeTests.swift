@@ -10,7 +10,8 @@ final class AppThemeTests: XCTestCase {
         _ = Text("Preview").dsTheme(DSTokens.compatibilityFixture)
     }
 
-    func testAppOwnedThemeMatchesBuiltIn() {
-        XCTAssertEqual(DSThemeTokens.tuition, DSTokens.tuition)
+    func testAppOwnedThemeCarriesFixtureExtras() {
+        XCTAssertEqual(DSThemeTokens.sampleApp.extraLight["highlight"], 0x3B82F6)
+        XCTAssertNotEqual(DSThemeTokens.sampleApp.light.primary, DSTokens.default.light.primary)
     }
 }

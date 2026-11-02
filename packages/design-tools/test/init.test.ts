@@ -80,11 +80,11 @@ describe("initDesign", () => {
 
   test("--from-legacy migrates an existing theme", () => {
     const dir = app();
-    const church = JSON.parse(readFileSync(join(ROOT, "tokens/themes/church.json"), "utf8"));
-    writeFileSync(join(dir, "old.json"), JSON.stringify(church));
+    const legacySrc = JSON.parse(readFileSync(join(ROOT, "tokens/themes/default.json"), "utf8"));
+    writeFileSync(join(dir, "old.json"), JSON.stringify(legacySrc));
     initDesign(dir, { name: "sample", fromLegacy: join(dir, "old.json") });
     const theme = JSON.parse(readFileSync(join(dir, "design/theme.json"), "utf8"));
-    const expected = toDtcg({ ...church, name: "sample" });
+    const expected = toDtcg({ ...legacySrc, name: "sample" });
     expect(theme).toEqual(JSON.parse(JSON.stringify(expected)));
   });
 

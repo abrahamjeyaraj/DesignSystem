@@ -6,7 +6,7 @@ Repo: abrahamjeyaraj/DesignSystem (private). Base: `main` @ 882f58f. Read `READM
 ## Objective
 Turn your platform's adapter into a component SDK that renders the Pen "Native Design System"
 (`docs/pen-native-spec.md`, 21 `M /` components) **from theme tokens only**, so the first native
-consumer can adopt it and others can reuse the SDK with their own themes (`tuition`, `church`, `bible`, …).
+consumer can adopt it and others can reuse the SDK with their own themes (`app`, `app`, `app`, …).
 
 ## Hard rules
 - Values come from the generated tokens (`DSTokens.<theme>`: `light/dark` roles, `mobileType`,
@@ -38,7 +38,7 @@ StatTile (label, value, meta with tone) · Segmented control · Field (label + b
 SearchField · LargeTitle (eyebrow, title, trailing action) · NavBar (leading, title, trailing) ·
 SheetHandle · SectionHeader (title + action) · TabBar (floating capsule, icon+label items, active
 pill) · Card · EmptyState (icon, title, message, action).
-Plus a **Gallery** screen showing every component for a chosen theme (tuition, church, bible) in
+Plus a **Gallery** screen showing every component for a chosen theme (app, app, app) in
 light and dark, which doubles as the manual check against Pen.
 
 ## Scope and deletion rules

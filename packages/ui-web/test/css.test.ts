@@ -6,7 +6,6 @@ const pkg = resolve(import.meta.dir, '..');
 
 /** Compiles the way a consumer app would: tailwindcss + one theme + this package. */
 function compile(theme: string): string {
-  // Inside the package so bare imports (tailwindcss, @abrahamjeyaraj/tokens) resolve from its node_modules.
   mkdirSync(join(pkg, '.tmp'), { recursive: true });
   const dir = mkdtempSync(join(pkg, '.tmp', 'css-'));
   const input = join(dir, 'in.css');
@@ -20,8 +19,8 @@ function compile(theme: string): string {
   return readFileSync(output, 'utf8');
 }
 
-describe.each(['bible', 'church', 'tuition'])('%s theme compiles with ui-web', (theme) => {
-  const css = compile(theme);
+describe('default theme compiles with ui-web', () => {
+  const css = compile('default');
 
   test('component utilities resolve to theme variables', () => {
     for (const cls of ['.bg-action', '.text-action-foreground', '.rounded-button', '.rounded-control', '.rounded-card', '.shadow-card', '.border-line', '.bg-subtle', '.text-ink', '.label-text']) {
@@ -34,15 +33,7 @@ describe.each(['bible', 'church', 'tuition'])('%s theme compiles with ui-web', (
   test('class-based dark mode: variables flip under .dark and dark: variant targets .dark', () => {
     expect(css).toContain('.dark');
     expect(css).toMatch(/:where\(\.dark, \.dark \*\)/);
+    expect(css).toContain('--color-action: #2563eb;');
+    expect(css).toContain('--label-case: none;');
   });
-});
-
-test('themes differ where they should', () => {
-  const bible = compile('bible');
-  const church = compile('church');
-  expect(bible).toContain('--color-action: #c8b496');
-  expect(church).toContain('--color-action: #1a6b54');
-  expect(bible).toContain('--label-case: uppercase');
-  expect(church).toContain('--label-case: none');
-  expect(church).toContain('--radius-card: 0.9375rem');
 });

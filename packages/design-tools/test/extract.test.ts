@@ -284,7 +284,7 @@ describe("ds-extract CLI", () => {
 
   test("--theme reports colours the frozen theme does not have", () => {
     const out = mkdtempSync(join(tmpdir(), "ds-extract-"));
-    const r = run(DESIGN, "--out", join(out, "report.json"), "--theme", join(ROOT, "tokens/themes/church.json"));
+    const r = run(DESIGN, "--out", join(out, "report.json"), "--theme", join(ROOT, "tokens/themes/default.json"));
     expect(r.exitCode).toBe(0);
     const report = JSON.parse(readFileSync(join(out, "report.json"), "utf8"));
     expect(report.drift.newColors).toContain("#8b5d2e");

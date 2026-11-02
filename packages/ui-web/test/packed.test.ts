@@ -52,7 +52,7 @@ test('every @source in the shipped styles.css points at a directory that ships',
 test('a consumer Tailwind build picks up ui-web component classes', () => {
   writeFileSync(
     join(consumer, 'in.css'),
-    '@import "tailwindcss";\n@import "@abrahamjeyaraj/tokens/css/bible.css";\n@import "@abrahamjeyaraj/ui-web/styles.css";\n',
+    '@import "tailwindcss";\n@import "@abrahamjeyaraj/tokens/css/default.css";\n@import "@abrahamjeyaraj/ui-web/styles.css";\n',
   );
   // Output outside the consumer, or Tailwind's automatic source detection would scan it next time.
   const out = join(mkdtempSync(join(tmpdir(), 'ui-web-out-')), 'out.css');

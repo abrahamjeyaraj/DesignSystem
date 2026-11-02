@@ -184,38 +184,14 @@ private fun Modifier.backgroundFromTheme(): Modifier {
     return background(Color(c.background))
 }
 
-@Preview(name = "Tuition Light", showBackground = true, widthDp = 390)
+@Preview(name = "Default Light", showBackground = true, widthDp = 390)
 @Composable
-private fun PreviewTuitionLight() {
-    DSTheme(DSTokens.tuition, dark = false) { DSGallery() }
+private fun PreviewDefaultLight() {
+    DSTheme(DSTokens.default, dark = false) { DSGallery() }
 }
 
-@Preview(name = "Tuition Dark (light-only theme)", showBackground = true, widthDp = 390)
+@Preview(name = "Default Dark", showBackground = true, widthDp = 390)
 @Composable
-private fun PreviewTuitionDark() {
-    DSTheme(DSTokens.tuition, dark = true) { DSGallery() }
-}
-
-@Preview(name = "Church Light", showBackground = true, widthDp = 390)
-@Composable
-private fun PreviewChurchLight() {
-    DSTheme(DSTokens.church, dark = false) { DSGallery() }
-}
-
-@Preview(name = "Church Dark", showBackground = true, widthDp = 390)
-@Composable
-private fun PreviewChurchDark() {
-    DSTheme(DSTokens.church, dark = true) { DSGallery() }
-}
-
-@Preview(name = "Bible Light", showBackground = true, widthDp = 390)
-@Composable
-private fun PreviewBibleLight() {
-    DSTheme(DSTokens.bible, dark = false) { DSGallery() }
-}
-
-@Preview(name = "Bible Dark", showBackground = true, widthDp = 390)
-@Composable
-private fun PreviewBibleDark() {
-    DSTheme(DSTokens.bible, dark = true) { DSGallery() }
+private fun PreviewDefaultDark() {
+    DSTheme(DSTokens.default, dark = true) { DSGallery() }
 }

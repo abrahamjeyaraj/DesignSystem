@@ -38,7 +38,7 @@ export function createTheme(name: ThemeName = tokens.defaultTheme, mode: ColorMo
   };
   const resolveFont = (role: FontRole, isLoaded = loaded(t.fontFamily[role].family)) => isLoaded ? t.fontFamily[role].family : fallback(role);
   const fontFamily = Object.fromEntries((Object.keys(t.fontFamily) as FontRole[]).map((role) => [role, resolveFont(role)])) as DSTheme['fontFamily'];
-  const mobileType = Object.fromEntries(Object.entries(t.mobile.type).map(([key, value]) => [key, { ...value, family: resolveFont(value.font as FontRole) }])) as DSMobileType;
+  const mobileType = Object.fromEntries(Object.entries(t.mobile.type).map(([key, value]) => [key, { ...value, family: resolveFont(value.font as FontRole) }])) as unknown as DSMobileType;
   const mobileLayout = t.mobile.layout as DSMobileLayout;
   return {
     name, mode: resolvedMode, colors: t[resolvedMode], extra: t.extra[resolvedMode], fontFamily,

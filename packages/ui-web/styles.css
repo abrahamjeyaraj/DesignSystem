@@ -1,6 +1,6 @@
 /* Scan this package's class names. Import after tailwindcss and a theme:
      @import "tailwindcss";
-     @import "@abrahamjeyaraj/tokens/css/church.css";
+     @import "@abrahamjeyaraj/tokens/css/default.css";
      @import "@abrahamjeyaraj/ui-web/styles.css";
 */
 @source "./src";

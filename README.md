@@ -7,7 +7,7 @@ built the same way.
 
 ```
 tokens/base.json            role contract + default scales (spacing, radius, type, shadow, motion)
-tokens/themes/<app>.json    bible | church | tuition: palette, role colours, fonts, sizes, radii
+tokens/themes/default.json  built-in neutral theme for SDK galleries, tests, and defaults
         │  bun run tokens  (packages/tokens/scripts/build.ts)
         ▼
 packages/tokens     @abrahamjeyaraj/tokens     Tailwind v4 CSS per theme + typed TS object
@@ -35,7 +35,7 @@ product `DesignSystem` (Xcode must be signed in to GitHub).
 
 ```swift
 import DesignSystem
-RootView().dsTheme(DSTokens.tuition)          // DSButton, DSListRow, .dsFont(.title), DSGallery ...
+RootView().dsTheme(DSTokens.default)       // DSButton, DSListRow, .dsFont(.title), DSGallery ...
 ```
 
 **Android (Compose)**: `settings.gradle.kts`
@@ -56,7 +56,7 @@ dependencyResolutionManagement {
 ```
 
 `implementation("com.abrahamjeyaraj:designsystem:0.2.0")`, put `gpr.user` / `gpr.key` in
-`~/.gradle/gradle.properties`, then `DSTheme(DSTokens.tuition) { ... }`.
+`~/.gradle/gradle.properties`, then `DSTheme(DSTokens.default) { ... }`.
 
 **React Native / Expo / react-native-web and React web**: `.npmrc` (or `bunfig.toml` scope)
 
@@ -66,12 +66,12 @@ dependencyResolutionManagement {
 ```
 
 `bun add @abrahamjeyaraj/ui-native` (pulls `@abrahamjeyaraj/tokens`), then
-`<DSThemeProvider theme="tuition">` and `DSButton`, `DSListRow`, `useDSTheme()` ...
+`<DSThemeProvider theme="default">` and `DSButton`, `DSListRow`, `useDSTheme()` ...
 Web: `bun add @abrahamjeyaraj/ui-web` and in CSS:
 
 ```css
 @import "tailwindcss";
-@import "@abrahamjeyaraj/tokens/css/church.css";
+@import "@abrahamjeyaraj/tokens/css/default.css";
 @import "@abrahamjeyaraj/tokens/base.css";
 @import "@abrahamjeyaraj/ui-web/styles.css";
 ```
@@ -89,22 +89,21 @@ dependencies:
       path: native/flutter
 ```
 
-`MaterialApp(theme: dsThemeData(DSTokens.tuition, brightness: Brightness.light), ...)`.
+`MaterialApp(theme: dsThemeData(DSTokens.defaultTheme, brightness: Brightness.light), ...)`.
 
 Every SDK ships a gallery (`DSGallery`) showing all components per theme in light and dark.
 
 ## Change the look
 
-Edit `tokens/themes/<app>.json` (or `base.json` for everyone), then `bun run tokens` and
+Edit `tokens/themes/default.json` (SDK default) or your app's `design/theme.json`, then `bun run tokens` and
 `bun run verify`. The generator rejects missing roles, unknown roles and new scale keys, so every
 theme keeps working with every component. Colours only one app needs go in that theme's `extra`.
 
-Add an app: copy a theme file, rename `name`, and adjust the values.
+Add an app theme: copy `packages/design-tools/test/fixtures/app-theme.json`, rename `name`, adjust values, and generate with `ds-tokens`.
 
-### Own the theme in the app
+### App-owned themes
 
-Apps are moving their theme into their own repo (see DESIGN.md). With `@abrahamjeyaraj/tokens`
-installed (needs Bun):
+With `@abrahamjeyaraj/tokens` installed (needs Bun):
 
 ```sh
 bunx ds-tokens css theme/app.json src/app/theme.css           # write
@@ -113,7 +112,7 @@ bunx ds-tokens css theme/app.json src/app/theme.css --check   # CI: fail if stal
 
 The theme JSON has the same shape as `tokens/themes/*.json` and is checked against the shipped
 `base.json` (`@abrahamjeyaraj/tokens/base.json`). Import the generated file after Tailwind in place
-of `@abrahamjeyaraj/tokens/css/<app>.css`, and commit it. If the theme JSON sits where Tailwind
+of `@abrahamjeyaraj/tokens/css/default.css` (or your generated `theme.css`), and commit it. If the theme JSON sits where Tailwind
 scans for sources, its keys become stray utilities; exclude it, e.g. `@source not "../../theme";`.
 
 ## The app's design/ folder
